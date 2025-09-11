@@ -1,0 +1,29 @@
+/* StoryBook.css */
+
+/* Căn full màn hình */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: #e5e7eb; /* bg-gray-200 */
+  font-family: "Arial", sans-serif;
+}
+
+/* Container sách */
+.book-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+/* Mỗi trang */
+.page {
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 20px;
+  font-size: 18px;
+  line-height: 1.6;
+}
