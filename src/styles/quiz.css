@@ -1,4 +1,4 @@
-/* Tổng thể container quiz */
+/* Tổng thể container quiz 
 .quiz-container {
   max-width: 600px;
   margin: 40px auto;
@@ -10,7 +10,7 @@
   text-align: center;
 }
 
-/* Tiêu đề quiz */
+
 .quiz-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -18,14 +18,14 @@
   color: #333;
 }
 
-/* Câu hỏi */
+
 .quiz-question {
   font-size: 1.2rem;
   margin-bottom: 15px;
   color: #444;
 }
 
-/* Danh sách đáp án */
+
 .quiz-options {
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@
   border-color: #4a90e2;
 }
 
-/* Đáp án đúng / sai */
+
 .quiz-option.correct {
   background: #d4f8d4;
   border-color: #27ae60;
@@ -60,7 +60,7 @@
   color: #7b241c;
 }
 
-/* Nút điều hướng */
+
 .quiz-button {
   margin-top: 20px;
   padding: 12px 20px;
@@ -76,3 +76,4 @@
 .quiz-button:hover {
   background: #357abd;
 }
+*/

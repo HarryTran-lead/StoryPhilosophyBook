@@ -1,9 +1,9 @@
+/* 
 html, body, #root {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* không cho scroll */
   background: #e5e7eb;
   font-family: "Georgia", serif;
 }
@@ -16,7 +16,7 @@ html, body, #root {
   width: 100vw;
 }
 
-/* Trang chung */
+
 .page {
   background: #fff;
   border: 1px solid #ddd;
@@ -31,7 +31,7 @@ html, body, #root {
   position: relative;
 }
 
-/* Bìa */
+
 .page.cover {
   background: linear-gradient(135deg, #4f46e5, #3b82f6);
   color: white;
@@ -51,7 +51,7 @@ html, body, #root {
   opacity: 0.8;
 }
 
-/* Tiêu đề */
+
 .page h2 {
   margin-top: 0;
   color: #1f2937;
@@ -60,14 +60,14 @@ html, body, #root {
   font-size: 22px;
 }
 
-/* Hình ảnh trong trang */
+
 .page-img {
   width: 100%;
   margin-top: 20px;
   border-radius: 8px;
 }
 
-/* Gallery */
+
 .gallery {
   display: flex;
   gap: 15px;
@@ -87,7 +87,7 @@ html, body, #root {
   transform: scale(1.1);
 }
 
-/* Blockquote */
+
 blockquote {
   margin-top: 20px;
   padding: 15px 20px;
@@ -97,10 +97,12 @@ blockquote {
   color: #374151;
 }
 
-/* Lời cảm ơn */
+
 .thanks {
   margin-top: auto;
   font-weight: bold;
   text-align: center;
   color: #16a34a;
 }
+
+ */
