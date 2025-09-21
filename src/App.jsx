@@ -5,7 +5,7 @@ import HomePage from "@pages/HomePage/mainLayout"; // Layout cha
 import Home from "@pages/HomePage/Home";
 import About from "@pages/HomePage/About";
 import Chapters from "@pages/HomePage/Chapters";
-import Quiz from "@pages/HomePage/Quiz";
+import Quiz from "@pages/HomePage/Quiz/QuizLayout";
 import Resources from "@pages/HomePage/Resources";
 // import Faqs from "@pages/HomePage/Faqs";
 import endPoint from "@routes/routes";

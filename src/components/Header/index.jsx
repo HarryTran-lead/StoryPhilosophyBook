@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { NavLink as RouterNavLink } from "react-router-dom";
 import endPoint from "@routes/routes";
+import { useLocation } from "react-router-dom";
 
 // Cấu hình nav items với philosophy theme
 const navItems = [
@@ -104,18 +105,20 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
           }`}
       >
         {/* Main dropdown card */}
-        <div className="relative bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-2xl border border-slate-700/50 overflow-hidden">
+        <div className="relative bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-xl border border-slate-600/40 overflow-hidden">
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-400/5 via-transparent to-slate-900/20 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-300/5 via-transparent to-slate-800/20 pointer-events-none" />
 
           {/* Header */}
-          <div className="relative px-4 py-2.5 border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+          <div className="relative px-4 py-2.5 border-b border-slate-600/40 bg-gradient-to-r from-slate-700/40 to-slate-800/40">
             <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-md bg-amber-400/10 border border-amber-400/20">
+              <div className="p-1.5 rounded-md bg-amber-300/10 border border-amber-300/20">
                 <BookOpen size={16} className="text-amber-300" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">Mục lục</h3>
+                <h3 className="text-slate-100 font-semibold text-sm">
+                  Mục lục
+                </h3>
                 <p className="text-slate-400 text-[11px] mt-0.5">
                   Chọn chương để học
                 </p>
@@ -128,21 +131,21 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
             {children.map((item, i) => (
               <div
                 key={i}
-                className="group relative border-b border-slate-700/30 last:border-b-0 
-                 hover:bg-gradient-to-r hover:from-amber-400/8 hover:via-amber-400/4 hover:to-transparent 
-                 transition-all duration-300"
+                className="group relative border-b border-slate-600/30 last:border-b-0 
+          hover:bg-gradient-to-r hover:from-amber-300/8 hover:via-amber-300/4 hover:to-transparent 
+          transition-all duration-300"
               >
                 <button
                   onClick={onClose}
                   className="w-full text-left px-5 py-2.5 flex items-center gap-3
-                   hover:translate-x-0.5 transition-all duration-300"
+            hover:translate-x-0.5 transition-all duration-300"
                 >
                   {/* Chapter number */}
                   <div
-                    className="flex-shrink-0 w-7 h-7 rounded-md bg-slate-800 border border-slate-600 
-                        flex items-center justify-center text-[11px] font-bold text-slate-300 
-                        group-hover:bg-amber-400/10 group-hover:border-amber-400/30 
-                        group-hover:text-amber-100 transition-all duration-300"
+                    className="flex-shrink-0 w-7 h-7 rounded-md bg-slate-700 border border-slate-500 
+              flex items-center justify-center text-[11px] font-bold text-slate-200 
+              group-hover:bg-amber-300/10 group-hover:border-amber-300/30 
+              group-hover:text-amber-100 transition-all duration-300"
                   >
                     {i + 1}
                   </div>
@@ -150,15 +153,15 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <h4
-                      className="text-sm font-medium text-white 
-                         group-hover:text-amber-200 transition-colors duration-300"
+                      className="text-sm font-medium text-slate-100 
+                group-hover:text-amber-200 transition-colors duration-300"
                     >
                       {item.label}
                     </h4>
                     {item.description && (
                       <p
                         className="text-xs text-slate-400 mt-0.5 
-                          group-hover:text-slate-300 transition-colors duration-300"
+                  group-hover:text-slate-300 transition-colors duration-300"
                       >
                         {item.description}
                       </p>
@@ -168,31 +171,31 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
                   {/* Arrow */}
                   <ArrowRight
                     size={13}
-                    className="flex-shrink-0 text-slate-500 
-                     group-hover:text-amber-400 group-hover:translate-x-0.5 
-                     transition-all duration-300"
+                    className="flex-shrink-0 text-slate-400 
+              group-hover:text-amber-400 group-hover:translate-x-0.5 
+              transition-all duration-300"
                   />
                 </button>
 
                 {/* Hover effect line */}
                 <div
                   className="absolute bottom-0 left-4 right-4 h-px 
-                      bg-gradient-to-r from-transparent via-amber-400/30 to-transparent 
-                      scale-x-0 group-hover:scale-x-100 
-                      transition-transform duration-500 origin-left"
+            bg-gradient-to-r from-transparent via-amber-300/30 to-transparent 
+            scale-x-0 group-hover:scale-x-100 
+            transition-transform duration-500 origin-left"
                 />
               </div>
             ))}
           </div>
 
           {/* Footer */}
-          <div className="relative px-4 py-2.5 bg-gradient-to-r from-slate-900/70 to-slate-800/70 border-t border-slate-700/50">
+          <div className="relative px-4 py-2.5 bg-gradient-to-r from-slate-800/60 to-slate-700/60 border-t border-slate-600/40">
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-slate-400 flex items-center">
                 <Book size={11} className="mr-1" />
                 {children.length} chương
               </span>
-              <span className="text-slate-500">Triết học Mác-Lênin</span>
+              <span className="text-slate-400">Triết học Mác-Lênin</span>
             </div>
           </div>
         </div>
@@ -385,6 +388,8 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -395,14 +400,18 @@ export default function Header() {
   }, []);
 
   return (
-    <div>
+    <div className="">
       {/* Refined Desktop Header */}
       <header
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ease-out ${
-          scrolled
-            ? "bg-black/30 backdrop-blur-md"
-            : "bg-black/20 backdrop-blur-sm"
-        }`}
+        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ease-out
+          ${
+            isHome
+              ? scrolled
+                ? "bg-black/30 backdrop-blur-md"
+                : "bg-black/20 backdrop-blur-sm" // Home lúc đầu trong suốt
+              : "bg-slate-800/90 backdrop-blur-md " // Các trang khác mặc định nền tối
+          }
+        `}
       >
         <div className="mx-auto pr-6 pl-8 py-1.5 flex items-center justify-between">
           {/* Sophisticated Logo */}
@@ -427,20 +436,17 @@ export default function Header() {
               return (
                 <div key={index} className="relative">
                   <RouterNavLink
-                    to={item.to || "#"}
+                    to={isDropdown ? "#" : item.to}
                     onClick={(e) => {
                       if (isDropdown) {
-                        e.preventDefault(); // chặn NavLink điều hướng
+                        e.preventDefault();
                         setOpenDropdown(isOpenDrop ? null : index);
-                      } else {
-                        onClose();
                       }
                     }}
                     className={({ isActive }) => {
                       const base =
                         "group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-400 ease-out overflow-hidden font-serif";
 
-                      // Nếu là dropdown cha thì KHÔNG bao giờ active
                       if (isDropdown) {
                         return `${base} text-slate-300 hover:text-amber-200`;
                       }
@@ -458,10 +464,12 @@ export default function Header() {
                     ></div>
 
                     {/* Flowing Underline */}
-                    <div
-                      className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 
-      group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out"
-                    ></div>
+                    {!isDropdown && (
+                      <div
+                        className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 
+        group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out"
+                      ></div>
+                    )}
 
                     <div className="relative z-10 flex items-center gap-2">
                       <item.icon

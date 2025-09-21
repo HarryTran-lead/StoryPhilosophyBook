@@ -63,3 +63,76 @@
         transform: translateX(0) translateY(-50%);
     }
 }
+
+/* End Quiz */
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.backface-hidden {
+    backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+
+.dark {
+    color-scheme: dark;
+}
+
+.confetti {
+    position: fixed;
+    font-size: 2rem;
+    animation: confetti-fall 2s ease-out forwards;
+    pointer-events: none;
+}
+
+.confetti:nth-child(1) {
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.confetti:nth-child(2) {
+    left: 50%;
+    animation-delay: 0.5s;
+}
+
+.confetti:nth-child(3) {
+    left: 80%;
+    animation-delay: 1s;
+}
+
+@keyframes confetti-fall {
+    0% {
+        top: -10%;
+        transform: rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        top: 100%;
+        transform: rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
