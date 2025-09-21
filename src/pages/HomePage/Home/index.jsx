@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
+import Header from "@components/Header";
+// import { motion, AnimatePresence } from "framer-motion";
+// import MarxismIntro from "./MarxismIntro";
 
 export default function MarxismPhilosophyPage() {
   const steps = 5;
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(0); // Bắt đầu từ intro = 0
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const scrollTargetRef = useRef(0);
+  const scrollTargetRef = useRef(0); // intro
   const scrollPosRef = useRef(0);
   const lastScrollTime = useRef(0);
 
@@ -13,7 +16,7 @@ export default function MarxismPhilosophyPage() {
       title: "Triết học Mác-Lênin",
       subtitle: "Nền tảng tư tưởng của thời đại mới",
       description:
-        "Hệ thống triết học khoa học về quy luật phát triển của tự nhiên, xã hội và tư duy con người",
+        "Hệ thống triết học khoa học về quy luật phát triển khách quan của tự nhiên, xã hội và tư duy con người",
       quote:
         "Triết học không chỉ giải thích thế giới, mà còn thay đổi thế giới",
       author: "Karl Marx",
@@ -34,7 +37,7 @@ export default function MarxismPhilosophyPage() {
       title: "Chủ nghĩa duy vật lịch sử",
       subtitle: "Khoa học về sự phát triển xã hội loài người",
       description:
-        "Tồn tại xã hội quyết định ý thức xã hội. Lực lượng sản xuất là động lực cơ bản của sự tiến bộ",
+        "Tồn tại xã hội quyết định ý thức xã hội. Lực lượng sản xuất là động lực cơ bản của sự tiến bộ của nhân loại",
       quote: "Lịch sử của mọi xã hội cho đến nay là lịch sử đấu tranh giai cấp",
       author: "Karl Marx & Friedrich Engels",
       backgroundImage:
@@ -62,76 +65,79 @@ export default function MarxismPhilosophyPage() {
     },
   ];
 
-  const animate = () => {
-    const diff = scrollTargetRef.current - scrollPosRef.current;
-    scrollPosRef.current += diff * 0.06;
-
-    const newStep = Math.round(scrollPosRef.current);
-    if (newStep !== step) {
-      setStep(newStep);
-    }
-
+  // animation loop
+  useEffect(() => {
+    const animate = () => {
+      const diff = scrollTargetRef.current - scrollPosRef.current;
+      scrollPosRef.current += diff * 0.06;
+      const newStep = Math.round(scrollPosRef.current);
+      if (newStep !== step) setStep(newStep);
+      requestAnimationFrame(animate);
+    };
     requestAnimationFrame(animate);
+  }, [step]);
+
+  // tiện ích chuyển step
+  const goToStep = (newTarget) => {
+    if (isTransitioning) return;
+    if (newTarget >= steps) newTarget = 0;
+    if (newTarget < 0) newTarget = steps - 1; // <-- bỏ qua intro khi lùi
+    // (step -1 chỉ được gọi 1 lần duy nhất lúc refresh trang)
+    scrollTargetRef.current = newTarget;
+    setIsTransitioning(true);
+    setTimeout(() => setIsTransitioning(false), 1200);
   };
 
+  // --- scroll + keyboard + click ---
   useEffect(() => {
-    requestAnimationFrame(animate);
-
     const handleWheel = (e) => {
+      if (step === -1) return;
       e.preventDefault();
-
       const now = Date.now();
-      if (now - lastScrollTime.current < 80) return;
+      if (now - lastScrollTime.current < 100) return;
       lastScrollTime.current = now;
-
-      if (isTransitioning) return;
-
-      const direction = e.deltaY > 0 ? 1 : -1;
-      const newTarget = Math.max(
-        0,
-        Math.min(steps - 1, scrollTargetRef.current + direction)
-      );
-
-      if (newTarget !== scrollTargetRef.current) {
-        setIsTransitioning(true);
-        scrollTargetRef.current = newTarget;
-        setTimeout(() => setIsTransitioning(false), 1200);
-      }
+      goToStep(scrollTargetRef.current + (e.deltaY > 0 ? 1 : -1));
     };
 
     const handleKey = (e) => {
-      if (isTransitioning) return;
-
-      let direction = 0;
-      if (["ArrowDown", "PageDown", "Space"].includes(e.key)) direction = 1;
-      if (["ArrowUp", "PageUp"].includes(e.key)) direction = -1;
-
-      if (direction !== 0) {
+      if (step === -1) return;
+      if (["ArrowDown", "PageDown", " "].includes(e.key)) {
         e.preventDefault();
-        const newTarget = Math.max(
-          0,
-          Math.min(steps - 1, scrollTargetRef.current + direction)
-        );
-
-        if (newTarget !== scrollTargetRef.current) {
-          setIsTransitioning(true);
-          scrollTargetRef.current = newTarget;
-          setTimeout(() => setIsTransitioning(false), 1200);
-        }
+        goToStep(scrollTargetRef.current + 1);
       }
+      if (["ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        goToStep(scrollTargetRef.current - 1);
+      }
+    };
+
+    const handleClick = () => {
+      if (step === -1) return;
+      if (scrollTargetRef.current === steps - 1) goToStep(0);
+      else goToStep(scrollTargetRef.current + 1);
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKey);
+    // window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKey);
+      // window.removeEventListener("click", handleClick);
     };
   }, [step, isTransitioning]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Intro Overlay */}
+      {/* <AnimatePresence>
+        {step === -1 && <MarxismIntro onFinish={() => goToStep(0)} />}
+      </AnimatePresence> */}
+
+      {/* Header */}
+      {/* <Header sections={sections} step={step} goToStep={goToStep} /> */}
+
       {/* Background Layers */}
       <div className="absolute inset-0">
         {sections.map((section, i) => (
@@ -142,19 +148,17 @@ export default function MarxismPhilosophyPage() {
             }`}
             style={{ zIndex: i === step ? 1 : 0 }}
           >
-            {/* Background Image with Parallax */}
+            {/* Background Image với Ken Burns */}
             <div
-              className={`absolute inset-0 bg-cover bg-center transition-transform duration-[20000ms] ease-linear ${
-                i === step ? "scale-105" : "scale-100"
-              }`}
+              className="absolute inset-0 bg-cover bg-center animate-kenburns"
               style={{
                 backgroundImage: `url(${section.backgroundImage})`,
-                filter: "brightness(0.6) contrast(1.2) saturate(1.1)",
+                filter: "brightness(0.65) contrast(1.15) saturate(1.15)",
               }}
             ></div>
 
-            {/* Clean Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/50"></div>
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60"></div>
 
             {/* Scholarly Pattern Overlay */}
             <div className="absolute inset-0 opacity-10">
@@ -173,21 +177,12 @@ export default function MarxismPhilosophyPage() {
                 i === step ? "opacity-100" : "opacity-0"
               }`}
             >
-              {/* Floating geometric shapes */}
-              <div
-                className="absolute top-20 left-20 w-2 h-2 bg-yellow-400/30 rounded-full animate-pulse"
-                style={{ animationDelay: "0s", animationDuration: "3s" }}
-              ></div>
-              <div
-                className="absolute bottom-32 right-32 w-3 h-3 bg-red-400/30 rounded-full animate-pulse"
-                style={{ animationDelay: "1s", animationDuration: "4s" }}
-              ></div>
-              <div
-                className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse"
-                style={{ animationDelay: "2s", animationDuration: "5s" }}
-              ></div>
+              {/* Floating shapes */}
+              <div className="absolute top-20 left-20 w-2 h-2 bg-yellow-400/30 rounded-full animate-pulse"></div>
+              <div className="absolute bottom-32 right-32 w-3 h-3 bg-red-400/30 rounded-full animate-pulse"></div>
+              <div className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse"></div>
 
-              {/* Subtle light rays */}
+              {/* Light rays */}
               <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-white/20 to-transparent transform -rotate-12 opacity-30"></div>
               <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-white/15 to-transparent transform rotate-12 opacity-30"></div>
             </div>
@@ -209,24 +204,24 @@ export default function MarxismPhilosophyPage() {
             }`}
             style={{ zIndex: i === step ? 20 : 10 }}
           >
-            <div className="text-center max-w-5xl mx-auto px-8">
+            <div className="text-center max-w-5xl mx-auto px-8 ">
               {/* Academic Header */}
               <div
-                className={`mb-8 transition-all duration-1200 delay-100 ${
+                className={`mb-6 transition-all duration-1200 delay-100 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
                 }`}
               >
                 <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-6"></div>
-                <div className="text-amber-400 text-sm font-medium tracking-[0.3em] uppercase">
+                <div className="text-amber-400 text-sm font-medium tracking-[0.25em] uppercase">
                   Chương {i + 1}
                 </div>
               </div>
 
               {/* Main Title */}
               <h1
-                className={`text-5xl md:text-7xl font-bold text-white mb-6 transition-all duration-1200 delay-300 ${
+                className={`text-4xl md:text-6xl font-bold text-white mb-6 transition-all duration-1200 delay-300 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
@@ -243,7 +238,7 @@ export default function MarxismPhilosophyPage() {
 
               {/* Subtitle */}
               <h2
-                className={`text-2xl md:text-3xl text-amber-300 mb-8 font-light transition-all duration-1200 delay-500 ${
+                className={`text-xl md:text-2xl text-amber-300 mb-7 font-light transition-all duration-1200 delay-500 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
@@ -259,7 +254,7 @@ export default function MarxismPhilosophyPage() {
 
               {/* Decorative divider */}
               <div
-                className={`flex items-center justify-center mb-8 transition-all duration-1200 delay-700 ${
+                className={`flex items-center justify-center mb-7 transition-all duration-1200 delay-700 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
@@ -272,7 +267,7 @@ export default function MarxismPhilosophyPage() {
 
               {/* Description */}
               <p
-                className={`text-xl md:text-2xl text-gray-100 leading-relaxed max-w-4xl mx-auto mb-8 transition-all duration-1200 delay-900 ${
+                className={`text-lg md:text-xl text-gray-100 leading-relaxed max-w-4xl mx-auto mb-7 transition-all duration-1200 delay-900 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
@@ -281,7 +276,7 @@ export default function MarxismPhilosophyPage() {
                   textShadow: "1px 1px 6px rgba(0,0,0,0.8)",
                   fontFamily:
                     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  lineHeight: "1.8",
+                  lineHeight: "1.75",
                 }}
               >
                 {section.description}
@@ -289,7 +284,7 @@ export default function MarxismPhilosophyPage() {
 
               {/* Famous Quote */}
               <div
-                className={`max-w-3xl mx-auto mb-8 transition-all duration-1200 delay-1100 ${
+                className={`max-w-3xl mx-auto mb-7 transition-all duration-1200 delay-1100 ${
                   i === step
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
@@ -300,7 +295,7 @@ export default function MarxismPhilosophyPage() {
                     "
                   </div>
                   <p
-                    className="text-lg md:text-xl text-amber-200 leading-relaxed pl-8 pr-8 italic"
+                    className="text-base md:text-lg text-amber-200 leading-relaxed pl-8 pr-8 italic"
                     style={{
                       fontFamily:
                         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -319,14 +314,24 @@ export default function MarxismPhilosophyPage() {
               {/* Call to action for last slide */}
               {i === steps - 1 && (
                 <div
-                  className={`mt-16 transition-all duration-1200 delay-1300 ${
+                  className={`mt-12 md:mt-16 transition-all duration-1200 delay-1300 flex justify-center ${
                     i === step
                       ? "translate-y-0 opacity-100"
                       : "translate-y-12 opacity-0"
                   }`}
                 >
                   <button
-                    className="group relative bg-gradient-to-r from-amber-600 to-amber-500 border-2 border-amber-400 text-white px-6 py-3 rounded-full text-xl font-semibold shadow-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90"
+                    className="
+        group relative
+        bg-gradient-to-r from-amber-600 to-amber-500 
+        border-2 border-amber-400 text-white 
+        px-4 py-2 md:py-2
+        rounded-full 
+        text-sm sm:text-base md:text-lg font-semibold
+        shadow-2xl overflow-hidden
+        transition-all duration-500
+        hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90
+      "
                     style={{
                       fontFamily:
                         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -352,38 +357,9 @@ export default function MarxismPhilosophyPage() {
         ))}
       </div>
 
-      {/* Progress indicator */}
-      <div className="fixed right-8 top-1/2 transform -translate-y-1/2 z-30">
-        <div className="flex flex-col space-y-2">
-          {sections.map((_, i) => (
-            <div key={i} className="relative group">
-              <div
-                className={`w-3 h-3 rounded-full border transition-all duration-500 cursor-pointer ${
-                  i === step
-                    ? "bg-white border-white scale-110 shadow-md shadow-white/40"
-                    : i < step
-                    ? "bg-white/60 border-white/60"
-                    : "bg-transparent border-white/40 hover:border-white/80"
-                }`}
-                onClick={() => {
-                  if (!isTransitioning) {
-                    setIsTransitioning(true);
-                    scrollTargetRef.current = i;
-                    setTimeout(() => setIsTransitioning(false), 1200);
-                  }
-                }}
-              ></div>
-              <div className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/70 text-white text-xs px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
-                Chương {i + 1}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Academic Navigation hint */}
       <div
-        className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-30 transition-all duration-1000 ${
+        className={`fixed bottom-16 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-30 transition-all duration-1000 ${
           step === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
@@ -394,7 +370,7 @@ export default function MarxismPhilosophyPage() {
       </div>
 
       {/* Academic footer watermark */}
-      <div className="fixed bottom-4 left-4 z-30 opacity-60">
+      <div className="fixed bottom-3 left-3 z-30 opacity-60">
         <div
           className="text-white/60 text-xs"
           style={{
