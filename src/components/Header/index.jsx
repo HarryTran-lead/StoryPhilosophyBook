@@ -87,7 +87,7 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-all duration-500 ${
+        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 rounded-xl transition-all duration-500 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
         onClick={onClose}
@@ -272,17 +272,14 @@ const MobileNav = ({ isOpen, onClose }) => {
                         : onClose()
                     }
                     // KHÔNG bao giờ active cho dropdown
-                    isActive={() => (isDropdown ? false : undefined)}
                     className={({ isActive }) => {
                       const base =
                         "group flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-all duration-400 ease-out relative overflow-hidden";
 
-                      // Dropdown = chỉ hover, không active
                       if (isDropdown) {
                         return `${base} text-slate-300 hover:text-amber-200 hover:bg-gradient-to-r hover:from-amber-400/8 hover:to-transparent`;
                       }
 
-                      // Link bình thường vẫn active
                       return isActive
                         ? `${base} bg-gradient-to-r from-amber-400/15 via-amber-300/10 to-transparent text-amber-200 shadow-inner`
                         : `${base} text-slate-300 hover:text-amber-200 hover:bg-gradient-to-r hover:from-amber-400/8 hover:to-transparent`;
@@ -291,17 +288,16 @@ const MobileNav = ({ isOpen, onClose }) => {
                       transitionDelay: isOpen ? `${index * 50}ms` : "0ms",
                     }}
                   >
+                    {" "}
                     {/* Icon */}
                     <div className="relative">
                       <item.icon className="w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
                       <div className="absolute inset-0 bg-amber-400/20 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 opacity-0 group-hover:opacity-100"></div>
                     </div>
-
                     {/* Label */}
                     <span className="font-serif tracking-wide">
                       {item.label}
                     </span>
-
                     {/* Dropdown Indicator */}
                     {isDropdown && (
                       <div

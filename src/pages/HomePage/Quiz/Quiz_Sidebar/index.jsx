@@ -150,34 +150,35 @@ export default function QuizSidebar({
 
                   {/* Content */}
                   <div className="ml-4">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex justify-between mb-2 items-start">
                       <h3
-                        className={`font-semibold text-base leading-tight
-                      ${
-                        darkMode
-                          ? isActive
-                            ? "text-amber-100"
-                            : "text-white"
-                          : isActive
-                          ? "text-amber-600"
-                          : "text-slate-800"
-                      }
-                    `}
+                        className={`font-semibold text-base leading-tight flex-1
+      ${
+        darkMode
+          ? isActive
+            ? "text-amber-100"
+            : "text-white"
+          : isActive
+          ? "text-amber-600"
+          : "text-slate-800"
+      }
+    `}
                       >
                         Chương {index + 1}: {chapter.title}
                       </h3>
+
                       <span
-                        className={`ml-1 px-2 py-1 rounded-full text-xs font-medium
-                      ${
-                        darkMode
-                          ? isActive
-                            ? "bg-amber-200/20 text-amber-300"
-                            : "bg-slate-700 text-slate-300"
-                          : isActive
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-slate-100 text-slate-600"
-                      }
-                    `}
+                        className={`ml-2.5 px-2 py-1 rounded-full text-xs font-medium
+      ${
+        darkMode
+          ? isActive
+            ? "bg-amber-200/20 text-amber-300"
+            : "bg-slate-700 text-slate-300"
+          : isActive
+          ? "bg-amber-100 text-amber-700"
+          : "bg-slate-100 text-slate-600"
+      }
+    `}
                       >
                         {progress}%
                       </span>
@@ -202,21 +203,23 @@ export default function QuizSidebar({
                     {/* Progress Bar */}
                     <div
                       className={`w-full rounded-full h-2 overflow-hidden ${
-                        darkMode ? "bg-slate-700" : "bg-slate-200"
+                        darkMode
+                          ? isActive
+                            ? "bg-gradient-to-br from-slate-500 to-slate-600"
+                            : "bg-gradient-to-br from-slate-600 to-slate-700"
+                          : "bg-slate-200"
                       }`}
                     >
                       <div
-                        className={`h-full rounded-full transition-all duration-500
-                      ${
-                        darkMode
-                          ? isActive
-                            ? "bg-amber-400"
-                            : "bg-slate-500"
-                          : isActive
-                          ? "bg-amber-500"
-                          : "bg-amber-300"
-                      }
-                    `}
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          isActive
+                            ? darkMode
+                              ? "bg-amber-400"
+                              : "bg-amber-500"
+                            : darkMode
+                            ? "bg-slate-500"
+                            : "bg-amber-300"
+                        }`}
                         style={{ width: `${progress}%` }}
                       />
                     </div>
@@ -224,7 +227,11 @@ export default function QuizSidebar({
                     {/* Questions count */}
                     <div
                       className={`mt-2 text-xs flex items-center gap-1 ${
-                        darkMode ? "text-slate-400" : "text-slate-500"
+                        darkMode
+                          ? isActive
+                            ? "text-slate-200"
+                            : "text-slate-400"
+                          : "text-slate-500"
                       }`}
                     >
                       <Circle className="w-3 h-3" />

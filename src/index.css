@@ -75,6 +75,7 @@
 
 .backface-hidden {
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .rotate-y-180 {
@@ -109,17 +110,16 @@
 
 @keyframes confetti-fall {
     0% {
-        top: -10%;
-        transform: rotate(0deg);
+        transform: translateY(-100vh) rotate(0deg);
         opacity: 1;
     }
 
     100% {
-        top: 100%;
-        transform: rotate(360deg);
+        transform: translateY(100vh) rotate(720deg);
         opacity: 0;
     }
 }
+
 
 @keyframes shake {
 
@@ -128,11 +128,18 @@
         transform: translateX(0);
     }
 
-    25% {
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
         transform: translateX(-5px);
     }
 
-    75% {
+    20%,
+    40%,
+    60%,
+    80% {
         transform: translateX(5px);
     }
 }
