@@ -1,0 +1,250 @@
+/* === THEME OVERRIDE: Dark + Amber (vàng ấm) === */
+:root {
+  /* Core palette */
+  --bg-900: #0b0b0f;   /* nền rất tối */
+  --bg-800: #111217;
+  --text-100: #f7f7f7;
+  --muted-400: #9aa0a6;
+
+  /* Amber / Gold accent */
+  --amber-700: #b45309;
+  --amber-600: #d97706;
+  --amber-500: #f59e0b;
+  --amber-400: #fbbf24;
+  --amber-300: #fcd34d;
+
+  /* Subtle borders/shadows */
+  --border-amber: rgba(245, 158, 11, 0.35);
+  --glow-amber: rgba(251, 191, 36, 0.35);
+  --ink-700: #2b2b31;
+}
+
+/* Đặt ảnh làm nền sau cùng, bên dưới các lớp gradient */
+.book-scene {
+  /* 1) Overlay tối + ánh ấm giữ chiều sâu */
+  background:
+    radial-gradient(60% 70% at 50% 40%, rgba(251,191,36,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.75) 60%, rgba(0,0,0,0.9) 100%),
+    url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80") center/cover no-repeat fixed !important;
+  color: #f7f7f7;
+}
+
+/* Vignette cũ vẫn dùng, đậm hơn chút cho dễ đọc text */
+.book-scene::before {
+  background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.25) 100%) !important;
+}
+
+/* Book container: bóng đổ ám ánh vàng */
+.book-container {
+  filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45)) drop-shadow(0 0 40px rgba(245, 158, 11, 0.06)) !important;
+}
+.book-container:hover {
+  transform: rotateY(-3deg) rotateX(1deg) scale(1.02);
+}
+
+/* Spine: tím -> amber gradient */
+.book-spine {
+  background: linear-gradient(
+    to right,
+    var(--amber-700),
+    var(--amber-600),
+    var(--amber-500),
+    var(--amber-600),
+    var(--amber-700)
+  ) !important;
+  box-shadow:
+    inset -10px 0 20px rgba(0,0,0,0.5),
+    inset 10px 0 20px rgba(255,255,255,0.06) !important;
+}
+
+/* Trang giấy: viền & ánh trong suốt theo amber */
+/* --- Override trang sách --- */
+.book-page {
+  background: linear-gradient(135deg, #1a1a22 0%, #202028 100%) !important; 
+  color: #e5e5e5 !important;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow:
+    inset 0 0 60px rgba(255, 255, 255, 0.02),
+    0 0 25px rgba(0, 0, 0, 0.7);
+}
+
+.page-body p {
+  color: #d1d5db !important;
+}
+
+
+/* Décor trong content: thay nét tím thành amber nhạt */
+.page-content {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.04) 0%, transparent 50%) !important;
+}
+.page-content::before {
+  border-left: 1px solid rgba(245, 158, 11, 0.14) !important;
+  border-right: 1px solid rgba(245, 158, 11, 0.14) !important;
+}
+.page-content.page-left::after {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(245, 158, 11, 0.18) 20%,
+    rgba(245, 158, 11, 0.18) 80%,
+    transparent
+  ) !important;
+}
+
+/* Bìa trước/sau: tím -> amber */
+.cover-front, .cover-back {
+  background: linear-gradient(135deg, var(--amber-700) 0%, var(--amber-600) 30%, var(--amber-500) 100%) !important;
+  border: 2px solid var(--amber-700) !important;
+  color: var(--text-100) !important;
+}
+.cover-front::before, .cover-back::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.12) 0%, transparent 30%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.07) 0%, transparent 30%) !important;
+}
+.cover-ornament, .back-ornament {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.85) 20%,
+    rgba(255,255,255,0.85) 80%,
+    transparent
+  ) !important;
+}
+
+/* Heading và divider */
+.page-header {
+  border-bottom: 2px solid rgba(245, 158, 11, 0.25) !important;
+}
+.page-header::after {
+  background: linear-gradient(to right, var(--amber-700), var(--amber-500), var(--amber-700)) !important;
+}
+.page-header h2,
+.page-body h3,
+.wisdom-item strong,
+.principle strong,
+.balance-item:first-child strong,
+.summary-item p {
+  color: var(--amber-600) !important;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.12);
+}
+
+/* First-letter màu amber */
+.first-letter::first-letter {
+  color: var(--amber-600) !important;
+}
+
+/* Quote box – toàn bộ biến thể dùng amber/xám trung tính thay vì tím/xanh/hồng */
+.philosophy-quote,
+.stoic-quote,
+.rumi-quote {
+  border-left-color: var(--amber-600) !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.12) !important;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.06), rgba(251, 191, 36, 0.1)) !important;
+}
+.quote-symbol { color: var(--amber-300) !important; opacity: 0.35 !important; }
+.philosophy-quote p,
+.stoic-quote p,
+.rumi-quote p {
+  color: #5b4b22 !important; /* nâu ấm dễ đọc trên nền sáng */
+}
+
+/* Box trung tính khác chuyển sang amber nhẹ */
+.reflection-box,
+.meditation-box,
+.connection-wisdom,
+.wisdom-insight,
+.summary-item,
+.principle,
+.love-item,
+.balance-item:first-child,
+.balance-item:last-child {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(251, 191, 36, 0.09)) !important;
+  border: 1px solid var(--border-amber) !important;
+  box-shadow: 0 4px 15px var(--glow-amber) !important;
+}
+.wisdom-number {
+  background: var(--amber-600) !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35) !important;
+}
+.balance-item:first-child strong,
+.balance-item:last-child strong {
+  color: var(--amber-600) !important;
+}
+
+/* Page number chip */
+.page-number {
+  color: var(--amber-600) !important;
+  background: rgba(251, 191, 36, 0.12) !important;
+}
+
+/* Nút điều hướng tròn: amber glass */
+.nav-button {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(251, 191, 36, 0.95)) !important;
+  box-shadow:
+    0 8px 25px rgba(245, 158, 11, 0.28),
+    0 0 0 0 rgba(245, 158, 11, 0.35) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+}
+.nav-button:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 1), rgba(251, 191, 36, 1)) !important;
+  box-shadow:
+    0 12px 35px rgba(245, 158, 11, 0.38),
+    0 0 0 10px rgba(245, 158, 11, 0.12) !important;
+}
+
+/* Chỉ báo trang */
+.page-indicator {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(251, 191, 36, 0.95)) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow:
+    0 8px 25px rgba(245, 158, 11, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Văn bản cơ bản */
+.page-body p,
+.wisdom-item p,
+.principle p,
+.love-item p,
+.balance-item p,
+.connection-wisdom p,
+.meditation-box p,
+.final-wisdom p,
+.growth-note p,
+.nature-wisdom p {
+  color: #4b5563 !important; /* neutral 600 để dễ đọc */
+}
+
+/* === Nâng độ nổi bật chữ trên nền tối === */
+
+/* Nội dung chính */
+.page-body p {
+  color: #f3f4f6 !important; /* trắng sáng hơn */
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.08);
+  line-height: 1.9;
+}
+
+/* Tiêu đề */
+.page-header h2,
+.page-body h3 {
+  color: #fbbf24 !important; /* vàng amber */
+  text-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
+
+/* Trích dẫn */
+.philosophy-quote p,
+.stoic-quote p,
+.rumi-quote p {
+  color: #fde68a !important; /* vàng nhạt */
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+}
+
+/* Box suy ngẫm, wisdom */
+.reflection-box,
+.wisdom-item strong {
+  color: #f9fafb !important; /* trắng sáng */
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.25);
+}
