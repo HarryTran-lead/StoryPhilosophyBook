@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import sections from "./data";
 // import { motion, AnimatePresence } from "framer-motion";
-// import MarxismIntro from "../marxismIntro";
-
+// import MarxismIntro from "./MarxismIntro";
+import { Link } from "react-router-dom"
 export default function MarxismPhilosophyPage() {
   const steps = 5;
   const [step, setStep] = useState(-1); // Bắt đầu từ intro = 0
@@ -287,36 +287,38 @@ export default function MarxismPhilosophyPage() {
                       : "translate-y-12 opacity-0"
                   }`}
                 >
-                  <button
-                    className="
-        group relative
-        bg-gradient-to-r from-amber-600 to-amber-500 
-        border-2 border-amber-400 text-white 
-        px-4 py-2 md:py-2
-        rounded-full 
-        text-sm sm:text-base md:text-lg font-semibold
-        shadow-2xl overflow-hidden
-        transition-all duration-500
-        hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90
-      "
-                    style={{
-                      fontFamily:
-                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                    }}
-                  >
-                    <span className="relative z-10 inline-block transition-all duration-500 group-hover:pr-4">
-                      Khám phá học thuyết sâu hơn
-                      <span className="absolute opacity-0 group-hover:opacity-100 right-0 top-0 transform translate-x-1 group-hover:translate-x-0 transition-all duration-300 text-white/90">
-                        &raquo;
-                      </span>
-                    </span>
+                <Link to="/storybook">
+  <button
+    className="
+      group relative
+      bg-gradient-to-r from-amber-600 to-amber-500 
+      border-2 border-amber-400 text-white 
+      px-4 py-2 md:py-2
+      rounded-full 
+      text-sm sm:text-base md:text-lg font-semibold
+      shadow-2xl overflow-hidden
+      transition-all duration-500
+      hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90
+    "
+    style={{
+      fontFamily:
+        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    }}
+  >
+    <span className="relative z-10 inline-block transition-all duration-500 group-hover:pr-4">
+      Khám phá học thuyết sâu hơn
+      <span className="absolute opacity-0 group-hover:opacity-100 right-0 top-0 transform translate-x-1 group-hover:translate-x-0 transition-all duration-300 text-white/90">
+        &raquo;
+      </span>
+    </span>
 
-                    {/* Ánh sáng chạy ngang */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-full pointer-events-none"></div>
+    {/* Ánh sáng chạy ngang */}
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-full pointer-events-none"></div>
 
-                    {/* Glow phía trên */}
-                    <div className="absolute inset-0 rounded-full bg-white/20 blur-xl opacity-0 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none"></div>
-                  </button>
+    {/* Glow phía trên */}
+    <div className="absolute inset-0 rounded-full bg-white/20 blur-xl opacity-0 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none"></div>
+  </button>
+</Link>
                 </div>
               )}
             </div>
