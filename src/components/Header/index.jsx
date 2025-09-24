@@ -62,6 +62,7 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        event.stopPropagation(); //  chặn bubble sang slide
         onClose();
       }
     };
@@ -90,12 +91,17 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
         className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 rounded-xl transition-all duration-500 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
-        onClick={onClose}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClose();
+        }}
       />
 
       {/* Dropdown Container */}
       <div
         ref={dropdownRef}
+        onClick={(e) => e.stopPropagation()}
         className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2.5 w-80 z-50
           transition-all duration-500 ease-out origin-top
           ${
@@ -136,7 +142,10 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
           transition-all duration-300"
               >
                 <button
-                  onClick={onClose}
+                  onClick={(e) => {
+                    e.stopPropagation(); // ngăn click lan ra body → trigger slide
+                    onClose();
+                  }}
                   className="w-full text-left px-5 py-2.5 flex items-center gap-3
             hover:translate-x-0.5 transition-all duration-300"
                 >
@@ -247,7 +256,10 @@ const MobileNav = ({ isOpen, onClose }) => {
             </div>
 
             <button
-              onClick={onClose}
+              onClick={(e) => {
+                e.stopPropagation(); // ngăn click lan ra body → trigger slide
+                onClose();
+              }}
               className="group p-2 rounded-xl hover:bg-amber-400/20 transition-all duration-300"
             >
               <X className="w-5 h-5 text-amber-100/90 group-hover:text-amber-200 transition-colors duration-300" />
@@ -331,7 +343,10 @@ const MobileNav = ({ isOpen, onClose }) => {
                         {item.children.map((child, i) => (
                           <button
                             key={i}
-                            onClick={onClose}
+                            onClick={(e) => {
+                              e.stopPropagation(); // ngăn click lan ra body → trigger slide
+                              onClose();
+                            }}
                             className="group block w-full text-left text-slate-300 hover:text-amber-200 
             transition-colors duration-300 text-sm p-2 rounded-lg hover:bg-amber-400/8"
                           >
@@ -381,9 +396,9 @@ const MobileNav = ({ isOpen, onClose }) => {
 };
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // mobile nav
   const [scrolled, setScrolled] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null); // desktop dropdown
   const location = useLocation();
   const isHome = location.pathname === "/";
 
@@ -399,15 +414,9 @@ export default function Header() {
     <div className="">
       {/* Refined Desktop Header */}
       <header
-        className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 ease-out
-          ${
-            isHome
-              ? scrolled
-                ? "bg-black/30 backdrop-blur-md"
-                : "bg-black/20 backdrop-blur-sm" // Home lúc đầu trong suốt
-              : "bg-slate-800/90 backdrop-blur-md " // Các trang khác mặc định nền tối
-          }
-        `}
+        className={`fixed top-0 left-0 w-full z-40 backdrop-blur-md transition-colors duration-500 ease-out ${
+          isHome ? (scrolled ? "bg-black/30" : "bg-black/20") : ""
+        }`}
       >
         <div className="mx-auto pr-6 pl-8 py-1.5 flex items-center justify-between">
           {/* Sophisticated Logo */}
@@ -460,12 +469,11 @@ export default function Header() {
                     ></div>
 
                     {/* Flowing Underline */}
-                    {!isDropdown && (
-                      <div
-                        className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 
+
+                    <div
+                      className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 
         group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out"
-                      ></div>
-                    )}
+                    ></div>
 
                     <div className="relative z-10 flex items-center gap-2">
                       <item.icon
@@ -503,7 +511,10 @@ export default function Header() {
           <button
             className="lg:hidden group p-2.5 rounded-xl bg-black/20 backdrop-blur-sm 
             hover:bg-amber-400/10 transition-all duration-300 border border-gray-500/30 hover:border-amber-200/10"
-            onClick={() => setIsOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation(); // ngăn click lan ra body → trigger slide
+              setIsOpen(true);
+            }}
           >
             <Menu
               className="w-4.5 h-4.5 text-white   

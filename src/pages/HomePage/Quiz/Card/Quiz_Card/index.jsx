@@ -10,10 +10,10 @@ const QuizCard = ({
   cardClasses,
 }) => {
   return (
-    <div className={`${cardClasses} rounded-xl shadow-lg p-8`}>
+    <div className={`${cardClasses} rounded-xl shadow-lg px-8 pb-8 pt-6`}>
       {/* Câu hỏi */}
       <h3
-        className={`text-xl font-bold mb-6 ${
+        className={`text-xl font-semibold mb-6 ${
           darkMode ? "text-white" : "text-slate-800"
         }`}
       >
@@ -23,23 +23,23 @@ const QuizCard = ({
       {/* Các đáp án */}
       <div className="space-y-3">
         {currentQuestion.quiz.options.map((option, index) => {
-          let baseClasses = `w-full px-4 py-3.5 text-left rounded-lg border-2 transition-all duration-300 transform`;
+          let baseClasses = `w-full px-4 py-3.5 text-left rounded-lg border-1 transition-all duration-300 transform`;
           let hoverClasses = !showResult
             ? `hover:scale-[1.01] ${
                 darkMode
-                  ? "hover:border-amber-200 hover:text-amber-100 hover:bg-slate-600"
+                  ? "hover:border-amber-200/70 hover:text-amber-50 hover:bg-slate-600"
                   : "hover:bg-amber-50"
               }`
             : "";
 
-          let stateClasses = "border-slate-200 hover:border-amber-200";
+          let stateClasses = "border-slate-300 hover:border-amber-200";
 
           if (showResult) {
             if (index === currentQuestion.quiz.correct) {
               // Nếu người dùng chọn sai → đáp án đúng pulse
               stateClasses =
                 selectedOption !== currentQuestion.quiz.correct
-                  ? "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md animate-pulse"
+                  ? "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md animate-soft-pulse"
                   : "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md"; // chọn đúng → ko pulse
             } else if (selectedOption === index) {
               // Sai
@@ -60,7 +60,7 @@ const QuizCard = ({
               className={`${baseClasses} ${hoverClasses} ${stateClasses}`}
             >
               <div className="flex items-center">
-                <span className="font-bold mr-3 text-lg">
+                <span className=" mr-3 text-lg">
                   {String.fromCharCode(65 + index)}.
                 </span>
                 <span className="flex-1">{option}</span>
@@ -127,6 +127,48 @@ const QuizCard = ({
           </div>
         </div>
       )}
+      <style jsx>{`
+        @keyframes soft-pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.65; /* mờ nhẹ thôi */
+          }
+        }
+
+        .animate-soft-pulse {
+          animation: soft-pulse 2.5s ease-in-out infinite; /* chậm rãi */
+        }
+
+        @keyframes natural-shake {
+          0% {
+            transform: translateX(0);
+          }
+          15% {
+            transform: translateX(-3px);
+          }
+          30% {
+            transform: translateX(3px);
+          }
+          45% {
+            transform: translateX(-2px);
+          }
+          60% {
+            transform: translateX(2px);
+          }
+          75% {
+            transform: translateX(-1px);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+        .animate-shake {
+          animation: natural-shake 0.5s ease-in-out; /* chạy một lần */
+        }
+      `}</style>
     </div>
   );
 };

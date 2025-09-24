@@ -1,69 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import Header from "@components/Header";
+import sections from "./data";
 // import { motion, AnimatePresence } from "framer-motion";
-// import MarxismIntro from "./MarxismIntro";
+// import MarxismIntro from "../marxismIntro";
 
 export default function MarxismPhilosophyPage() {
   const steps = 5;
-  const [step, setStep] = useState(0); // Bắt đầu từ intro = 0
+  const [step, setStep] = useState(-1); // Bắt đầu từ intro = 0
   const [isTransitioning, setIsTransitioning] = useState(false);
   const scrollTargetRef = useRef(0); // intro
   const scrollPosRef = useRef(0);
   const lastScrollTime = useRef(0);
-
-  const sections = [
-    {
-      title: "Triết học Mác-Lênin",
-      subtitle: "Nền tảng tư tưởng của thời đại mới",
-      description:
-        "Hệ thống triết học khoa học về quy luật phát triển khách quan của tự nhiên, xã hội và tư duy con người",
-      quote:
-        "Triết học không chỉ giải thích thế giới, mà còn thay đổi thế giới",
-      author: "Karl Marx",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80",
-    },
-    {
-      title: "Chủ nghĩa duy vật biện chứng",
-      subtitle: "Phương pháp luận khoa học nhận thức thế giới",
-      description:
-        "Vật chất là cơ sở, ý thức là sản phẩm. Thế giới vận động theo quy luật khách quan có thể nhận thức được",
-      quote: "Tự nhiên là tiêu chuẩn kiểm chứng nhận thức",
-      author: "Friedrich Engels",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1920&auto=format&fit=crop&q=80",
-    },
-    {
-      title: "Chủ nghĩa duy vật lịch sử",
-      subtitle: "Khoa học về sự phát triển xã hội loài người",
-      description:
-        "Tồn tại xã hội quyết định ý thức xã hội. Lực lượng sản xuất là động lực cơ bản của sự tiến bộ của nhân loại",
-      quote: "Lịch sử của mọi xã hội cho đến nay là lịch sử đấu tranh giai cấp",
-      author: "Karl Marx & Friedrich Engels",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=1920&auto=format&fit=crop&q=80",
-    },
-    {
-      title: "Kinh tế chính trị Mác-xít",
-      subtitle: "Khám phá bản chất của chế độ tư bản chủ nghĩa",
-      description:
-        "Thặng dư giá trị - bí mật của sự bóc lột tư bản. Mâu thuẫn giữa tính xã hội hóa sản xuất và chiếm hữu tư nhân",
-      quote: "Vốn không phải là sức mạnh cá nhân, nó là sức mạnh xã hội",
-      author: "Karl Marx",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1920&auto=format&fit=crop&q=80",
-    },
-    {
-      title: "Chủ nghĩa xã hội khoa học",
-      subtitle: "Con đường dẫn tới xã hội cộng sản tương lai",
-      description:
-        "Xã hội không giai cấp, không áp bức bóc lột. Từ mỗi người theo khả năng, cho mỗi người theo nhu cầu",
-      quote: "Tự do của mỗi người là điều kiện cho tự do của tất cả",
-      author: "Karl Marx & Friedrich Engels",
-      backgroundImage:
-        "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1600&q=80",
-    },
-  ];
 
   // animation loop
   useEffect(() => {
@@ -77,30 +23,45 @@ export default function MarxismPhilosophyPage() {
     requestAnimationFrame(animate);
   }, [step]);
 
+  // useEffect(() => {
+  //   const animate = () => {
+  //     const diff = scrollTargetRef.current - scrollPosRef.current;
+  //     scrollPosRef.current += diff * 0.06;
+  //     const newStep = Math.round(scrollPosRef.current);
+  //     if (newStep !== step) setStep(newStep);
+  //     requestAnimationFrame(animate);
+  //   };
+  //   requestAnimationFrame(animate);
+  // }, []); // <-- chỉ chạy 1 lần
+
   // tiện ích chuyển step
   const goToStep = (newTarget) => {
     if (isTransitioning) return;
-    if (newTarget >= steps) newTarget = 0;
-    if (newTarget < 0) newTarget = steps - 1; // <-- bỏ qua intro khi lùi
-    // (step -1 chỉ được gọi 1 lần duy nhất lúc refresh trang)
+
+    if (newTarget >= steps) newTarget = 0; // đi tới cuối → về đầu
+    if (newTarget < 0) newTarget = steps - 1; // đi ngược từ đầu → nhảy tới cuối
+
     scrollTargetRef.current = newTarget;
     setIsTransitioning(true);
-    setTimeout(() => setIsTransitioning(false), 1200);
+    setTimeout(() => setIsTransitioning(false), 2000); // lock 2s
   };
 
   // --- scroll + keyboard + click ---
   useEffect(() => {
     const handleWheel = (e) => {
-      if (step === -1) return;
+      if (step === -1 || isTransitioning) return;
       e.preventDefault();
+
       const now = Date.now();
-      if (now - lastScrollTime.current < 100) return;
+      if (now - lastScrollTime.current < 300) return;
       lastScrollTime.current = now;
+
       goToStep(scrollTargetRef.current + (e.deltaY > 0 ? 1 : -1));
     };
 
     const handleKey = (e) => {
-      if (step === -1) return;
+      if (step === -1 || isTransitioning) return;
+
       if (["ArrowDown", "PageDown", " "].includes(e.key)) {
         e.preventDefault();
         goToStep(scrollTargetRef.current + 1);
@@ -111,32 +72,38 @@ export default function MarxismPhilosophyPage() {
       }
     };
 
-    const handleClick = () => {
-      if (step === -1) return;
-      if (scrollTargetRef.current === steps - 1) goToStep(0);
-      else goToStep(scrollTargetRef.current + 1);
+    const handleClick = (e) => {
+      if (step === -1 || isTransitioning) return;
+      // Nếu click nằm trong header thì bỏ qua
+      if (e.target.closest("header")) {
+        return;
+      }
+      if (scrollTargetRef.current === steps - 1) {
+        goToStep(0);
+      } else {
+        goToStep(scrollTargetRef.current + 1);
+      }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKey);
-    // window.addEventListener("click", handleClick);
+    window.addEventListener("click", handleClick);
 
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKey);
-      // window.removeEventListener("click", handleClick);
+      window.removeEventListener("click", handleClick);
     };
   }, [step, isTransitioning]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
       {/* Intro Overlay */}
-      {/* <AnimatePresence>
-        {step === -1 && <MarxismIntro onFinish={() => goToStep(0)} />}
+      {/* <AnimatePresence mode="wait">
+        {step === -1 && (
+          <MarxismIntro key="intro" onFinish={() => goToStep(0)} />
+        )}
       </AnimatePresence> */}
-
-      {/* Header */}
-      {/* <Header sections={sections} step={step} goToStep={goToStep} /> */}
 
       {/* Background Layers */}
       <div className="absolute inset-0">

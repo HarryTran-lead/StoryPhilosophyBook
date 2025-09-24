@@ -2,11 +2,8 @@ import React, { memo } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "@components/Header";
 
-
 function MainLayoutComponent() {
   const location = useLocation();
-
-  // Nếu path là "/" (home), thì không margin-top
   const isHome = location.pathname === "/";
 
   return (
@@ -14,10 +11,13 @@ function MainLayoutComponent() {
       {/* Header */}
       <Header variant="site" />
 
+      {/* Background Section chỉ hiện ở các trang khác ngoài home */}
+      {!isHome && <div className="w-full h-13 bg-slate-900/90" />}
+
       {/* Main content */}
-      <div className={isHome ? "" : "mt-13"}>
+      <main>
         <Outlet />
-      </div>
+      </main>
     </>
   );
 }

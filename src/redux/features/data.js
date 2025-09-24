@@ -21,7 +21,65 @@ export const chapters = [
           correct: 1,
         },
         fillAnswer:
-          "quá trình phản ánh hiện thực khách quan vào trong tư duy con người",
+          "___ là quá trình phản ánh hiện thực khách quan vào trong tư duy con người",
+        answer: "Nhận thức",
+        fullFillAnswer:
+          "Nhận thức là quá trình phản ánh hiện thực khách quan vào trong tư duy con người",
+      },
+      {
+        id: 2,
+        term: "Thực tiễn",
+        definition:
+          "Toàn bộ hoạt động vật chất có mục đích mang tính lịch sử - xã hội của con người nhằm cải biến tự nhiên và xã hội.",
+        quiz: {
+          question: "Thực tiễn trong triết học Mác – Lênin là gì?",
+          options: [
+            "Hoạt động tinh thần",
+            "Kinh nghiệm chủ quan",
+            "Hoạt động vật chất có mục đích mang tính xã hội",
+            "Suy nghĩ cá nhân",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "___ là toàn bộ hoạt động vật chất có mục đích mang tính xã hội",
+        answer: "Thực tiễn",
+        fullFillAnswer:
+          "Thực tiễn là toàn bộ hoạt động vật chất có mục đích mang tính xã hội",
+      },
+      {
+        id: 3,
+        term: "Nguồn gốc nhận thức",
+        definition:
+          "Thực tiễn là cơ sở, động lực, mục đích và tiêu chuẩn của chân lý.",
+        quiz: {
+          question: "Nguồn gốc của nhận thức là gì?",
+          options: ["Ý thức", "Thực tiễn", "Kinh nghiệm cá nhân", "Ngôn ngữ"],
+          correct: 1,
+        },
+        fillAnswer: "___ là nguồn gốc, động lực và mục đích của nhận thức",
+        answer: "Thực tiễn",
+        fullFillAnswer:
+          "Thực tiễn là nguồn gốc, động lực và mục đích của nhận thức",
+      },
+      {
+        id: 4,
+        term: "Nhận thức cảm tính",
+        definition:
+          "Giai đoạn đầu tiên của nhận thức, phản ánh trực tiếp sự vật hiện tượng thông qua giác quan.",
+        quiz: {
+          question: "Nhận thức cảm tính phản ánh sự vật qua đâu?",
+          options: [
+            "Hoạt động lý luận",
+            "Giác quan",
+            "Thực nghiệm khoa học",
+            "Trực giác siêu hình",
+          ],
+          correct: 1,
+        },
+        fillAnswer: "Nhận thức cảm tính phản ánh sự vật qua ___",
+        answer: "Giác quan",
+        fullFillAnswer: "Nhận thức cảm tính phản ánh sự vật qua giác quan",
       },
     ],
   },
@@ -46,20 +104,9 @@ export const chapters = [
           ],
           correct: 2,
         },
-        fillAnswer:
-          "thực tại khách quan tồn tại độc lập với ý thức và được ý thức phản ánh",
-      },
-      {
-        id: 3,
-        term: "Mối quan hệ giữa vật chất và ý thức",
-        definition:
-          "Vật chất có trước, quyết định ý thức; ý thức tác động trở lại vật chất thông qua hoạt động thực tiễn.",
-        quiz: {
-          question: "Trong mối quan hệ vật chất - ý thức, yếu tố nào có trước?",
-          options: ["Ý thức", "Vật chất", "Cả hai đồng thời", "Không yếu tố nào"],
-          correct: 1,
-        },
-        fillAnswer: "vật chất có trước và quyết định ý thức",
+        fillAnswer: "___ tồn tại độc lập với ý thức con người",
+        answer: "Vật chất",
+        fullFillAnswer: "Vật chất tồn tại độc lập với ý thức con người",
       },
     ],
   },
@@ -84,25 +131,10 @@ export const chapters = [
           ],
           correct: 2,
         },
-        fillAnswer: "thay đổi về lượng có thể dẫn đến thay đổi về chất",
-      },
-      {
-        id: 5,
-        term: "Quy luật mâu thuẫn",
-        definition:
-          "Sự thống nhất và đấu tranh giữa các mặt đối lập là nguồn gốc vận động và phát triển.",
-        quiz: {
-          question: "Nguồn gốc của sự phát triển theo phép biện chứng duy vật là gì?",
-          options: [
-            "Tác động của ngoại cảnh",
-            "Sáng tạo của con người",
-            "Sự thống nhất và đấu tranh giữa các mặt đối lập",
-            "Sự ngẫu nhiên",
-          ],
-          correct: 2,
-        },
-        fillAnswer:
-          "sự thống nhất và đấu tranh giữa các mặt đối lập",
+        fillAnswer: "Theo ___, sự thay đổi về lượng dẫn đến thay đổi về chất",
+        answer: "Quy luật lượng - chất",
+        fullFillAnswer:
+          "Theo Quy luật lượng - chất, sự thay đổi về lượng dẫn đến thay đổi về chất",
       },
     ],
   },
@@ -128,24 +160,11 @@ export const chapters = [
           ],
           correct: 1,
         },
-        fillAnswer: "lực lượng sản xuất và quan hệ sản xuất",
-      },
-      {
-        id: 7,
-        term: "Đấu tranh giai cấp",
-        definition:
-          "Động lực trực tiếp của sự phát triển xã hội trong xã hội có giai cấp đối kháng.",
-        quiz: {
-          question: "Động lực trực tiếp của sự phát triển xã hội có giai cấp là gì?",
-          options: [
-            "Cải cách chính trị",
-            "Khoa học công nghệ",
-            "Đấu tranh giai cấp",
-            "Kinh tế hàng hóa",
-          ],
-          correct: 2,
-        },
-        fillAnswer: "đấu tranh giai cấp",
+        fillAnswer:
+          "___ là sự thống nhất giữa lực lượng sản xuất và quan hệ sản xuất",
+        answer: "Phương thức sản xuất",
+        fullFillAnswer:
+          "Phương thức sản xuất là sự thống nhất giữa lực lượng sản xuất và quan hệ sản xuất",
       },
     ],
   },
@@ -170,7 +189,11 @@ export const chapters = [
           ],
           correct: 1,
         },
-        fillAnswer: "giai cấp vô sản",
+        fillAnswer:
+          "___ là quá trình chuyển biến từ chế độ tư bản sang xã hội chủ nghĩa",
+        answer: "Cách mạng xã hội chủ nghĩa",
+        fullFillAnswer:
+          "Cách mạng xã hội chủ nghĩa là quá trình chuyển biến từ chế độ tư bản sang xã hội chủ nghĩa",
       },
       {
         id: 9,
@@ -187,7 +210,11 @@ export const chapters = [
           ],
           correct: 2,
         },
-        fillAnswer: "giải phóng con người và phát triển toàn diện",
+        fillAnswer:
+          "___ hướng tới giải phóng con người và phát triển toàn diện",
+        answer: "Tiến bộ xã hội",
+        fullFillAnswer:
+          "Tiến bộ xã hội hướng tới giải phóng con người và phát triển toàn diện",
       },
     ],
   },

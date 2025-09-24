@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Clock,
-  CheckCircle,
-} from "lucide-react";
+import { Clock, CheckCircle } from "lucide-react";
 import StudyTips from "./Study_Tips";
 import QuizSidebar from "./Quiz_Sidebar";
 import StudyHeader from "./Study_Header";
@@ -10,26 +7,38 @@ import Flashcard from "./Card/Flash_Card";
 import QuizCard from "./Card/Quiz_Card";
 import FillCard from "./Card/Fill_Card";
 import QuestionNavigation from "./Pagination";
-import { chapters } from "./data";
+// import { chapters } from "../../../redux/features/data";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setActiveChapter,
+  setCurrentPage,
+  nextPage,
+  prevPage,
+  updateQuestionState,
+  resetChapter,
+} from "../../../redux/features/quizSlice";
 
-// ==============================================
-// Main Component
-// ==============================================
 const MarxistPhilosophyQuiz = () => {
-  // ------------------------------------------
   // State
-  // ------------------------------------------
-  const [activeChapter, setActiveChapter] = useState(0);
+  // const [activeChapter, setActiveChapter] = useState(0);
   const [studyMode, setStudyMode] = useState("flashcard"); // flashcard | quiz | fill
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
-  const [questionStates, setQuestionStates] = useState({});
+  // const [questionStates, setQuestionStates] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState({ 0: true });
   const [showConfetti, setShowConfetti] = useState(false);
+
+  const dispatch = useDispatch();
+  // Redux state
+  const { chapters, activeChapter, currentPage, questionStates } = useSelector(
+    (state) => state.quiz
+  );
+  const currentChapter = chapters[activeChapter];
+  const currentQuestion = currentChapter.questions[currentPage];
+  const totalQuestions = currentChapter.questions.length;
 
   const [studySettings, setStudySettings] = useState({
     randomMode: false,
@@ -37,13 +46,11 @@ const MarxistPhilosophyQuiz = () => {
     timeLimit: 300,
   });
 
-  const currentChapter = chapters[activeChapter];
-  const currentQuestion = currentChapter.questions[currentQuestionIndex];
-  const totalQuestions = currentChapter.questions.length;
+  // const currentChapter = chapters[activeChapter];
+  // const currentQuestion = currentChapter.questions[currentQuestionIndex];
+  // const totalQuestions = currentChapter.questions.length;
 
-  // ------------------------------------------
   // Effects: Dark Mode
-  // ------------------------------------------
   useEffect(() => {
     const saved = localStorage.getItem("darkMode");
     if (saved !== null) setDarkMode(JSON.parse(saved));
@@ -53,23 +60,8 @@ const MarxistPhilosophyQuiz = () => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
-  // ------------------------------------------
-  // Initialize question states
-  // ------------------------------------------
-  useEffect(() => {
-    const initialStates = {};
-    chapters.forEach((chapter, ci) => {
-      chapter.questions.forEach((_, qi) => {
-        const key = `${ci}-${qi}`;
-        if (!questionStates[key]) initialStates[key] = "not-started";
-      });
-    });
-    setQuestionStates((prev) => ({ ...prev, ...initialStates }));
-  }, []);
-
   // ==============================================
   // Handlers
-  // ==============================================
   const toggleDarkMode = () => setDarkMode((prev) => !prev);
 
   const toggleFullscreen = () => {
@@ -89,28 +81,19 @@ const MarxistPhilosophyQuiz = () => {
     }));
   };
 
-  const updateQuestionState = (state) => {
-    const key = `${activeChapter}-${currentQuestionIndex}`;
-    setQuestionStates((prev) => ({ ...prev, [key]: state }));
-
-    if (state === "completed") {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 2000);
-    }
-  };
-
   const handleNext = () => {
-    if (currentQuestionIndex < totalQuestions - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      resetQuestion();
-    }
+    dispatch(nextPage());
+    resetQuestion();
   };
 
   const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-      resetQuestion();
-    }
+    dispatch(prevPage());
+    resetQuestion();
+  };
+
+  const restartChapter = () => {
+    dispatch(resetChapter(activeChapter));
+    resetQuestion();
   };
 
   const resetQuestion = () => {
@@ -122,24 +105,45 @@ const MarxistPhilosophyQuiz = () => {
 
   const handleFlashcardFlip = () => {
     setShowAnswer((prev) => !prev);
-    if (!showAnswer) updateQuestionState("learning");
+    if (!showAnswer)
+      dispatch(
+        updateQuestionState({
+          chapterIndex: activeChapter,
+          questionIndex: currentPage,
+          newState: "learning",
+        })
+      );
   };
 
   const handleQuizAnswer = (optionIndex) => {
     setSelectedOption(optionIndex);
     setShowResult(true);
-    updateQuestionState(
-      optionIndex === currentQuestion.quiz.correct ? "completed" : "learning"
+    dispatch(
+      updateQuestionState({
+        chapterIndex: activeChapter,
+        questionIndex: currentPage,
+        newState:
+          optionIndex === currentQuestion.quiz.correct
+            ? "completed"
+            : "learning",
+      })
     );
   };
 
   const handleFillAnswer = () => {
     const userLower = userAnswer.toLowerCase().trim();
-    const correctLower = currentQuestion.fillAnswer.toLowerCase().trim();
+    const correctLower = currentQuestion.answer.toLowerCase().trim();
     const isCorrect =
       userLower === correctLower || userLower.includes(correctLower);
+
     setShowResult(true);
-    updateQuestionState(isCorrect ? "completed" : "learning");
+    dispatch(
+      updateQuestionState({
+        chapterIndex: activeChapter,
+        questionIndex: currentPage,
+        newState: isCorrect ? "completed" : "learning",
+      })
+    );
   };
 
   const shuffleQuestions = () => {
@@ -151,19 +155,8 @@ const MarxistPhilosophyQuiz = () => {
     resetQuestion();
   };
 
-  const restartChapter = () => {
-    setCurrentQuestionIndex(0);
-    resetQuestion();
-    const updatedStates = { ...questionStates };
-    chapters[activeChapter].questions.forEach((_, idx) => {
-      updatedStates[`${activeChapter}-${idx}`] = "not-started";
-    });
-    setQuestionStates(updatedStates);
-  };
-
   // ==============================================
   // Helpers
-  // ==============================================
   const getStateIcon = (chapterIndex, questionIndex) => {
     const key = `${chapterIndex}-${questionIndex}`;
     const state = questionStates[key] || "not-started";
@@ -204,20 +197,18 @@ const MarxistPhilosophyQuiz = () => {
     return { completed: totalCompleted, total: totalQuestions };
   };
 
-  // ==============================================
   // Styling classes
-  // ==============================================
   const themeClasses = darkMode ? "dark bg-slate-800" : "bg-slate-100";
   const cardClasses = darkMode
     ? "bg-slate-700 text-white"
     : "bg-white text-slate-800";
   const sidebarClasses = darkMode ? "bg-slate-900" : "bg-slate-700";
 
-  // ==============================================
   // Render
-  // ==============================================
   return (
-    <div className={` ${themeClasses} transition-all duration-300 overflow-hidden`}>
+    <div
+      className={` ${themeClasses} transition-all duration-300 overflow-hidden`}
+    >
       {/* ==============================================
           Confetti Effect
       ============================================== */}
@@ -239,9 +230,9 @@ const MarxistPhilosophyQuiz = () => {
           toggleDarkMode={toggleDarkMode}
           chapters={chapters}
           activeChapter={activeChapter}
-          setActiveChapter={setActiveChapter}
-          currentQuestionIndex={currentQuestionIndex}
-          setCurrentQuestionIndex={setCurrentQuestionIndex}
+          setActiveChapter={(i) => dispatch(setActiveChapter(i))}
+          currentQuestionIndex={currentPage}
+          setCurrentQuestionIndex={(i) => dispatch(setCurrentPage(i))}
           expandedChapters={expandedChapters}
           toggleChapterExpanded={toggleChapterExpanded}
           getTotalProgress={getTotalProgress}
@@ -258,7 +249,7 @@ const MarxistPhilosophyQuiz = () => {
           <StudyHeader
             darkMode={darkMode}
             currentChapter={currentChapter}
-            currentQuestionIndex={currentQuestionIndex}
+            currentQuestionIndex={currentPage}
             totalQuestions={totalQuestions}
             studyMode={studyMode}
             setStudyMode={setStudyMode}
@@ -266,7 +257,6 @@ const MarxistPhilosophyQuiz = () => {
             shuffleQuestions={shuffleQuestions}
             restartChapter={restartChapter}
             toggleFullscreen={toggleFullscreen}
-            chapters={chapters}
             activeChapter={activeChapter}
             questionStates={questionStates}
             calculateProgress={calculateProgress}
@@ -278,12 +268,15 @@ const MarxistPhilosophyQuiz = () => {
             {/* Flashcard | Quiz | Fill */}
             {studyMode === "flashcard" && (
               <Flashcard
+                key={`${activeChapter}-${currentPage}`}
                 currentQuestion={currentQuestion}
                 showAnswer={showAnswer}
+                setShowAnswer={setShowAnswer}
                 handleFlashcardFlip={handleFlashcardFlip}
                 updateQuestionState={updateQuestionState}
                 cardClasses={cardClasses}
                 darkMode={darkMode}
+                resetKey={`${activeChapter}-${currentPage}`}
               />
             )}
 
@@ -315,8 +308,8 @@ const MarxistPhilosophyQuiz = () => {
             {/* Navigation */}
             <QuestionNavigation
               totalQuestions={totalQuestions}
-              currentQuestionIndex={currentQuestionIndex}
-              setCurrentQuestionIndex={setCurrentQuestionIndex}
+              currentQuestionIndex={currentPage}
+              setCurrentQuestionIndex={(i) => dispatch(setCurrentPage(i))}
               handlePrev={handlePrev}
               handleNext={handleNext}
               questionStates={questionStates}
@@ -325,7 +318,7 @@ const MarxistPhilosophyQuiz = () => {
             />
 
             {/* Tips */}
-            <StudyTips />
+            {/* <StudyTips /> */}
           </div>
         </main>
       </div>
