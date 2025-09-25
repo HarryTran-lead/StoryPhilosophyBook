@@ -1,95 +1,51 @@
-// src/components/QuestionNavigation.jsx
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Tooltip } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  selectQuiz,
   setCurrentPage,
   nextPage,
   prevPage,
-  selectQuiz,
 } from "@redux/features/quizSlice";
 
-const QuestionNavigation = ({ darkMode }) => {
+const QuestionNavigation = ({ darkMode = false }) => {
   const dispatch = useDispatch();
-  const { currentPage, activeChapter, chapters } = useSelector(selectQuiz);
+  const { chapters, activeChapter, currentPage } = useSelector(selectQuiz);
+  const totalQuestions = chapters?.[activeChapter]?.questions?.length || 0;
 
-  const totalQuestions = chapters[activeChapter].questions.length;
   const [jumpPage, setJumpPage] = useState("");
 
-  // ----------------------------
-  // Render Pagination
-  // ----------------------------
-  const renderPagination = () => {
-    const pages = [];
+  const pages = useMemo(() => {
     const maxVisible = 7;
-
     if (totalQuestions <= maxVisible) {
-      for (let i = 0; i < totalQuestions; i++) pages.push(i);
-    } else {
-      if (currentPage < 4) {
-        pages.push(0, 1, 2, 3, 4, "...", totalQuestions - 1);
-      } else if (currentPage > totalQuestions - 5) {
-        pages.push(
-          0,
-          "...",
-          totalQuestions - 5,
-          totalQuestions - 4,
-          totalQuestions - 3,
-          totalQuestions - 2,
-          totalQuestions - 1
-        );
-      } else {
-        pages.push(
-          0,
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          totalQuestions - 1
-        );
-      }
+      return Array.from({ length: totalQuestions }, (_, i) => i);
     }
+    if (currentPage < 4) {
+      return [0, 1, 2, 3, 4, "...", totalQuestions - 1];
+    }
+    if (currentPage > totalQuestions - 5) {
+      return [
+        0,
+        "...",
+        totalQuestions - 5,
+        totalQuestions - 4,
+        totalQuestions - 3,
+        totalQuestions - 2,
+        totalQuestions - 1,
+      ];
+    }
+    return [
+      0,
+      "...",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "...",
+      totalQuestions - 1,
+    ];
+  }, [totalQuestions, currentPage]);
 
-    return pages.map((page, index) => {
-      if (page === "...") {
-        return (
-          <span
-            key={`ellipsis-${index}`}
-            className={`w-10 h-10 flex items-center justify-center ${
-              darkMode ? "text-slate-500" : "text-slate-400"
-            }`}
-          >
-            ...
-          </span>
-        );
-      }
-
-      return (
-        <button
-          key={page}
-          onClick={() => dispatch(setCurrentPage(page))}
-          className={`w-9 h-9 rounded-md text-sm font-medium transition-colors border
-            ${
-              page === currentPage
-                ? darkMode
-                  ? "bg-gradient-to-r from-amber-300/30 via-amber-300/20 to-amber-400/20 text-amber-100 shadow-inner border-amber-200/40"
-                  : "bg-gradient-to-r from-amber-100/40 via-amber-100/60 to-amber-100/50 text-amber-800 shadow-sm border-amber-200/60"
-                : darkMode
-                ? "bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-slate-300 border-slate-600"
-                : "bg-white text-slate-600 hover:brightness-90 hover:border-none border-slate-300"
-            }`}
-        >
-          {page + 1}
-        </button>
-      );
-    });
-  };
-
-  // ----------------------------
-  // Jump to page
-  // ----------------------------
   const handleJump = () => {
     const pageNum = parseInt(jumpPage, 10);
     if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalQuestions) {
@@ -98,13 +54,10 @@ const QuestionNavigation = ({ darkMode }) => {
     }
   };
 
-  // ----------------------------
-  // JSX
-  // ----------------------------
   return (
     <div className="flex flex-col items-center gap-4 mt-8">
       <div className="flex justify-between items-center w-full">
-        {/* Nút Câu trước */}
+        {/* Prev */}
         <button
           onClick={() => dispatch(prevPage())}
           disabled={currentPage === 0}
@@ -124,9 +77,39 @@ const QuestionNavigation = ({ darkMode }) => {
         </button>
 
         {/* Pagination */}
-        <div className="flex gap-1">{renderPagination()}</div>
+        <div className="flex gap-1">
+          {pages.map((page, index) =>
+            page === "..." ? (
+              <span
+                key={`ellipsis-${index}`}
+                className={`w-10 h-10 flex items-center justify-center ${
+                  darkMode ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
+                …
+              </span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => dispatch(setCurrentPage(page))}
+                className={`w-9 h-9 rounded-md text-sm font-medium transition-colors border
+                  ${
+                    page === currentPage
+                      ? darkMode
+                        ? "bg-gradient-to-r from-amber-300/30 via-amber-300/20 to-amber-400/20 text-amber-100 shadow-inner border-amber-200/40"
+                        : "bg-gradient-to-r from-amber-100/40 via-amber-100/60 to-amber-100/50 text-amber-800 shadow-sm border-amber-200/60"
+                      : darkMode
+                      ? "bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-slate-300 border-slate-600"
+                      : "bg-white text-slate-600 hover:brightness-90 hover:border-none border-slate-300"
+                  }`}
+              >
+                {page + 1}
+              </button>
+            )
+          )}
+        </div>
 
-        {/* Nút Câu sau */}
+        {/* Next */}
         <button
           onClick={() => dispatch(nextPage())}
           disabled={currentPage === totalQuestions - 1}
@@ -145,7 +128,7 @@ const QuestionNavigation = ({ darkMode }) => {
         </button>
       </div>
 
-      {/* Input Jump To Page */}
+      {/* Jump To Page */}
       {totalQuestions > 8 && (
         <div className="flex items-center gap-2">
           <Tooltip title="Nhập số trang muốn tới" arrow>

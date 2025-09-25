@@ -1,17 +1,60 @@
-import React from "react";
-import { CheckCircle, CheckCircle2, XCircle, Info } from "lucide-react";
+import React, { useMemo, useEffect, useRef, useState } from "react";
+import { CheckCircle, CheckCircle2, XCircle } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectQuiz,
+  selectQuestionUI,
+  answerQuiz,
+} from "@redux/features/quizSlice";
 
-const QuizCard = ({
-  currentQuestion,
-  showResult,
-  selectedOption,
-  handleQuizAnswer,
-  darkMode,
-  cardClasses,
-}) => {
+const QuizCard = ({ currentQuestion, darkMode, cardClasses }) => {
+  const dispatch = useDispatch();
+  const { activeChapter, currentPage } = useSelector(selectQuiz);
+  const ui = useSelector((state) =>
+    selectQuestionUI(state, activeChapter, currentPage, "quiz")
+  );
+
+  const questionId = useMemo(
+    () =>
+      currentQuestion?.id ||
+      currentQuestion?.quiz?.id ||
+      currentQuestion?.quiz?.question ||
+      `${activeChapter}-${currentPage}`,
+    [currentQuestion, activeChapter, currentPage]
+  );
+
+  // Animate chỉ khi showResult chuyển từ false -> true
+  const prevShowRef = useRef(undefined);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
+  useEffect(() => {
+    prevShowRef.current = undefined;
+    setShouldAnimate(false);
+  }, [questionId]);
+
+  useEffect(() => {
+    const prev = prevShowRef.current;
+    if (prev === false && ui.showResult === true) setShouldAnimate(true);
+    else setShouldAnimate(false);
+    prevShowRef.current = ui.showResult;
+  }, [ui.showResult]);
+
+  const handleQuizAnswer = (index) => {
+    if (ui.showResult) return;
+    dispatch(
+      answerQuiz({
+        chapterIndex: activeChapter,
+        questionIndex: currentPage,
+        optionIndex: index,
+        mode: "quiz",
+      })
+    );
+  };
+
+  const { showResult, selectedOption } = ui;
+
   return (
     <div className={`${cardClasses} rounded-xl shadow-lg px-8 pb-8 pt-6`}>
-      {/* Câu hỏi */}
       <h3
         className={`text-xl font-semibold mb-6 ${
           darkMode ? "text-white" : "text-slate-800"
@@ -20,67 +63,65 @@ const QuizCard = ({
         {currentQuestion.quiz.question}
       </h3>
 
-      {/* Các đáp án */}
       <div className="space-y-3">
         {currentQuestion.quiz.options.map((option, index) => {
-          let baseClasses = `w-full px-4 py-3.5 text-left rounded-lg border-1 transition-all duration-300 transform`;
-          let hoverClasses = !showResult
-            ? `hover:scale-[1.01] ${
-                darkMode
-                  ? "hover:border-amber-200/70 hover:text-amber-50 hover:bg-slate-600"
-                  : "hover:bg-amber-50"
-              }`
+          const isCorrect = index === currentQuestion.quiz.correct;
+          const isSelected = selectedOption === index;
+
+          const base = `w-full px-4 py-3.5 text-left rounded-lg border transition-all duration-300 transform`;
+          const hover = !showResult
+            ? darkMode
+              ? "hover:border-amber-200/70 hover:text-amber-50 hover:bg-slate-600 hover:scale-[1.01]"
+              : "hover:bg-amber-50 hover:scale-[1.01]"
             : "";
 
-          let stateClasses = "border-slate-300 hover:border-amber-200";
+          let state = darkMode
+            ? "border-slate-500 bg-slate-700/60 text-slate-200"
+            : "border-slate-300 bg-white text-slate-700";
 
           if (showResult) {
-            if (index === currentQuestion.quiz.correct) {
-              // Nếu người dùng chọn sai → đáp án đúng pulse
-              stateClasses =
-                selectedOption !== currentQuestion.quiz.correct
-                  ? "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md animate-soft-pulse"
-                  : "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md"; // chọn đúng → ko pulse
-            } else if (selectedOption === index) {
-              // Sai
-              stateClasses =
-                "border-red-500 bg-red-50 text-red-800 shadow-red-200 shadow-md animate-shake";
+            if (isCorrect) {
+              state = isSelected
+                ? "border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md"
+                : `border-green-500 bg-green-50 text-green-800 shadow-green-200 shadow-md ${
+                    shouldAnimate ? "animate-soft-pulse" : ""
+                  }`;
+            } else if (isSelected) {
+              state = `border-red-500 bg-red-50 text-red-800 shadow-red-200 shadow-md ${
+                shouldAnimate ? "animate-shake" : ""
+              }`;
             } else {
-              stateClasses = darkMode
-                ? "border-slate-400 bg-slate-600 text-slate-400"
+              state = darkMode
+                ? "border-slate-600 bg-slate-600/60 text-slate-300"
                 : "border-slate-200 bg-slate-50 text-slate-500";
             }
           }
 
           return (
             <button
-              key={index}
+              key={`${questionId}-${index}`}
+              type="button"
               onClick={() => handleQuizAnswer(index)}
               disabled={showResult}
-              className={`${baseClasses} ${hoverClasses} ${stateClasses}`}
+              className={`${base} ${hover} ${state}`}
             >
               <div className="flex items-center">
-                <span className=" mr-3 text-lg">
+                <span className="mr-3 text-lg">
                   {String.fromCharCode(65 + index)}.
                 </span>
                 <span className="flex-1">{option}</span>
-
-                {/* Icon kết quả */}
-                {showResult && index === currentQuestion.quiz.correct && (
+                {showResult && isCorrect && (
                   <CheckCircle className="w-6 h-6 text-green-500" />
                 )}
-                {showResult &&
-                  selectedOption === index &&
-                  index !== currentQuestion.quiz.correct && (
-                    <div className="w-6 h-6 text-red-500 text-xl">✗</div>
-                  )}
+                {showResult && isSelected && !isCorrect && (
+                  <div className="w-6 h-6 text-red-500 text-xl">✗</div>
+                )}
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* Phần hiển thị kết quả */}
       {showResult && (
         <div
           className={`mt-6 p-4 rounded-lg border-l-4 ${
@@ -111,7 +152,6 @@ const QuizCard = ({
             )}
           </div>
 
-          {/* Đáp án đúng nếu chọn sai */}
           {selectedOption !== currentQuestion.quiz.correct && (
             <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
               <span className="font-semibold text-amber-800">Đáp án đúng:</span>
@@ -127,47 +167,20 @@ const QuizCard = ({
           </div>
         </div>
       )}
-      <style jsx>{`
-        @keyframes soft-pulse {
-          0%,
-          100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.65; /* mờ nhẹ thôi */
-          }
-        }
 
-        .animate-soft-pulse {
-          animation: soft-pulse 2.5s ease-in-out infinite; /* chậm rãi */
-        }
-
+      <style>{`
+        @keyframes soft-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.65; } }
+        .animate-soft-pulse { animation: soft-pulse 2.5s ease-in-out infinite; }
         @keyframes natural-shake {
-          0% {
-            transform: translateX(0);
-          }
-          15% {
-            transform: translateX(-3px);
-          }
-          30% {
-            transform: translateX(3px);
-          }
-          45% {
-            transform: translateX(-2px);
-          }
-          60% {
-            transform: translateX(2px);
-          }
-          75% {
-            transform: translateX(-1px);
-          }
-          100% {
-            transform: translateX(0);
-          }
+          0% { transform: translateX(0); }
+          15% { transform: translateX(-3px); }
+          30% { transform: translateX(3px); }
+          45% { transform: translateX(-2px); }
+          60% { transform: translateX(2px); }
+          75% { transform: translateX(-1px); }
+          100% { transform: translateX(0); }
         }
-        .animate-shake {
-          animation: natural-shake 0.5s ease-in-out; /* chạy một lần */
-        }
+        .animate-shake { animation: natural-shake 0.5s ease-in-out; }
       `}</style>
     </div>
   );
