@@ -1,5 +1,7 @@
+// src/pages/MarxistPhilosophyQuiz.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+// Other section
 import QuizSidebar from "./Quiz_Sidebar";
 import StudyHeader from "./Study_Header";
 import Flashcard from "./Card/Flash_Card";
@@ -9,12 +11,12 @@ import QuestionNavigation from "./Pagination";
 
 import {
   selectQuiz,
+  selectQuestionUI,
   setActiveChapter,
   setCurrentPage,
-  nextPage,
-  prevPage,
   setStudyMode,
   resetChapter,
+  selectModeAttemptPercent, // dùng để tính trung bình 3 mode
 } from "@redux/features/quizSlice";
 
 const MarxistPhilosophyQuiz = () => {
@@ -24,9 +26,13 @@ const MarxistPhilosophyQuiz = () => {
 
   const currentChapter = chapters[activeChapter];
   const currentQuestion = currentChapter.questions[currentPage];
-  const totalQuestions = currentChapter.questions.length;
 
-  // Dark mode
+  // (Giữ lại: nếu component con cần UI tổng quát)
+  const ui = useSelector((state) =>
+    selectQuestionUI(state, activeChapter, currentPage)
+  );
+
+  // Dark mode cục bộ (persist localStorage)
   const [darkMode, setDarkMode] = React.useState(() => {
     const saved = localStorage.getItem("darkMode");
     return saved ? JSON.parse(saved) : false;
@@ -35,11 +41,27 @@ const MarxistPhilosophyQuiz = () => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
+  // TÍNH PROGRESS CHO SIDEBAR = trung bình (quiz, fill, flashcard) mỗi chương
+  const chapterAvgProgress = useSelector((state) =>
+    state.quiz.chapters.map((_, ci) => {
+      const quizP = selectModeAttemptPercent(state, ci, "quiz");
+      const fillP = selectModeAttemptPercent(state, ci, "fill");
+      const cardP = selectModeAttemptPercent(state, ci, "flashcard");
+      return Math.round((quizP + fillP + cardP) / 3);
+    })
+  );
+
+  // Hàm cung cấp cho Sidebar
+  const calculateProgress = (chapterIndex) =>
+    chapterAvgProgress?.[chapterIndex] ?? 0;
+
+  // Sidebar vẫn cần setter page/chapter
   const [expandedChapters, setExpandedChapters] = React.useState({ 0: true });
   const toggleDarkMode = () => setDarkMode((v) => !v);
   const toggleChapterExpanded = (idx) =>
     setExpandedChapters((s) => ({ ...s, [idx]: !s[idx] }));
 
+  // Prev/Next (nếu còn dùng ở nơi khác)
   const restart = () => dispatch(resetChapter(activeChapter));
 
   const themeClasses = darkMode ? "dark bg-slate-800" : "bg-slate-100";
@@ -48,25 +70,30 @@ const MarxistPhilosophyQuiz = () => {
     : "bg-white text-slate-800";
   const sidebarClasses = darkMode ? "bg-slate-900" : "bg-slate-700";
 
-  // Sidebar helpers (progress tổng "completed")
+  // Icon trạng thái tổng thể (không theo mode) — giữ nguyên nếu bạn vẫn muốn hiển thị
   const getStateIcon = (chapterIndex, questionIndex) => {
     const k = `${chapterIndex}-${questionIndex}`;
     const s = questionStates[k] || "not-started";
     if (s === "completed")
-      return <div className="w-4 h-4 rounded-full bg-emerald-500" />;
+      return (
+        <svg
+          className="w-4 h-4 text-green-500"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-7.071 7.071a1 1 0 01-1.414 0L3.293 9.95a1 1 0 011.414-1.414l3.101 3.1 6.364-6.343a1 1 0 011.535 0z"
+            clipRule="evenodd"
+          />
+        </svg>
+      );
     if (s === "learning")
       return <div className="w-4 h-4 rounded-full bg-amber-400" />;
     return <div className="w-4 h-4 rounded-full border-2 border-slate-400" />;
   };
-  const calculateProgress = (chapterIndex) => {
-    const chapter = chapters[chapterIndex];
-    if (!chapter) return 0;
-    const completed = chapter.questions.reduce((acc, _, i) => {
-      const k = `${chapterIndex}-${i}`;
-      return questionStates[k] === "completed" ? acc + 1 : acc;
-    }, 0);
-    return Math.round((completed / chapter.questions.length) * 100);
-  };
+
+  // (Tuỳ ý) tổng completed toàn app — nếu không dùng có thể bỏ
   const getTotalProgress = () => {
     let totalCompleted = 0;
     let totalQ = 0;
@@ -91,12 +118,12 @@ const MarxistPhilosophyQuiz = () => {
           chapters={chapters}
           activeChapter={activeChapter}
           setActiveChapter={(i) => dispatch(setActiveChapter(i))}
-          currentQuestionIndex={currentPage}
           setCurrentQuestionIndex={(i) => dispatch(setCurrentPage(i))}
+          // Các prop dưới nếu Sidebar bạn không dùng có thể bỏ bớt
           expandedChapters={expandedChapters}
           toggleChapterExpanded={toggleChapterExpanded}
           getTotalProgress={getTotalProgress}
-          calculateProgress={calculateProgress}
+          calculateProgress={calculateProgress} // Sidebar dùng progress trung bình 3 mode
           getStateIcon={getStateIcon}
           sidebarClasses={sidebarClasses}
           themeClasses={themeClasses}
@@ -107,7 +134,7 @@ const MarxistPhilosophyQuiz = () => {
             darkMode={darkMode}
             currentChapter={currentChapter}
             studyMode={studyMode}
-            setStudyMode={(m) => dispatch(setStudyMode(m))} // ⬅️ reducer reset về trang 1
+            setStudyMode={(m) => dispatch(setStudyMode(m))} //  đổi mode sẽ reset về câu 1 (đã xử lý trong slice)
             shuffleQuestions={() => dispatch(setCurrentPage(0))}
             restartChapter={restart}
             toggleFullscreen={() => {
@@ -140,14 +167,8 @@ const MarxistPhilosophyQuiz = () => {
               />
             )}
 
-            {/* Pagination đồng bộ Redux */}
+            {/* Pagination thuần Redux */}
             <QuestionNavigation darkMode={darkMode} />
-            {/* Bạn có thể thêm prev/next nhanh:
-              <div className="mt-4 flex gap-2">
-                <button onClick={() => dispatch(prevPage())}>Prev</button>
-                <button onClick={() => dispatch(nextPage())}>Next</button>
-              </div>
-            */}
           </div>
         </main>
       </div>
