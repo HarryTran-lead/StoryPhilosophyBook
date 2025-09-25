@@ -396,10 +396,12 @@ const MobileNav = ({ isOpen, onClose }) => {
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false); // mobile nav
-  const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null); // desktop dropdown
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
   const isHome = location.pathname === "/";
+  const isQuiz = location.pathname === endPoint.QUIZ;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -409,13 +411,22 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  let bgColor = "";
+
+  if (isHome) {
+    bgColor = scrolled ? "bg-black/30" : "bg-black/20";
+  } else if (isQuiz) {
+    bgColor = "bg-slate-900/60";
+  } else {
+    // các trang khác
+    bgColor = scrolled ? "bg-black/30" : "bg-black/20";
+  }
+
   return (
     <div className="">
       {/* Refined Desktop Header */}
       <header
-        className={`fixed top-0 left-0 w-full z-40 backdrop-blur-md transition-colors duration-500 ease-out ${
-          isHome ? (scrolled ? "bg-black/30" : "bg-black/20") : ""
-        }`}
+        className={`fixed top-0 left-0 w-full z-40 backdrop-blur-md transition-colors duration-500 ease-out ${bgColor}`}
       >
         <div className="mx-auto pr-6 pl-8 py-1.5 flex items-center justify-between">
           {/* Sophisticated Logo */}
@@ -449,7 +460,7 @@ export default function Header() {
                     }}
                     className={({ isActive }) => {
                       const base =
-                        "group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-400 ease-out overflow-hidden font-serif";
+                        "group relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-[13px] font-medium transition-all duration-400 ease-out overflow-hidden font-serif";
 
                       if (isDropdown) {
                         return `${base} text-slate-300 hover:text-amber-200`;
@@ -483,7 +494,7 @@ export default function Header() {
 
                       {isDropdown && (
                         <ChevronDown
-                          className={`w-3.5 h-3.5 transition-all duration-300 ${
+                          className={`w-3.5 h-3.5 -ml-1 transition-all duration-300 ${
                             isOpenDrop
                               ? "rotate-180 text-amber-300"
                               : "text-slate-400"
@@ -508,7 +519,7 @@ export default function Header() {
 
           {/* Elegant Mobile Menu Button */}
           <button
-            className="lg:hidden group p-2.5 rounded-xl bg-black/20 backdrop-blur-sm 
+            className="lg:hidden group p-2.5 rounded-lg bg-black/20 backdrop-blur-sm 
             hover:bg-amber-400/10 transition-all duration-300 border border-gray-500/30 hover:border-amber-200/10"
             onClick={(e) => {
               e.stopPropagation(); // ngăn click lan ra body → trigger slide

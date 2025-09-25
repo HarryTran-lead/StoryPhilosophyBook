@@ -1,8 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { chapters } from "./data";
+import { chapters as sourceChapters, DATASET_VERSION } from "./data";
+
+const keyOf = (c, q) => `${c}-${q}`;
+
+const DEFAULT_UI = {
+  selectedOption: null,
+  showResult: false,
+  userAnswer: "",
+  showAnswer: false,
+  revealCount: 0,
+  isCorrect: null,
+};
 
 const initialState = {
-  chapters,
+  chapters: sourceChapters,
+  dataVersion: DATASET_VERSION, // để so sánh khi rehydrate
   activeChapter: 0,
   currentPage: 0,
   // tổng thể (không theo mode)
@@ -14,16 +26,6 @@ const initialState = {
     flashcard: {},
   },
   studyMode: "quiz",
-};
-
-const keyOf = (c, q) => `${c}-${q}`;
-const DEFAULT_UI = {
-  selectedOption: null,
-  showResult: false,
-  userAnswer: "",
-  showAnswer: false,
-  revealCount: 0,
-  isCorrect: null,
 };
 
 const ensureUI = (state, mode, c, q) => {
@@ -51,7 +53,7 @@ const quizSlice = createSlice({
       if (state.currentPage > 0) state.currentPage--;
     },
 
-    // ⬅️ đổi mode thì reset về câu 1
+    // đổi mode thì reset về câu 1
     setStudyMode: (state, action) => {
       const next = action.payload;
       if (next !== state.studyMode) {
@@ -70,6 +72,7 @@ const quizSlice = createSlice({
       const { ui } = ensureUI(state, mode, chapterIndex, questionIndex);
       ui.showAnswer = !!value;
     },
+
     setUserAnswer: (state, action) => {
       const {
         chapterIndex,
@@ -128,7 +131,7 @@ const quizSlice = createSlice({
       state.questionStates[k] = isCorrect ? "completed" : "learning";
     },
 
-    // FLASHCARD: chỉ lật (không ghi progress tổng), nhưng có revealCount để tính “đã xem” theo mode
+    // FLASHCARD
     flipFlashcard: (state, action) => {
       const { chapterIndex, questionIndex } = action.payload;
       const { ui } = ensureUI(state, "flashcard", chapterIndex, questionIndex);
@@ -191,7 +194,8 @@ export const selectQuestionUI = (
   mode = "quiz"
 ) => {
   const k = `${chapterIndex}-${questionIndex}`;
-  return state.quiz.uiState?.[mode]?.[k] || { ...DEFAULT_UI };
+  const DEFAULT = { ...DEFAULT_UI };
+  return state.quiz.uiState?.[mode]?.[k] || DEFAULT;
 };
 
 // % đã làm THEO MODE (attempt-based, không theo vị trí)

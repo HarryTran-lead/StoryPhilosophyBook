@@ -1,4 +1,5 @@
 // App.jsx
+import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import StoryBook from "./components/StoryBook";
 import HomePage from "@pages/HomePage/mainLayout"; // Layout cha
@@ -9,6 +10,7 @@ import Quiz from "@pages/HomePage/Quiz/quizLayout";
 import Resources from "@pages/HomePage/Resources";
 // import Faqs from "@pages/HomePage/Faqs";
 import endPoint from "@routes/routes";
+import useThemeMode from "@hooks/useThemeMode";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  useThemeMode({ applyToDocument: true });
   return <RouterProvider router={router} />;
 }
 

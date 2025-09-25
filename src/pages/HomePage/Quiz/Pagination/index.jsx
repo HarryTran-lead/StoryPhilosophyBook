@@ -1,3 +1,4 @@
+// src/pages/Pagination.jsx (QuestionNavigation)
 import React, { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Tooltip } from "@mui/material";
@@ -16,35 +17,40 @@ const QuestionNavigation = ({ darkMode = false }) => {
 
   const [jumpPage, setJumpPage] = useState("");
 
-  const pages = useMemo(() => {
-    const maxVisible = 7;
+  // Helper tạo dãy trang với '...'
+  const getPages = (maxVisible) => {
     if (totalQuestions <= maxVisible) {
       return Array.from({ length: totalQuestions }, (_, i) => i);
     }
-    if (currentPage < 4) {
-      return [0, 1, 2, 3, 4, "...", totalQuestions - 1];
+    if (currentPage < Math.ceil(maxVisible / 2)) {
+      const head = Array.from({ length: maxVisible - 2 }, (_, i) => i);
+      return [...head, "...", totalQuestions - 1];
     }
-    if (currentPage > totalQuestions - 5) {
-      return [
-        0,
-        "...",
-        totalQuestions - 5,
-        totalQuestions - 4,
-        totalQuestions - 3,
-        totalQuestions - 2,
-        totalQuestions - 1,
-      ];
+    if (currentPage > totalQuestions - Math.ceil(maxVisible / 2) - 1) {
+      const tailStart = totalQuestions - (maxVisible - 2);
+      const tail = Array.from(
+        { length: maxVisible - 2 },
+        (_, i) => tailStart + i
+      );
+      return [0, "...", ...tail];
     }
+    // ở giữa
+    const side = Math.floor((maxVisible - 4) / 2); // 2 đầu + 2 '...'
     return [
       0,
       "...",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
+      ...[currentPage - side, currentPage, currentPage + side],
       "...",
       totalQuestions - 1,
     ];
-  }, [totalQuestions, currentPage]);
+  };
+
+  // Desktop giữ nguyên 7, Tablet rút còn 5
+  const pagesDesktop = useMemo(
+    () => getPages(7),
+    [totalQuestions, currentPage]
+  );
+  const pagesTablet = useMemo(() => getPages(5), [totalQuestions, currentPage]);
 
   const handleJump = () => {
     const pageNum = parseInt(jumpPage, 10);
@@ -54,31 +60,142 @@ const QuestionNavigation = ({ darkMode = false }) => {
     }
   };
 
+  // Styles chung
+  const prevNextBase =
+    "flex items-center justify-center rounded-md font-medium transition-colors";
+  const prevNextEnabled = darkMode
+    ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
+    : "bg-white shadow-md text-gray-600 hover:bg-amber-50";
+  const prevNextDisabled = darkMode
+    ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+    : "bg-slate-200 text-slate-400 cursor-not-allowed";
+
   return (
-    <div className="flex flex-col items-center gap-4 mt-8">
-      <div className="flex justify-between items-center w-full">
+    <div className="mt-8 mb-6 flex flex-col items-center gap-4">
+      {/* ====== MOBILE (<sm): chỉ 2 nút tròn + label Câu X/Y ====== */}
+      <div className="flex w-full items-center justify-between sm:hidden">
+        <button
+          onClick={() => dispatch(prevPage())}
+          disabled={currentPage === 0}
+          aria-label="Câu trước"
+          className={[
+            "w-10 h-10 rounded-full",
+            prevNextBase,
+            currentPage === 0 ? prevNextDisabled : prevNextEnabled,
+          ].join(" ")}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+
+        <div
+          className={`text-sm ${
+            darkMode ? "text-slate-300" : "text-slate-700"
+          }`}
+        >
+          Câu {currentPage + 1} / {totalQuestions}
+        </div>
+
+        <button
+          onClick={() => dispatch(nextPage())}
+          disabled={currentPage === totalQuestions - 1}
+          aria-label="Câu sau"
+          className={[
+            "w-10 h-10 rounded-full",
+            prevNextBase,
+            currentPage === totalQuestions - 1
+              ? prevNextDisabled
+              : prevNextEnabled,
+          ].join(" ")}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* ====== TABLET (sm–lg): số trang rút gọn, nút nhỏ ====== */}
+      <div className="hidden sm:flex lg:hidden w-full items-center justify-between">
         {/* Prev */}
         <button
           onClick={() => dispatch(prevPage())}
           disabled={currentPage === 0}
-          className={`flex items-center gap-0.5 px-3 py-2.5 rounded-md font-medium transition-colors
-            ${
-              currentPage === 0
-                ? darkMode
-                  ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                  : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                : darkMode
-                ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                : "bg-white shadow-md text-gray-600 hover:bg-amber-50"
-            }`}
+          className={[
+            prevNextBase,
+            "gap-1 px-3 py-2 rounded-md text-sm",
+            currentPage === 0 ? prevNextDisabled : prevNextEnabled,
+          ].join(" ")}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Trước
+        </button>
+
+        {/* Pagination gọn */}
+        <div className="flex gap-1">
+          {pagesTablet.map((page, idx) =>
+            page === "..." ? (
+              <span
+                key={`ellipsis-t-${idx}`}
+                className={`w-8 h-8 flex items-center justify-center ${
+                  darkMode ? "text-slate-500" : "text-slate-400"
+                }`}
+              >
+                …
+              </span>
+            ) : (
+              <button
+                key={`p-t-${page}`}
+                onClick={() => dispatch(setCurrentPage(page))}
+                className={`w-8 h-8 rounded-md text-xs font-medium transition-colors border
+                  ${
+                    page === currentPage
+                      ? darkMode
+                        ? "bg-gradient-to-r from-amber-300/30 via-amber-300/20 to-amber-400/20 text-amber-100 shadow-inner border-amber-200/40"
+                        : "bg-gradient-to-r from-amber-100/40 via-amber-100/60 to-amber-100/50 text-amber-800 shadow-sm border-amber-200/60"
+                      : darkMode
+                      ? "bg-slate-700 text-slate-400 hover:bg-slate-600 border-slate-600"
+                      : "bg-white text-slate-600 hover:brightness-95 border-slate-300"
+                  }`}
+              >
+                {page + 1}
+              </button>
+            )
+          )}
+        </div>
+
+        {/* Next */}
+        <button
+          onClick={() => dispatch(nextPage())}
+          disabled={currentPage === totalQuestions - 1}
+          className={[
+            prevNextBase,
+            "gap-1 px-3 py-2 rounded-md text-sm",
+            currentPage === totalQuestions - 1
+              ? prevNextDisabled
+              : prevNextEnabled,
+          ].join(" ")}
+        >
+          Sau
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* ====== DESKTOP (≥lg): UI ĐÚNG BẢN GỐC ====== */}
+      <div className="hidden lg:flex w-full items-center justify-between">
+        {/* Prev */}
+        <button
+          onClick={() => dispatch(prevPage())}
+          disabled={currentPage === 0}
+          className={[
+            prevNextBase,
+            "gap-1 px-3 py-2.5 rounded-md",
+            currentPage === 0 ? prevNextDisabled : prevNextEnabled,
+          ].join(" ")}
         >
           <ChevronLeft className="w-5 h-5 mt-0.5" />
           Câu trước
         </button>
 
-        {/* Pagination */}
+        {/* Pagination đầy đủ */}
         <div className="flex gap-1">
-          {pages.map((page, index) =>
+          {pagesDesktop.map((page, index) =>
             page === "..." ? (
               <span
                 key={`ellipsis-${index}`}
@@ -113,25 +230,22 @@ const QuestionNavigation = ({ darkMode = false }) => {
         <button
           onClick={() => dispatch(nextPage())}
           disabled={currentPage === totalQuestions - 1}
-          className={`flex items-center gap-0.5 px-3 py-2.5 rounded-md font-medium transition-colors
-            ${
-              currentPage === totalQuestions - 1
-                ? darkMode
-                  ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                  : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                : darkMode
-                ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                : "bg-white shadow-md text-gray-600 hover:bg-amber-50"
-            }`}
+          className={[
+            prevNextBase,
+            "gap-1 px-3 py-2.5 rounded-md",
+            currentPage === totalQuestions - 1
+              ? prevNextDisabled
+              : prevNextEnabled,
+          ].join(" ")}
         >
           Câu sau <ChevronRight className="w-5 h-5 mt-0.5" />
         </button>
       </div>
 
-      {/* Jump To Page */}
+      {/* Jump To Page — chỉ hiện từ tablet trở lên */}
       {totalQuestions > 8 && (
-        <div className="flex items-center gap-2">
-          <Tooltip title="Nhập số trang muốn tới" arrow>
+        <div className="hidden sm:flex items-center gap-2">
+          <Tooltip title="Nhập số câu muốn tới" arrow>
             <input
               type="number"
               min={1}
@@ -146,7 +260,7 @@ const QuestionNavigation = ({ darkMode = false }) => {
               }`}
             />
           </Tooltip>
-          <Tooltip title="Nhấn GO để chuyển tới trang" arrow>
+          <Tooltip title="Nhấn GO để chuyển tới câu..." arrow>
             <button
               onClick={handleJump}
               className="px-3 py-2 rounded-md bg-amber-400/80 text-white text-sm font-medium hover:brightness-90 transition"

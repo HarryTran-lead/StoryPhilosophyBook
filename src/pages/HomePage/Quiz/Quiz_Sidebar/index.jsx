@@ -24,7 +24,7 @@ export default function QuizSidebar({
 }) {
   return (
     <aside
-      className={`w-86 flex flex-col min-h-screen transition-colors duration-500 ease-in-out
+      className={`w-88 flex flex-col min-h-screen transition-colors duration-500 ease-in-out
         ${
           darkMode
             ? "bg-slate-900 text-slate-200"

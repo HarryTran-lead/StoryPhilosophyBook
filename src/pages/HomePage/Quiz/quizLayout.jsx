@@ -1,6 +1,6 @@
-// src/pages/MarxistPhilosophyQuiz.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 // Other section
 import QuizSidebar from "./Quiz_Sidebar";
 import StudyHeader from "./Study_Header";
@@ -16,7 +16,7 @@ import {
   setCurrentPage,
   setStudyMode,
   resetChapter,
-  selectModeAttemptPercent, // dùng để tính trung bình 3 mode
+  selectModeAttemptPercent,
 } from "@redux/features/quizSlice";
 
 const MarxistPhilosophyQuiz = () => {
@@ -70,7 +70,7 @@ const MarxistPhilosophyQuiz = () => {
     : "bg-white text-slate-800";
   const sidebarClasses = darkMode ? "bg-slate-900" : "bg-slate-700";
 
-  // Icon trạng thái tổng thể (không theo mode) — giữ nguyên nếu bạn vẫn muốn hiển thị
+  // Icon trạng thái tổng thể (không theo mode)
   const getStateIcon = (chapterIndex, questionIndex) => {
     const k = `${chapterIndex}-${questionIndex}`;
     const s = questionStates[k] || "not-started";
@@ -93,7 +93,7 @@ const MarxistPhilosophyQuiz = () => {
     return <div className="w-4 h-4 rounded-full border-2 border-slate-400" />;
   };
 
-  // (Tuỳ ý) tổng completed toàn app — nếu không dùng có thể bỏ
+  // (Tuỳ ý) tổng completed toàn app
   const getTotalProgress = () => {
     let totalCompleted = 0;
     let totalQ = 0;
@@ -107,34 +107,79 @@ const MarxistPhilosophyQuiz = () => {
     return { completed: totalCompleted, total: totalQ };
   };
 
+  // MOBILE drawer state
+  const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+
   return (
     <div
-      className={`${themeClasses} transition-all duration-300 overflow-hidden`}
+      className={`${themeClasses} transition-all duration-300 min-h-[100svh]`}
     >
-      <div className="flex">
-        <QuizSidebar
-          darkMode={darkMode}
-          toggleDarkMode={toggleDarkMode}
-          chapters={chapters}
-          activeChapter={activeChapter}
-          setActiveChapter={(i) => dispatch(setActiveChapter(i))}
-          setCurrentQuestionIndex={(i) => dispatch(setCurrentPage(i))}
-          // Các prop dưới nếu Sidebar bạn không dùng có thể bỏ bớt
-          expandedChapters={expandedChapters}
-          toggleChapterExpanded={toggleChapterExpanded}
-          getTotalProgress={getTotalProgress}
-          calculateProgress={calculateProgress} // Sidebar dùng progress trung bình 3 mode
-          getStateIcon={getStateIcon}
-          sidebarClasses={sidebarClasses}
-          themeClasses={themeClasses}
-        />
+      {/* Drawer Sidebar — mở bằng nút trong StudyHeader (chỉ mobile) */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMobileSidebarOpen(false)}
+            aria-hidden
+          />
+          <div
+            className={`absolute left-0 top-0 h-full w-[86vw] max-w-[360px] shadow-xl overflow-y-auto ${
+              darkMode ? "bg-slate-900" : "bg-slate-50"
+            }`}
+          >
+            <QuizSidebar
+              darkMode={darkMode}
+              toggleDarkMode={toggleDarkMode}
+              chapters={chapters}
+              activeChapter={activeChapter}
+              setActiveChapter={(i) => {
+                setMobileSidebarOpen(false);
+                dispatch(setActiveChapter(i));
+                dispatch(setCurrentPage(0));
+              }}
+              setCurrentQuestionIndex={(i) => {
+                setMobileSidebarOpen(false);
+                dispatch(setCurrentPage(i));
+              }}
+              expandedChapters={expandedChapters}
+              toggleChapterExpanded={toggleChapterExpanded}
+              getTotalProgress={getTotalProgress}
+              calculateProgress={calculateProgress}
+              getStateIcon={getStateIcon}
+              sidebarClasses={sidebarClasses}
+              themeClasses={themeClasses}
+            />
+          </div>
+        </div>
+      )}
 
-        <main className="flex-1 px-8 pt-4 pb-8 min-h-screen overflow-y-auto">
+      <div className="flex flex-col lg:flex-row">
+        {/* Sidebar desktop GIỮ NGUYÊN */}
+        <div className="hidden lg:block lg:sticky lg:top-0 lg:h-full lg:min-w-[300px]">
+          <QuizSidebar
+            darkMode={darkMode}
+            toggleDarkMode={toggleDarkMode}
+            chapters={chapters}
+            activeChapter={activeChapter}
+            setActiveChapter={(i) => dispatch(setActiveChapter(i))}
+            setCurrentQuestionIndex={(i) => dispatch(setCurrentPage(i))}
+            expandedChapters={expandedChapters}
+            toggleChapterExpanded={toggleChapterExpanded}
+            getTotalProgress={getTotalProgress}
+            calculateProgress={calculateProgress}
+            getStateIcon={getStateIcon}
+            sidebarClasses={sidebarClasses}
+            themeClasses={themeClasses}
+          />
+        </div>
+
+        {/* Main */}
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 pt-3 lg:pt-4 pb-2 min-h-screen">
           <StudyHeader
             darkMode={darkMode}
             currentChapter={currentChapter}
             studyMode={studyMode}
-            setStudyMode={(m) => dispatch(setStudyMode(m))} //  đổi mode sẽ reset về câu 1 (đã xử lý trong slice)
+            setStudyMode={(m) => dispatch(setStudyMode(m))}
             shuffleQuestions={() => dispatch(setCurrentPage(0))}
             restartChapter={restart}
             toggleFullscreen={() => {
@@ -146,11 +191,11 @@ const MarxistPhilosophyQuiz = () => {
             }}
             activeChapter={activeChapter}
             cardClasses={cardClasses}
+            onOpenSidebar={() => setMobileSidebarOpen(true)} // nút menu trong header
           />
 
           <div className="max-w-4xl mx-auto">
             {studyMode === "flashcard" && <Flashcard darkMode={darkMode} />}
-
             {studyMode === "quiz" && (
               <QuizCard
                 currentQuestion={currentQuestion}
@@ -158,7 +203,6 @@ const MarxistPhilosophyQuiz = () => {
                 cardClasses={cardClasses}
               />
             )}
-
             {studyMode === "fill" && (
               <FillCard
                 currentQuestion={currentQuestion}
@@ -167,8 +211,9 @@ const MarxistPhilosophyQuiz = () => {
               />
             )}
 
-            {/* Pagination thuần Redux */}
-            <QuestionNavigation darkMode={darkMode} />
+            <div className="mt-6">
+              <QuestionNavigation darkMode={darkMode} />
+            </div>
           </div>
         </main>
       </div>

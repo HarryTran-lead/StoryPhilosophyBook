@@ -1,3 +1,4 @@
+export const DATASET_VERSION = 2; // tăng mỗi khi đổi dữ liệu
 export const chapters = [
   {
     id: 1,
@@ -80,6 +81,127 @@ export const chapters = [
         fillAnswer: "Nhận thức cảm tính phản ánh sự vật qua ___",
         answer: "Giác quan",
         fullFillAnswer: "Nhận thức cảm tính phản ánh sự vật qua giác quan",
+      },
+      {
+        id: 5,
+        term: "Nhận thức lý tính",
+        definition:
+          "Giai đoạn cao hơn của nhận thức, phản ánh gián tiếp và khái quát sự vật bằng tư duy trừu tượng.",
+        quiz: {
+          question: "Nhận thức lý tính phản ánh sự vật bằng cách nào?",
+          options: [
+            "Thông qua giác quan trực tiếp",
+            "Thông qua tư duy trừu tượng",
+            "Thông qua hành vi thực tiễn",
+            "Thông qua cảm xúc",
+          ],
+          correct: 1,
+        },
+        fillAnswer: "Nhận thức lý tính phản ánh sự vật bằng ___",
+        answer: "Tư duy trừu tượng",
+        fullFillAnswer:
+          "Nhận thức lý tính phản ánh sự vật bằng tư duy trừu tượng",
+      },
+      {
+        id: 6,
+        term: "Kinh nghiệm",
+        definition:
+          "Tri thức được hình thành từ sự quan sát, thử nghiệm và tích lũy trong đời sống thực tiễn.",
+        quiz: {
+          question: "Kinh nghiệm được hình thành từ đâu?",
+          options: [
+            "Hoạt động tư duy trừu tượng",
+            "Sự quan sát và tích lũy trong thực tiễn",
+            "Sự suy đoán chủ quan",
+            "Niềm tin tôn giáo",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "___ được hình thành từ sự quan sát và tích lũy trong thực tiễn",
+        answer: "Kinh nghiệm",
+        fullFillAnswer:
+          "Kinh nghiệm được hình thành từ sự quan sát và tích lũy trong thực tiễn",
+      },
+      {
+        id: 7,
+        term: "Lý luận",
+        definition:
+          "Hệ thống tri thức được khái quát từ kinh nghiệm, phản ánh bản chất và quy luật của sự vật, hiện tượng.",
+        quiz: {
+          question: "Lý luận có nguồn gốc từ đâu?",
+          options: [
+            "Niềm tin chủ quan",
+            "Khái quát kinh nghiệm",
+            "Ngẫu nhiên trong tư duy",
+            "Cảm xúc cá nhân",
+          ],
+          correct: 1,
+        },
+        fillAnswer: "Lý luận được hình thành từ sự ___ kinh nghiệm",
+        answer: "Khái quát",
+        fullFillAnswer: "Lý luận được hình thành từ sự khái quát kinh nghiệm",
+      },
+      {
+        id: 8,
+        term: "Chân lý",
+        definition:
+          "Tri thức phù hợp với hiện thực khách quan và được kiểm nghiệm qua thực tiễn.",
+        quiz: {
+          question: "Chân lý được xác định bằng gì?",
+          options: [
+            "Ý thức chủ quan",
+            "Sự đồng thuận xã hội",
+            "Kiểm nghiệm qua thực tiễn",
+            "Sự phỏng đoán logic",
+          ],
+          correct: 2,
+        },
+        fillAnswer: "___ là tri thức được kiểm nghiệm qua thực tiễn",
+        answer: "Chân lý",
+        fullFillAnswer: "Chân lý là tri thức được kiểm nghiệm qua thực tiễn",
+      },
+      {
+        id: 9,
+        term: "Sai lầm",
+        definition:
+          "Tri thức không phù hợp với hiện thực khách quan nhưng lại được con người cho là đúng.",
+        quiz: {
+          question: "Sai lầm trong nhận thức là gì?",
+          options: [
+            "Tri thức không phù hợp hiện thực nhưng được coi là đúng",
+            "Tri thức luôn đúng với hiện thực",
+            "Sự phản ánh khách quan",
+            "Kinh nghiệm khoa học",
+          ],
+          correct: 0,
+        },
+        fillAnswer:
+          "Sai lầm là tri thức không phù hợp với ___ nhưng lại được coi là đúng",
+        answer: "Hiện thực khách quan",
+        fullFillAnswer:
+          "Sai lầm là tri thức không phù hợp với hiện thực khách quan nhưng lại được coi là đúng",
+      },
+      {
+        id: 10,
+        term: "Thực nghiệm khoa học",
+        definition:
+          "Hoạt động thực tiễn đặc biệt nhằm kiểm chứng giả thuyết, khám phá quy luật tự nhiên và xã hội.",
+        quiz: {
+          question: "Thực nghiệm khoa học có vai trò gì trong nhận thức?",
+          options: [
+            "Khẳng định niềm tin",
+            "Kiểm chứng giả thuyết và khám phá quy luật",
+            "Thay thế tư duy lý luận",
+            "Xác nhận kinh nghiệm cá nhân",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "___ là hoạt động kiểm chứng giả thuyết và khám phá quy luật",
+        answer: "Thực nghiệm khoa học",
+        fullFillAnswer:
+          "Thực nghiệm khoa học là hoạt động kiểm chứng giả thuyết và khám phá quy luật",
       },
     ],
   },
