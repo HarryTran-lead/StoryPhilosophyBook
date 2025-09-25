@@ -1,18 +1,16 @@
-import React, { useMemo, useState, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
+import HTMLFlipBook from "react-pageflip";
 import { ChevronLeft, ChevronRight, Home, BookOpenCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-import "../styles/PhilosophyStoryBook.css";
-import "../styles/BookAnimations.css";
+import Header from "../components/Header"; 
 import "../styles/BookTheme.css";
+import "../styles/BookAnimations.css";
+import "../styles/PhilosophyStoryBook.css"; // import CUỐI
 
 const PhilosophyStoryBook = () => {
   const navigate = useNavigate();
-
-  // Khóa flip tức thời (không phụ thuộc render của state)
-  const flippingRef = useRef(false);
-  const pendingActionRef = useRef(null); // "next" | "prev"
-  const activeIndexRef = useRef(-1);
+  const flipRef = useRef(null);
+const [pageSize, setPageSize] = useState({ w: 520, h: 700 });
 
   // ============= SPREADS (giữ nguyên nội dung của bạn) =============
   const spreads = useMemo(
@@ -113,7 +111,7 @@ const PhilosophyStoryBook = () => {
         ),
       },
 
-      // TODO: thêm các spread Ch. II, III, IV của bạn ngay đây
+      // TODO: thêm các spread Ch. II, III, IV ở đây
 
       // ======== Kết & Bìa sau ========
       {
@@ -182,160 +180,118 @@ const PhilosophyStoryBook = () => {
     []
   );
 
-  // ============= Map thành các tờ giấy (sheet) =============
-  // Mỗi sheet i:
-  //   - front = spreads[i].right (trang phải của spread i)
-  //   - back  = spreads[i+1]?.left (trang trái của spread i+1)
-  const papers = useMemo(
-    () =>
-      spreads.map((s, i) => ({
-        front: s.right,
-        back: spreads[i + 1]?.left ?? null,
-      })),
-    [spreads]
-  );
+  // ============= Map spreads -> pages cho HTMLFlipBook =============
+  // Quy ước: showCover=true, nên page 0 = bìa phải (spreads[0].right)
+  // Trang tiếp theo: spread1.left, spread1.right, ... tới spreadN.left, spreadN.right (bìa sau)
+  const pages = useMemo(() => {
+    const arr = [];
 
-  const [turned, setTurned] = useState(() => Array(papers.length).fill(false)); // tờ đã lật
-  const [currentPaper, setCurrentPaper] = useState(0); // đang đứng ở spread nào
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [flipDirection, setFlipDirection] = useState(""); // "next" | "prev"
-  const [activeIndex, setActiveIndex] = useState(-1);
+    // 0) Bìa trước (right của spread 0)
+    arr.push(
+      <div className="page" key="cover-front">
+        {/* .page-content đã nằm trong spreads[0].right */}
+        {spreads[0].right}
+      </div>
+    );
 
-  const canPrev = currentPaper > 0 && !isFlipping;
-  const canNext = currentPaper < papers.length - 1 && !isFlipping;
-  const atFinalSpread = currentPaper === papers.length - 1;
+    // 1) Các spreads còn lại (left rồi right nếu có)
+    for (let i = 1; i < spreads.length; i++) {
+      const s = spreads[i];
+      if (s.left) {
+        arr.push(
+          <div className="page" key={`p-${i}-L`}>
+            {s.left}
+          </div>
+        );
+      }
+      if (s.right) {
+        arr.push(
+          <div className="page" key={`p-${i}-R`}>
+            {s.right}
+          </div>
+        );
+      }
+    }
 
-  // ============= Handlers =============
-  const onFlipEnd = (e) => {
-    if (e.propertyName !== "transform") return;
-    if (!flippingRef.current) return;
+    return arr;
+  }, [spreads]);
+  useEffect(() => {
+  const calc = () => {
+    const vw = Math.min(window.innerWidth, 1400);
+    const vh = window.innerHeight;
 
-    const act = pendingActionRef.current;
-    if (act === "next") setCurrentPaper((v) => v + 1);
-    if (act === "prev") setCurrentPaper((v) => v - 1);
+    // book chiếm ~80% chiều cao, mỗi trang tỉ lệ ~0.74 (520/700)
+    const targetBookH = Math.min(Math.round(vh * 0.8), 900);
+    const pageWFromH = Math.round(targetBookH * 0.74);
 
-    flippingRef.current = false;
-    pendingActionRef.current = null;
-    activeIndexRef.current = -1;
+    // mỗi TRANG chiếm ~38–42% viewport width, cap 680
+    const pageWFromW = Math.round(vw * 0.40);
 
-    setIsFlipping(false);
-    setFlipDirection("");
-    setActiveIndex(-1);
+    const w = Math.min(680, Math.max(360, Math.min(pageWFromH, pageWFromW)));
+    const h = Math.round(w / 0.74);
+    setPageSize({ w, h });
   };
+  calc();
+  window.addEventListener("resize", calc);
+  return () => window.removeEventListener("resize", calc);
+}, []);
 
-  const nextPage = () => {
-    if (!canNext || flippingRef.current) return;
-    const i = currentPaper;
-    flippingRef.current = true;
-    pendingActionRef.current = "next";
-    activeIndexRef.current = i;
+  // Theo dõi trang hiện tại & tính spread index để hiển thị indicator / nút Quiz
+  const [currentPage, setCurrentPage] = useState(0); // 0-based page in FlipBook
+  const currentSpread = Math.min(spreads.length - 1, Math.ceil(currentPage / 2)); // 0=cover, 1,2,...
+  const atFinalSpread = currentSpread === spreads.length - 1;
 
-    setFlipDirection("next");
-    setActiveIndex(i);
-    setIsFlipping(true);
-    setTurned((t) => {
-      const c = [...t];
-      c[i] = true;
-      return c;
-    });
-  };
+  const canPrev = currentPage > 0;
+  const canNext = currentPage < pages.length - 1;
 
-  const prevPage = () => {
-    if (!canPrev || flippingRef.current) return;
-    const i = currentPaper - 1;
-    flippingRef.current = true;
-    pendingActionRef.current = "prev";
-    activeIndexRef.current = i;
-
-    setFlipDirection("prev");
-    setActiveIndex(i);
-    setIsFlipping(true);
-    setTurned((t) => {
-      const c = [...t];
-      c[i] = false;
-      return c;
-    });
+  const onFlip = (e) => {
+    setCurrentPage(e.data); // e.data = current page index
   };
 
   // Lật bằng bàn phím
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === "ArrowRight") nextPage();
-      if (e.key === "ArrowLeft") prevPage();
+      if (e.key === "ArrowRight") flipRef.current?.pageFlip().flipNext();
+      if (e.key === "ArrowLeft")  flipRef.current?.pageFlip().flipPrev();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [canNext, canPrev, currentPaper, isFlipping]);
+  }, []);
 
   return (
+   <div className="philo-book">
+  <Header /> {/* hero có BG Unsplash */}
+
+  <div className="page-with-header">
     <div className="book-scene">
-      <div className="book-container">
+      <div className="book-container book-dark">
         {/* Back về Home */}
-        <button
-          className="global-back-btn"
-          aria-label="Về trang chủ"
-          onClick={() => navigate("/")}
-        >
-          <Home size={18} />
-          <span>Về Trang Chủ</span>
-        </button>
+     
 
         {/* gáy sách */}
         <div className="book-spine">
           <div className="spine-text">TRIẾT LÝ CUỘC SỐNG</div>
         </div>
 
-        {/* Stack sheets */}
-        <div className={`book ${isFlipping ? "is-flipping" : ""}`}>
-          {papers.map((paper, i) => {
-            const clickableNext = !turned[i] && i === currentPaper;
-            const clickablePrev = turned[i] && i === currentPaper - 1;
-
-            return (
-              <div
-                key={i}
-                className={[
-                  "sheet",
-                  turned[i] ? "is-turned" : "",
-                  isFlipping && activeIndex === i
-                    ? flipDirection === "next"
-                      ? "flip-next"
-                      : "flip-prev"
-                    : "",
-                  clickableNext || clickablePrev ? "is-clickable" : "",
-                ].join(" ")}
-                style={{ zIndex: papers.length - i }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (clickableNext) nextPage();
-                  else if (clickablePrev) prevPage();
-                }}
-                onTransitionEnd={activeIndex === i ? onFlipEnd : undefined}
-                data-index={i}
-              >
-                {/* mặt trước = trang phải của spread i */}
-                <div className="page-face front">
-                  <div className="page-pane right">{paper.front}</div>
-                </div>
-
-                {/* mặt sau = trang trái của spread i+1 */}
-                <div className="page-face back">
-                  <div className="page-pane left">
-                    {paper.back ?? <div className="page-content page-left blank" />}
-                  </div>
-                </div>
-
-                <div className="page-shadow" aria-hidden />
-              </div>
-            );
-          })}
-        </div>
+        <HTMLFlipBook
+          ref={flipRef}
+          className="html-flip-book"
+          width={pageSize.w}
+          height={pageSize.h}
+          showCover
+          maxShadowOpacity={0.5}
+          drawShadow
+          mobileScrollSupport
+          onFlip={onFlip}
+        >
+          {pages}
+        </HTMLFlipBook>
 
         {/* Nút điều hướng */}
         <div className="navigation nav-prev">
           <button
             className="nav-button"
-            onClick={prevPage}
+            onClick={() => flipRef.current?.pageFlip().flipPrev()}
             disabled={!canPrev}
             aria-label="Trang trước"
             title="Trang trước"
@@ -347,7 +303,7 @@ const PhilosophyStoryBook = () => {
         <div className="navigation nav-next">
           <button
             className="nav-button"
-            onClick={nextPage}
+            onClick={() => flipRef.current?.pageFlip().flipNext()}
             disabled={!canNext}
             aria-label="Trang sau"
             title="Trang sau"
@@ -358,22 +314,15 @@ const PhilosophyStoryBook = () => {
 
         {/* Chỉ số spread */}
         <div className="page-indicator">
-          Trang {Math.min(currentPaper + 1, spreads.length)} / {spreads.length}
+          Trang {Math.min(currentSpread + 1, spreads.length)} / {spreads.length}
         </div>
 
-        {/* Quiz ở spread cuối */}
-        {atFinalSpread && (
-          <button
-            className="quiz-btn"
-            aria-label="Đi tới Quiz"
-            onClick={() => navigate("/quiz")}
-          >
-            <BookOpenCheck size={18} />
-            <span>Làm Quiz</span>
-          </button>
-        )}
+     
       </div>
     </div>
+  </div>
+</div>
+
   );
 };
 
