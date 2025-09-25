@@ -1,0 +1,448 @@
+/* ===================== ANIMATIONS & COVER DESIGNS ===================== */
+/* BookAnimations.css */
+
+/* Page Flipping Animations - Real Book Style */
+.book-page {
+  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+
+/* When flipping to next page - right page flips over to the left */
+.book-page.right.flipping-next {
+  transform: rotateY(-180deg);
+  z-index: 10;
+}
+
+/* When flipping to previous page - left page flips over to the right */  
+.book-page.left.flipping-prev {
+  transform: rotateY(180deg);
+  z-index: 10;
+}
+
+/* Fix text orientation during flip */
+.book-page.flipping-next .page-content,
+.book-page.flipping-prev .page-content {
+  transform: rotateY(180deg);
+}
+
+/* Star Animations */
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #fbbf24;
+  border-radius: 50%;
+  box-shadow: 0 0 15px #fbbf24;
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.star-1 { top: 15%; left: 20%; animation-delay: 0s; }
+.star-2 { top: 25%; right: 15%; animation-delay: 1s; }
+.star-3 { top: 70%; left: 10%; animation-delay: 2s; }
+.star-4 { top: 80%; right: 25%; animation-delay: 1.5s; }
+.star-5 { top: 40%; right: 30%; animation-delay: 0.5s; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Cover Front Design */
+.cover-front {
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
+    linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0f0f1a 100%);
+  border: 2px solid #d97706;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-design {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+.cover-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cover-ornament {
+  width: 60%;
+  height: 4px;
+  margin: 20px 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8) 20%, rgba(255, 255, 255, 0.8) 80%, transparent);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+}
+
+.cover-title {
+  position: relative;
+  margin: 40px 0;
+}
+
+.title-backdrop {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(ellipse, rgba(245, 158, 11, 0.1) 0%, transparent 60%);
+  filter: blur(20px);
+}
+
+.main-title {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+
+.title-line-1, .title-line-2 {
+  display: block;
+  font-size: clamp(32px, 6vw, 52px);
+  font-weight: 700;
+  color: #fbbf24;
+  text-shadow: 
+    0 0 30px rgba(245, 158, 11, 0.8),
+    0 0 60px rgba(245, 158, 11, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 0.9;
+  letter-spacing: 2px;
+}
+
+.title-line-2 {
+  color: #fcd34d;
+  margin-top: 5px;
+}
+
+.subtitle {
+  font-size: clamp(14px, 2.5vw, 18px);
+  color: #fde68a;
+  opacity: 0.9;
+  margin-top: 15px;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.cover-quote {
+  position: relative;
+  max-width: 85%;
+  margin: 30px 0;
+  padding: 25px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.quote-marks {
+  position: absolute;
+  font-size: 60px;
+  color: #fcd34d;
+  opacity: 0.4;
+  font-family: serif;
+  line-height: 1;
+}
+
+.quote-marks:first-child {
+  top: -10px;
+  left: 10px;
+}
+
+.quote-marks.closing {
+  bottom: -20px;
+  right: 10px;
+  transform: rotate(180deg);
+}
+
+.quote-text {
+  font-style: italic;
+  color: #f9fafb;
+  font-size: clamp(14px, 2.2vw, 16px);
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+.quote-author {
+  text-align: right;
+  font-size: clamp(12px, 2vw, 14px);
+  color: #fbbf24;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.cover-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Cover Back Design */
+.cover-back {
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+    linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0a0a14 100%);
+  border: 2px solid #d97706;
+  position: relative;
+  overflow: hidden;
+}
+
+.back-cover-design {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+.back-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.back-ornament {
+  width: 50%;
+  height: 3px;
+  margin: 25px 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.6) 80%, transparent);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.back-title {
+  position: relative;
+  margin: 30px 0;
+}
+
+.back-title-backdrop {
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(ellipse, rgba(124, 58, 237, 0.1) 0%, transparent 60%);
+  filter: blur(15px);
+}
+
+.back-title h1 {
+  position: relative;
+  z-index: 2;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 700;
+  color: #a78bfa;
+  text-shadow: 
+    0 0 25px rgba(167, 139, 250, 0.8),
+    0 0 50px rgba(167, 139, 250, 0.4);
+  margin: 0;
+  letter-spacing: 3px;
+}
+
+.infinity-symbol {
+  font-size: clamp(20px, 4vw, 32px);
+  color: #fbbf24;
+  margin-top: 10px;
+  text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.back-quote {
+  max-width: 80%;
+  margin: 25px 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.back-quote-text {
+  font-style: italic;
+  color: #fde68a;
+  font-size: clamp(13px, 2vw, 15px);
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.back-quote-divider {
+  width: 40%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #fbbf24, transparent);
+  margin: 15px auto;
+}
+
+.back-message {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: #fcd34d;
+  opacity: 0.8;
+  margin-top: 20px;
+  font-weight: 300;
+}
+
+.back-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Hover Effects */
+.cover-design:hover .title-line-1,
+.cover-design:hover .title-line-2 {
+  animation: titleGlow 2s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+  0%, 100% { text-shadow: 0 0 30px rgba(245, 158, 11, 0.8), 0 0 60px rgba(245, 158, 11, 0.4), 2px 2px 4px rgba(0, 0, 0, 0.5); }
+  50% { text-shadow: 0 0 40px rgba(245, 158, 11, 1), 0 0 80px rgba(245, 158, 11, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.5); }
+}
+
+.back-cover-design:hover .back-title h1 {
+  animation: purpleGlow 2s ease-in-out infinite;
+}
+
+@keyframes purpleGlow {
+  0%, 100% { text-shadow: 0 0 25px rgba(167, 139, 250, 0.8), 0 0 50px rgba(167, 139, 250, 0.4); }
+  50% { text-shadow: 0 0 35px rgba(167, 139, 250, 1), 0 0 70px rgba(167, 139, 250, 0.6); }
+}
+
+/* Floating Animation for Ornaments */
+.cover-ornament.top {
+  animation: float 4s ease-in-out infinite;
+}
+
+.cover-ornament.bottom {
+  animation: float 4s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Subtle breathing effect for covers */
+.cover-front, .cover-back {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.005); }
+}
+
+/* ========= Realistic page flip (sheet-based) ========= */
+/* Mỗi .sheet = 1 tờ giấy: mặt trước = trang phải của spread i, mặt sau = trang trái của spread i+1 */
+
+.book { position: relative; width: 100%; height: 100%; perspective: 2200px; transform-style: preserve-3d; }
+
+/* Kích thước tờ giấy ăn theo khung sách: nửa cuốn (trang đơn) */
+.sheet {
+  position: absolute;
+  top: 0; left: 50%;  /* gốc bên trái của tờ ở giữa gáy */
+  width: 50%; height: 100%;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transition: transform 0.8s cubic-bezier(.23, 1, .32, 1);
+  will-change: transform;
+}
+
+.sheet.is-turned { transform: rotateY(-180deg); }
+
+/* Mặt trang (front/back) */
+.page-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--border-amber);
+  box-shadow: inset 0 0 60px rgba(255,255,255,.02), 0 0 25px rgba(0,0,0,.7);
+}
+
+/* Front = trang phải */
+.page-face.front .page-pane.right {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--page-1) 0%, var(--page-2) 100%);
+}
+
+/* Back = trang trái của spread kế */
+.page-face.back {
+  transform: rotateY(180deg);
+}
+.page-face.back .page-pane.left {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--page-1) 0%, var(--page-2) 100%);
+}
+
+/* Nội dung trang bạn đã có sẵn class .page-content; chỉ cần bọc trong .page-pane */
+.page-pane .page-content { height: 100%; }
+
+/* Hiệu ứng bóng cạnh gấp */
+.page-shadow {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.25), transparent 35%),
+    radial-gradient(120% 100% at 0% 50%, rgba(0,0,0,.35), transparent 60%);
+  opacity: .0;
+  transition: opacity .35s ease;
+}
+.sheet.flip-next .page-shadow,
+.sheet.flip-prev .page-shadow { opacity: .55; }
+
+/* Con trỏ khi có thể click lật */
+.sheet.is-clickable { cursor: pointer; }
+
+/* Điều chỉnh nút điều hướng khi chạm giới hạn */
+.nav-button:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+/* (Tùy chọn) Ẩn layout left/right cũ nếu còn CSS cũ: chúng ta không dùng .book-page nữa */
+.book-page { display: none !important; }
+/* --- Page flip fix: ensure backface is hidden on all faces --- */
+.book, .sheet, .page-face, .page-pane {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.page-face, .page-pane {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Chrome/Opera/Safari cần */
+}
+
+/* Quan trọng: cho front cũng có transform riêng để backface ẩn đúng */
+.page-face.front { 
+  transform: rotateY(0deg) translateZ(0.1px); /* tránh z-fighting */
+}
+.page-face.back  { 
+  transform: rotateY(180deg) translateZ(0.1px);
+}
+
+/* Tờ giấy */
+.sheet {
+  transform-origin: left center;
+  transition: transform 0.8s cubic-bezier(.23,1,.32,1);
+  will-change: transform;
+}
+.sheet.is-turned { transform: rotateY(-180deg); }
+
+/* Bóng khi lật (không bắt buộc) */
+.sheet.flip-next .page-shadow,
+.sheet.flip-prev .page-shadow { opacity: .55; }
+
+/* Nếu còn rule cũ dùng .book-page, ẩn nó đi để tránh chồng lớp */
+.book-page { display: none !important; }
