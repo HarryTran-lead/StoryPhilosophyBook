@@ -46,8 +46,49 @@ const OdometerNumber = ({ prev, current, className = "" }) => {
 };
 
 /* ===== ROTATING PHRASE: chữ hiển thị + đổi 5s ===== */
+// const RotatingPhrase = ({ phrases, intervalMs = 5000, className = "" }) => {
+//   const [idx, setIdx] = React.useState(0);
+
+//   React.useEffect(() => {
+//     const t = setInterval(() => {
+//       setIdx((i) => (i + 1) % phrases.length);
+//     }, intervalMs);
+//     return () => clearInterval(t);
+//   }, [intervalMs, phrases.length]);
+
+//   return (
+//     <div className={`relative h-[1.6em] overflow-hidden ${className}`}>
+//       <AnimatePresence mode="wait" initial={false}>
+//         <motion.div
+//           key={idx}
+//           initial={{ y: "100%", opacity: 0 }}
+//           animate={{ y: "0%", opacity: 1 }}
+//           exit={{ y: "-100%", opacity: 0 }}
+//           transition={{ duration: 0.6, ease: "easeOut" }}
+//           className="whitespace-nowrap leading-6"
+//         >
+//           {phrases[idx]}
+//         </motion.div>
+//       </AnimatePresence>
+//     </div>
+//   );
+// };
+
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isMobile;
+};
+
 const RotatingPhrase = ({ phrases, intervalMs = 5000, className = "" }) => {
   const [idx, setIdx] = React.useState(0);
+  const isMobile = useIsMobile();
 
   React.useEffect(() => {
     const t = setInterval(() => {
@@ -57,15 +98,23 @@ const RotatingPhrase = ({ phrases, intervalMs = 5000, className = "" }) => {
   }, [intervalMs, phrases.length]);
 
   return (
-    <div className={`relative h-[1.6em] overflow-hidden ${className}`}>
+    <div
+      className={[
+        // mobile: để auto height + không ẩn tràn
+        "relative",
+        isMobile ? "h-auto overflow-visible" : "h-[1.6em] overflow-hidden",
+        className,
+      ].join(" ")}
+    >
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={idx}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
+          initial={isMobile ? { opacity: 0 } : { y: "100%", opacity: 0 }}
+          animate={isMobile ? { opacity: 1 } : { y: "0%", opacity: 1 }}
+          exit={isMobile ? { opacity: 0 } : { y: "-100%", opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="whitespace-nowrap leading-6"
+          // mobile: cho phép xuống dòng; md+: vẫn giữ nowrap
+          className="leading-6 whitespace-normal break-words md:whitespace-nowrap"
         >
           {phrases[idx]}
         </motion.div>
@@ -374,11 +423,11 @@ const HeroSection = () => {
                 </div>
 
                 {/* Center content */}
-                <div className="absolute inset-24 rounded-full bg-slate-800/80 backdrop-blur-sm border border-amber-400/40 flex flex-col items-center justify-center p-8 text-center">
+                <div className="absolute inset-24 rounded-full bg-slate-800/80 backdrop-blur-sm border border-amber-400/40 flex flex-col items-center justify-center sm:p-8 text-center">
                   <OdometerNumber
                     prev={prevYear}
                     current={year}
-                    className="text-4xl md:text-5xl text-amber-400 mb-1"
+                    className="text-2xl sm:text-3xl md:text-4xl text-amber-400 mb-0 sm:mb-1"
                   />
                   <RotatingPhrase
                     phrases={[
@@ -386,14 +435,15 @@ const HeroSection = () => {
                       "Những bước ngoặt tư tưởng",
                       "Di sản cách mạng",
                     ]}
-                    intervalMs={5000} // 5s/lần
-                    className="text-sm text-slate-300 mb-4"
+                    intervalMs={5000}
+                    className="text-xs sm:text-sm md:text-base text-slate-300 mb-0.5 sm:mb-4"
                   />
-                  <div className="w-12 h-px bg-amber-400/60 mb-4" />
-                  <div className="text-4xl font-bold text-amber-400 mb-2">
+
+                  <div className="w-12 sm:w-20 h-px bg-amber-400/60 mb-0 sm:mb-4" />
+                  <div className=" text-xl sm:text-3xl md:text-4xl font-bold text-amber-400 mb-0 sm:mb-2">
                     ∞
                   </div>
-                  <div className="text-sm text-slate-300">
+                  <div className="text-xs sm:text-sm text-slate-300">
                     Ảnh hưởng vĩnh cửu
                   </div>
                 </div>

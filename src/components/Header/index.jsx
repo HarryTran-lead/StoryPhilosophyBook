@@ -14,6 +14,13 @@ import {
 import { NavLink as RouterNavLink } from "react-router-dom";
 import endPoint from "@routes/routes";
 import { useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+
+/* =========================
+   Config / constants
+========================= */
+// Easing ngắn, mượt
+const EASE = [0.2, 0, 0, 1];
 
 // Cấu hình nav items với philosophy theme
 const navItems = [
@@ -22,7 +29,6 @@ const navItems = [
   {
     label: "Mục lục",
     icon: BookOpen,
-    to: "#",
     children: [
       {
         label: "Chương 1: Nhận thức khoa học",
@@ -55,29 +61,27 @@ const navItems = [
   // { label: "Tài liệu", icon: FileText, to: endPoint.RESOURCES },
 ];
 
-// Dropdown component
-const EnhancedDropdown = ({ children, isOpen, onClose }) => {
+/* =========================
+   EnhancedDropdown (Desktop)
+========================= */
+const EnhancedDropdown = ({ items = [], isOpen, onClose, id }) => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        event.stopPropagation(); //  chặn bubble sang slide
+        event.stopPropagation();
         onClose();
       }
     };
-
     const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
+      if (event.key === "Escape") onClose();
     };
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleEscape);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
@@ -86,34 +90,33 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-40 rounded-xl transition-all duration-500 ${
-          isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          onClose();
-        }}
-      />
+      {/* Backdrop (desktop) */}
+     <div
+  className={`fixed inset-0 z-[55]  // ⬅️ z-index riêng
+  bg-slate-900/70 md:bg-slate-900/60 md:backdrop-blur-md
+  transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+  onClick={onClose}
+/>
 
-      {/* Dropdown Container */}
+
+      {/* Container */}
       <div
         ref={dropdownRef}
         onClick={(e) => e.stopPropagation()}
-        className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2.5 w-80 z-50
-          transition-all duration-500 ease-out origin-top
-          ${
-            isOpen
-              ? "opacity-100 scale-100 translate-y-0"
-              : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
-          }`}
+        className={`absolute top-full left-1/2 -translate-x-1/2 mt-2.5 w-80 z-50 origin-top
+        transition-[opacity,transform] duration-250 ease-out
+        ${isOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}`}
+        style={{
+          transform: isOpen
+            ? "translate(-50%,0) translateZ(0)"
+            : "translate(-50%,-0.5rem) translateZ(0)",
+        }}
+        id={id}
+        role="menu"
+        aria-hidden={!isOpen}
       >
-        {/* Main dropdown card */}
-        <div className="relative bg-slate-900/95 backdrop-blur-xl rounded-xl shadow-xl border border-slate-600/40 overflow-hidden">
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-300/5 via-transparent to-slate-800/20 pointer-events-none" />
+        <div className="relative rounded-xl overflow-hidden border border-slate-600/40 shadow-xl bg-slate-900/95 md:backdrop-blur-xl">
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-amber-300/5 via-transparent to-slate-800/20" />
 
           {/* Header */}
           <div className="relative px-4 py-2.5 border-b border-slate-600/40 bg-gradient-to-r from-slate-700/40 to-slate-800/40">
@@ -122,77 +125,45 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
                 <BookOpen size={16} className="text-amber-300" />
               </div>
               <div>
-                <h3 className="text-slate-100 font-semibold text-sm">
-                  Mục lục
-                </h3>
-                <p className="text-slate-400 text-[11px] mt-0.5">
-                  Chọn chương để học
-                </p>
+                <h3 className="text-slate-100 font-semibold text-sm">Mục lục</h3>
+                <p className="text-slate-400 text-[11px] mt-0.5">Chọn chương để học</p>
               </div>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="relative h-full">
-            {children.map((item, i) => (
+          {/* Items */}
+          <div className="relative">
+            {items.map((item, i) => (
               <div
-                key={i}
-                className="group relative border-b border-slate-600/30 last:border-b-0 
-          hover:bg-gradient-to-r hover:from-amber-300/8 hover:via-amber-300/4 hover:to-transparent 
-          transition-all duration-300"
+                key={item.to ?? item.label ?? i}
+                className="group border-b border-slate-600/30 last:border-b-0 hover:bg-gradient-to-r hover:from-amber-300/8 hover:via-amber-300/4 hover:to-transparent transition-colors duration-200"
               >
-                <button
+                <RouterNavLink
+                  to={item.to}
                   onClick={(e) => {
-                    e.stopPropagation(); // ngăn click lan ra body → trigger slide
+                    e.stopPropagation();
                     onClose();
                   }}
-                  className="w-full text-left px-5 py-2.5 flex items-center gap-3
-            hover:translate-x-0.5 transition-all duration-300"
+                  className="w-full text-left px-5 py-2.5 flex items-center gap-3"
+                  role="menuitem"
                 >
-                  {/* Chapter number */}
-                  <div
-                    className="flex-shrink-0 w-7 h-7 rounded-md bg-slate-700 border border-slate-500 
-              flex items-center justify-center text-[11px] font-bold text-slate-200 
-              group-hover:bg-amber-300/10 group-hover:border-amber-300/30 
-              group-hover:text-amber-100 transition-all duration-300"
-                  >
+                  <div className="w-7 h-7 flex-shrink-0 rounded-md bg-slate-700 border border-slate-500 flex items-center justify-center text-[11px] font-bold text-slate-200 group-hover:bg-amber-300/10 group-hover:border-amber-300/30 group-hover:text-amber-100 transition-colors">
                     {i + 1}
                   </div>
 
-                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h4
-                      className="text-sm font-medium text-slate-100 
-                group-hover:text-amber-200 transition-colors duration-300"
-                    >
+                    <h4 className="text-sm font-medium text-slate-100 group-hover:text-amber-200 transition-colors">
                       {item.label}
                     </h4>
                     {item.description && (
-                      <p
-                        className="text-xs text-slate-400 mt-0.5 
-                  group-hover:text-slate-300 transition-colors duration-300"
-                      >
+                      <p className="text-xs text-slate-400 mt-0.5 group-hover:text-slate-300 transition-colors">
                         {item.description}
                       </p>
                     )}
                   </div>
 
-                  {/* Arrow */}
-                  <ArrowRight
-                    size={13}
-                    className="flex-shrink-0 text-slate-400 
-              group-hover:text-amber-400 group-hover:translate-x-0.5 
-              transition-all duration-300"
-                  />
-                </button>
-
-                {/* Hover effect line */}
-                <div
-                  className="absolute bottom-0 left-4 right-4 h-px 
-            bg-gradient-to-r from-transparent via-amber-300/30 to-transparent 
-            scale-x-0 group-hover:scale-x-100 
-            transition-transform duration-500 origin-left"
-                />
+                  <ArrowRight size={13} className="text-slate-400 group-hover:text-amber-400 transition-colors" />
+                </RouterNavLink>
               </div>
             ))}
           </div>
@@ -202,180 +173,186 @@ const EnhancedDropdown = ({ children, isOpen, onClose }) => {
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-slate-400 flex items-center">
                 <Book size={11} className="mr-1" />
-                {children.length} chương
+                {items.length} chương
               </span>
               <span className="text-slate-400">Triết học Mác-Lênin</span>
             </div>
           </div>
         </div>
 
-        {/* Decorative arrow */}
-        <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-7 border-r-7 border-b-7 border-transparent border-b-slate-900/95" />
+        {/* Arrow */}
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-7 border-r-7 border-b-7 border-transparent border-b-slate-900/95" />
       </div>
     </>
   );
 };
 
+/* =========================
+   MobileNav (Mobile)
+========================= */
 const MobileNav = ({ isOpen, onClose }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
 
+  useEffect(() => {
+    if (!isOpen) setOpenDropdown(null);
+  }, [isOpen]);
+
   return (
     <div
-      className={`fixed inset-0 z-50 lg:hidden transition-all duration-500 ease-out ${
+      className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
         isOpen ? "opacity-100 visible" : "opacity-0 invisible"
       }`}
     >
-      {/* Backdrop */}
+      {/* Backdrop: bỏ blur trên mobile để mượt hơn */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/90 backdrop-blur-md
-        transition-all duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 bg-slate-900/70 md:bg-slate-900/60 md:backdrop-blur-md transition-opacity duration-300 ${
+          isOpen ? "opacity-100" : "opacity-0"
+        }`}
         onClick={onClose}
       />
 
       {/* Sidebar */}
-      <div
-        className={`absolute right-0 top-0 h-full w-72 
-        bg-gradient-to-b from-slate-900/95 via-slate-800/90 to-slate-900/95 
-        backdrop-blur-xl border-l border-amber-200/10 shadow-2xl
-        transform transition-all duration-500 ease-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        {/* Header */}
-        <div className="relative pl-5 pr-2 py-4.5 border-b border-amber-200/20 bg-gradient-to-r from-slate-900/95 to-slate-900/90 shadow-md">
-          <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-transparent to-amber-400/5 pointer-events-none"></div>
+    <aside
+  className={`fixed right-0 top-0 z-[60] // ⬅️ cao hơn overlay
+  h-full w-72 bg-slate-900 border-l border-amber-200/10 shadow-xl
+  will-change-transform transition-transform duration-300 ease-out
+  ${isOpen ? "translate-x-0" : "translate-x-full"}`} // ⬅️ KHÔNG dùng inline style transform nữa
+>
 
-          <div className="relative flex items-center justify-between">
+        {/* Header */}
+        <div className="pl-5 pr-2 py-4.5 border-b border-amber-200/20 bg-slate-900">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-amber-100 text-xl font-semibold tracking-wide drop-shadow-md">
+              <h2 className="text-amber-100 text-lg font-semibold tracking-wide">
                 Triết học Mác – Lênin
               </h2>
-              <p className="text-amber-200 text-sm italic font-[Georgia] mt-1.5 font-light drop-shadow-sm">
+              <p className="text-amber-200/80 text-xs italic mt-1">
                 Dòng chảy của tri thức
               </p>
             </div>
-
             <button
               onClick={(e) => {
-                e.stopPropagation(); // ngăn click lan ra body → trigger slide
+                e.stopPropagation();
                 onClose();
               }}
-              className="group p-2 rounded-xl hover:bg-amber-400/20 transition-all duration-300"
+              className="p-2 rounded-lg hover:bg-amber-400/15 active:scale-95 transition"
+              aria-label="Đóng menu"
             >
-              <X className="w-5 h-5 text-amber-100/90 group-hover:text-amber-200 transition-colors duration-300" />
+              <X className="w-5 h-5 text-amber-100" />
             </button>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="h-[calc(100%-160px)] overflow-y-hidden py-4 px-2 space-y-2 custom-scrollbar">
-          <nav className="flex flex-col space-y-1.5">
+        {/* Nav list */}
+        <div
+          className="h-[calc(100%-160px)] overflow-y-auto py-4 px-2 space-y-2"
+          style={{
+            WebkitOverflowScrolling: "touch",
+            transform: "translateZ(0)",
+          }}
+        >
+          <nav className="flex flex-col gap-1.5">
             {navItems.map((item, index) => {
-              const isDropdown = !!item.children;
+              const isDropdown = !!item.children?.length;
               const isOpenDrop = openDropdown === index;
 
               return (
-                <div key={index}>
-                  <RouterNavLink
-                    to={item.to || "#"}
-                    onClick={() =>
-                      isDropdown
-                        ? setOpenDropdown(isOpenDrop ? null : index)
-                        : onClose()
-                    }
-                    // KHÔNG bao giờ active cho dropdown
-                    className={({ isActive }) => {
-                      const base =
-                        "group flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-all duration-400 ease-out relative overflow-hidden";
-
-                      if (isDropdown) {
-                        return `${base} text-slate-300 hover:text-amber-200 hover:bg-gradient-to-r hover:from-amber-400/8 hover:to-transparent`;
-                      }
-
-                      return isActive
-                        ? `${base} bg-gradient-to-r from-amber-400/15 via-amber-300/10 to-transparent text-amber-200 shadow-inner`
-                        : `${base} text-slate-300 hover:text-amber-200 hover:bg-gradient-to-r hover:from-amber-400/8 hover:to-transparent`;
-                    }}
-                    style={{
-                      transitionDelay: isOpen ? `${index * 50}ms` : "0ms",
-                    }}
-                  >
-                    {" "}
-                    {/* Icon */}
-                    <div className="relative">
-                      <item.icon className="w-5 h-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3" />
-                      <div className="absolute inset-0 bg-amber-400/20 rounded-full scale-0 group-hover:scale-150 transition-transform duration-500 opacity-0 group-hover:opacity-100"></div>
-                    </div>
-                    {/* Label */}
-                    <span className="font-serif tracking-wide">
-                      {item.label}
-                    </span>
-                    {/* Dropdown Indicator */}
-                    {isDropdown && (
-                      <div
-                        className={`ml-auto transition-transform duration-500 ease-in-out ${
-                          isOpenDrop
-                            ? "rotate-180 translate-y-0"
-                            : "rotate-0 -translate-y-0.5"
-                        }`}
+                <div key={item.label ?? index}>
+                  {/* Parent có con: dùng button để toggle, KHÔNG NavLink */}
+                  {isDropdown ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenDropdown(isOpenDrop ? null : index)
+                        }
+                        className="group flex w-full items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-colors text-slate-300 hover:text-amber-200 hover:bg-amber-400/8"
+                        aria-expanded={isOpenDrop}
+                        aria-controls={`m-dd-${index}`}
                       >
-                        <ChevronDown
-                          className={`w-4 h-4 ${
-                            isOpenDrop ? "text-amber-300" : "text-slate-400"
-                          }`}
-                        />
-                      </div>
-                    )}
-                  </RouterNavLink>
+                        <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
+                        <span className="font-serif tracking-wide">
+                          {item.label}
+                        </span>
+                        <motion.span
+                          initial={false}
+                          animate={{ rotate: isOpenDrop ? 180 : 0 }}
+                          transition={{ duration: 0.2, ease: EASE }}
+                          className="ml-auto"
+                        >
+                          <ChevronDown
+                            className={`w-4 h-4 ${
+                              isOpenDrop ? "text-amber-300" : "text-slate-400"
+                            }`}
+                          />
+                        </motion.span>
+                      </button>
 
-                  {/* Dropdown children */}
-                  {isDropdown && (
-                    <div
-                      className={`overflow-hidden transition-all duration-500 ease-out 
-      transform origin-top
-      ${
-        isOpenDrop
-          ? "max-h-96 opacity-100 scale-100 translate-y-0"
-          : "max-h-0 opacity-0 scale-95 -translate-y-2"
-      }`}
-                    >
-                      <div className="pl-2 py-1 space-y-1.5">
-                        {item.children.map((child, i) => (
-                          <button
-                            key={i}
-                            onClick={(e) => {
-                              e.stopPropagation(); // ngăn click lan ra body → trigger slide
-                              onClose();
-                            }}
-                            className="group block w-full text-left text-slate-300 hover:text-amber-200 
-            transition-colors duration-300 text-sm p-2 rounded-lg hover:bg-amber-400/8"
+                      {/* Dropdown children */}
+                      <AnimatePresence initial={false}>
+                        {isOpenDrop && (
+                          <motion.div
+                            id={`m-dd-${index}`}
+                            key="dropdown"
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.22, ease: EASE }}
+                            className="overflow-hidden will-change-[height,opacity]"
+                            style={{ transform: "translateZ(0)" }}
                           >
-                            <div className="flex items-start gap-2.5">
-                              {/* Icon số */}
-                              <div
-                                className="w-6 h-6 flex-shrink-0 rounded-md border border-slate-600 
-                flex items-center justify-center text-xs font-semibold text-slate-400 
-                transition-all duration-300 ease-out
-                group-hover:border-amber-300/40 group-hover:text-amber-100 
-                group-hover:shadow-[0_0_6px_rgba(251,191,36,0.4)]"
-                              >
-                                {i + 1}
-                              </div>
-
-                              {/* Nội dung */}
-                              <div className="flex-1">
-                                <div className="font-medium">{child.label}</div>
-                                {child.description && (
-                                  <div className="text-xs text-slate-500 mt-0.5">
-                                    {child.description}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                            <ul className="pl-2 py-1 space-y-1.5">
+                              {item.children.map((child, i) => (
+                                <li key={child.to ?? child.label ?? i}>
+                                  <RouterNavLink
+                                    to={child.to}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      onClose();
+                                    }}
+                                    className="group block w-full text-left text-slate-300 hover:text-amber-200 transition-colors text-sm p-2 rounded-lg hover:bg-amber-400/8"
+                                  >
+                                    <div className="flex items-start gap-2.5">
+                                      <div className="w-6 h-6 flex-shrink-0 rounded-md border border-slate-600 flex items-center justify-center text-xs font-semibold text-slate-400 group-hover:border-amber-300/40 group-hover:text-amber-100">
+                                        {i + 1}
+                                      </div>
+                                      <div className="flex-1">
+                                        <div className="font-medium">
+                                          {child.label}
+                                        </div>
+                                        {child.description && (
+                                          <div className="text-xs text-slate-500 mt-0.5">
+                                            {child.description}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </RouterNavLink>
+                                </li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  ) : (
+                    // Mục thường (không có con) → NavLink
+                    <RouterNavLink
+                      to={item.to}
+                      onClick={onClose}
+                      className={({ isActive }) => {
+                        const base =
+                          "group flex items-center gap-3 px-3 py-3 rounded-xl text-base font-medium transition-colors";
+                        return isActive
+                          ? `${base} bg-amber-400/10 text-amber-200`
+                          : `${base} text-slate-300 hover:text-amber-200 hover:bg-amber-400/8`;
+                      }}
+                    >
+                      <item.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
+                      <span className="font-serif tracking-wide">
+                        {item.label}
+                      </span>
+                    </RouterNavLink>
                   )}
                 </div>
               );
@@ -385,16 +362,26 @@ const MobileNav = ({ isOpen, onClose }) => {
 
         {/* Footer */}
         <div className="absolute bottom-4 left-4 right-4">
-          <div className="h-[2px] bg-gradient-to-r from-transparent via-amber-300/20 to-transparent"></div>
-          <p className="text-center text-xs text-amber-300/80 mt-3 italic font-[Georgia]">
+          <div className="h-px bg-amber-300/20" />
+          <p className="text-center text-xs text-amber-300/80 mt-3 italic">
             "Thực tiễn là tiêu chuẩn của chân lý"
           </p>
         </div>
-      </div>
+      </aside>
+
+      {/* Respect reduced motion */}
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          .transition-transform, .transition-opacity, .transition-colors { transition: none !important; }
+        }
+      `}</style>
     </div>
   );
 };
 
+/* =========================
+   Header (Desktop + Mobile)
+========================= */
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false); // mobile nav
   const [scrolled, setScrolled] = useState(false);
@@ -403,123 +390,113 @@ export default function Header() {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="">
-      {/* Refined Desktop Header */}
+    <div>
+      {/* Desktop Header */}
       <header
         className={`fixed top-0 left-0 w-full z-40 backdrop-blur-md transition-colors duration-500 ease-out ${
           isHome ? (scrolled ? "bg-black/30" : "bg-black/20") : ""
         }`}
       >
         <div className="mx-auto pr-6 pl-8 py-1.5 flex items-center justify-between">
-          {/* Sophisticated Logo */}
+          {/* Logo */}
           <div className="group cursor-pointer">
             <a href="/">
-              <h2
-                className="text-amber-200/95 font-serif text-3xl font-bold tracking-wide 
-      group-hover:text-amber-100 transition-all duration-300 hover:scale-105
-      hover:drop-shadow-[0_0_2px_rgba(255,191,0,0.7)]"
-              >
+              <h2 className="text-amber-200/95 font-serif text-3xl font-bold tracking-wide group-hover:text-amber-100 transition-all duration-300 hover:scale-105 hover:drop-shadow-[0_0_2px_rgba(255,191,0,0.7)]">
                 BookStory
               </h2>
             </a>
           </div>
 
-          {/* Refined Desktop Navigation */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1 bg-black/20 rounded-2xl px-1.5 py-1 backdrop-blur-sm">
             {navItems.map((item, index) => {
-              const isDropdown = !!item.children;
+              const isDropdown = !!item.children?.length;
               const isOpenDrop = openDropdown === index;
 
               return (
-                <div key={index} className="relative">
-                  <RouterNavLink
-                    to={isDropdown ? "#" : item.to}
-                    onClick={(e) => {
-                      if (isDropdown) {
-                        e.preventDefault();
-                        setOpenDropdown(isOpenDrop ? null : index);
-                      }
-                    }}
-                    className={({ isActive }) => {
-                      const base =
-                        "group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-400 ease-out overflow-hidden font-serif";
+                <div key={item.label ?? index} className="relative">
+                  {/* Nếu có con: dùng button để toggle */}
+                  {isDropdown ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenDropdown(isOpenDrop ? null : index)
+                        }
+                        className="group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-300 ease-out overflow-hidden font-serif text-slate-300 hover:text-amber-200"
+                        aria-expanded={isOpenDrop}
+                        aria-controls={`desktop-dd-${index}`}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-amber-400/0 via-amber-300/0 to-amber-400/0 group-hover:from-amber-400/10 group-hover:via-amber-300/8 group-hover:to-amber-400/5 transition-all duration-500 ease-out" />
+                        <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out" />
+                        <div className="relative z-10 flex items-center gap-2">
+                          <item.icon
+                            size={16}
+                            className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                          />
+                          <span className="tracking-wide">{item.label}</span>
+                          <ChevronDown
+                            className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                              isOpenDrop
+                                ? "rotate-180 text-amber-300"
+                                : "text-slate-400"
+                            }`}
+                          />
+                        </div>
+                      </button>
 
-                      if (isDropdown) {
-                        return `${base} text-slate-300 hover:text-amber-200`;
-                      }
-
-                      return isActive
-                        ? `${base} bg-gradient-to-r from-amber-400/20 via-amber-300/15 to-amber-400/10 text-amber-100 shadow-inner`
-                        : `${base} text-slate-300 hover:text-amber-200`;
-                    }}
-                  >
-                    {/* Hover Background Effect */}
-                    <div
-                      className="absolute inset-0 bg-gradient-to-r from-amber-400/0 via-amber-300/0 to-amber-400/0 
-      group-hover:from-amber-400/10 group-hover:via-amber-300/8 group-hover:to-amber-400/5 
-      transition-all duration-500 ease-out"
-                    ></div>
-
-                    {/* Flowing Underline */}
-
-                    <div
-                      className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 
-        group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out"
-                    ></div>
-
-                    <div className="relative z-10 flex items-center gap-2">
-                      <item.icon
-                        size={16}
-                        className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
+                      {/* Dropdown */}
+                      <EnhancedDropdown
+                        items={item.children}
+                        isOpen={isOpenDrop}
+                        onClose={() => setOpenDropdown(null)}
+                        id={`desktop-dd-${index}`}
                       />
-                      <span className="tracking-wide">{item.label}</span>
-
-                      {isDropdown && (
-                        <ChevronDown
-                          className={`w-3.5 h-3.5 transition-all duration-300 ${
-                            isOpenDrop
-                              ? "rotate-180 text-amber-300"
-                              : "text-slate-400"
-                          }`}
+                    </>
+                  ) : (
+                    // Không có con: NavLink bình thường
+                    <RouterNavLink
+                      to={item.to}
+                      className={({ isActive }) => {
+                        const base =
+                          "group relative flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-medium transition-all duration-300 ease-out overflow-hidden font-serif";
+                        return isActive
+                          ? `${base} bg-gradient-to-r from-amber-400/20 via-amber-300/15 to-amber-400/10 text-amber-100 shadow-inner`
+                          : `${base} text-slate-300 hover:text-amber-200`;
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-amber-400/0 via-amber-300/0 to-amber-400/0 group-hover:from-amber-400/10 group-hover:via-amber-300/8 group-hover:to-amber-400/5 transition-all duration-500 ease-out" />
+                      <div className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-gradient-to-r from-amber-400 to-amber-600 group-hover:w-full group-hover:left-0 transition-all duration-500 ease-out" />
+                      <div className="relative z-10 flex items-center gap-2">
+                        <item.icon
+                          size={16}
+                          className="transition-all duration-300 group-hover:scale-110 group-hover:rotate-3"
                         />
-                      )}
-                    </div>
-                  </RouterNavLink>
-
-                  {/* Dropdown */}
-                  {isDropdown && (
-                    <EnhancedDropdown
-                      children={item.children}
-                      isOpen={isOpenDrop}
-                      onClose={() => setOpenDropdown(null)}
-                    />
+                        <span className="tracking-wide">{item.label}</span>
+                      </div>
+                    </RouterNavLink>
                   )}
                 </div>
               );
             })}
           </nav>
 
-          {/* Elegant Mobile Menu Button */}
+          {/* Mobile Menu Button */}
           <button
-            className="lg:hidden group p-2.5 rounded-xl bg-black/20 backdrop-blur-sm 
-            hover:bg-amber-400/10 transition-all duration-300 border border-gray-500/30 hover:border-amber-200/10"
+            className="lg:hidden group p-2.5 rounded-xl bg-black/20 backdrop-blur-sm hover:bg-amber-400/10 transition-all duration-300 border border-gray-500/30 hover:border-amber-200/10"
             onClick={(e) => {
-              e.stopPropagation(); // ngăn click lan ra body → trigger slide
+              e.stopPropagation();
               setIsOpen(true);
             }}
+            aria-label="Mở menu"
           >
-            <Menu
-              className="w-4.5 h-4.5 text-white   
-            transition-all duration-300 group-hover:scale-110"
-            />
+            <Menu className="w-4.5 h-4.5 text-white transition-all duration-300 group-hover:scale-110" />
           </button>
         </div>
       </header>
