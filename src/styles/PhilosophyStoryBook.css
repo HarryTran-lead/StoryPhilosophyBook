@@ -1,33 +1,38 @@
 /* ===================== PhilosophyStoryBook.css (SCOPED for react-pageflip) ===================== */
 
 /* Scene & Wrapper */
-.philo-book .book-scene{
+/* SCOPED: chỉ áp cho trang sách */
+.philo-book .book-scene {
   min-height: 100svh;
   display: grid;
   place-items: center;
   padding: 24px;
-  color:#e6edf3;
+  color: #e6edf3;
 
-  /* Nền: gradient + ảnh Unsplash */
+  /* 4 lớp nền: 3 gradient + 1 ảnh ở LỚP DƯỚI CÙNG */
   background-image:
     radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
     radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
     linear-gradient(180deg, #0b0c10 0%, #0c1116 100%),
     url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
   background-size: 100% 100%, 100% 100%, 100% 100%, cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-position: center, center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
 }
-@media (min-width:1024px){
-  /* tránh jank mobile */
-  .philo-book .book-scene{
+
+/* ĐỪNG ghi đè lại bằng .book-scene không có url ở desktop.
+   Nếu cần tách riêng cho desktop, vẫn phải include url như dưới: */
+@media (min-width: 1024px) {
+  .philo-book .book-scene {
     background-image:
       radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
       radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
       linear-gradient(180deg, #0b0c10 0%, #0c1116 100%),
       url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+    background-size: 100% 100%, 100% 100%, 100% 100%, cover;
   }
 }
+
 
 .philo-book .book-container{
   position: relative;
@@ -217,4 +222,72 @@
 /* ===================== Reduced motion ===================== */
 @media (prefers-reduced-motion: reduce){
   .philo-book *{ animation-duration:0ms !important; transition-duration:0ms !important; }
+}
+/* ẢNH NỀN: tách riêng thành lớp dưới cùng để không bị gradient che */
+.philo-book .bg-photo {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #e6edf3;
+
+  /* ảnh ở dưới cùng, luôn cover */
+  background-image: url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* thích thì giữ, không thì bỏ */
+}
+
+/* LỚP OVERLAY: đặt gradient lên bằng ::before (không che ảnh) */
+.philo-book .bg-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* gradient có alpha, không che ảnh */
+  background:
+    radial-gradient(60% 70% at 30% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(11,12,16,0.85) 0%, rgba(12,17,22,0.9) 100%);
+  /* có thể tăng/giảm độ tối bằng alpha của linear-gradient trên */
+}
+/* đảm bảo viewport full-height hoạt động chuẩn */
+html, body, #root { height: 100%; }
+
+/* ẢNH NỀN TOÀN MÀN HÌNH CHỈ KHI Ở TRANG SÁCH */
+body.philo-bg { position: relative; }
+
+/* Lớp ảnh (full màn) */
+body.philo-bg::before{
+  content:"";
+  position: fixed;  /* bám viewport, không scroll theo nội dung */
+  inset: 0;
+  z-index: -2;
+  background-image: url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* nếu iOS bị giật khi scroll, bỏ dòng dưới */
+  background-attachment: fixed;
+}
+
+/* Lớp overlay (tối nhẹ + gradient màu) */
+body.philo-bg::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(11,12,16,.85) 0%, rgba(12,17,22,.9) 100%);
+}
+
+/* Để background body lộ ra hoàn toàn */
+.philo-book .book-scene{
+  min-height: 100dvh;
+  background: transparent !important;
 }
