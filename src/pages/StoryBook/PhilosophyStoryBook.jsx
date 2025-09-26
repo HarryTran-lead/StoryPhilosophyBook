@@ -2,13 +2,13 @@
 import React, { useMemo, useRef, useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Header from "../components/Header";
+import Header from "@components/Header";
 
 import { spreads as PHILO_SPREADS, spreadsToPages } from "./philosophySpreads.jsx"; // <-- dùng data tách riêng
 
-import "../styles/BookTheme.css";
-import "../styles/BookAnimations.css";
-import "../styles/PhilosophyStoryBook.css"; // import CUỐI
+import "@styles/BookTheme.css";
+import "@styles/BookAnimations.css";
+import "@styles/PhilosophyStoryBook.css"; // import CUỐI
 
 const PhilosophyStoryBook = () => {
   const flipRef = useRef(null);

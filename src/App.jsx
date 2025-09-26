@@ -1,16 +1,15 @@
 // App.jsx
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import StoryBook from "./StoryBook/PhilosophyStoryBook";
-import HomePage from "@pages/HomePage/mainLayout"; // Layout cha
-import Home from "@pages/HomePage/Home";
-import About from "@pages/HomePage/About/layoutSection";
-import Chapters from "@pages/HomePage/Chapters";
-import Quiz from "@pages/HomePage/Quiz/quizLayout";
-import Resources from "@pages/HomePage/Resources";
+import StoryBook from "@pages/StoryBook/PhilosophyStoryBook";
+import HomePage from "@layout/mainLayout"; // Layout cha
+import Home from "@pages/Home";
+import About from "@pages/About/layoutSection";
+import Chapters from "@pages/Chapters";
+import Quiz from "@pages/Quiz/quizLayout";
+import Resources from "@pages/Resources";
 // import Faqs from "@pages/HomePage/Faqs";
 import endPoint from "@routes/routes";
-import useThemeMode from "@hooks/useThemeMode";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +31,6 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  useThemeMode({ applyToDocument: true });
   return <RouterProvider router={router} />;
 }
 
