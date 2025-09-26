@@ -1,7 +1,7 @@
 // App.jsx
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import StoryBook from "./components/PhilosophyStoryBook";
+import StoryBook from "./StoryBook/PhilosophyStoryBook";
 import HomePage from "@pages/HomePage/mainLayout"; // Layout cha
 import Home from "@pages/HomePage/Home";
 import About from "@pages/HomePage/About/layoutSection";

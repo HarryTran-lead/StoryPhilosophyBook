@@ -1,324 +1,293 @@
-/* ===================== MAIN LAYOUT & STRUCTURE ===================== */
-/* PhilosophyStoryBook.css */
+/* ===================== PhilosophyStoryBook.css (SCOPED for react-pageflip) ===================== */
 
 /* Scene & Wrapper */
-.book-scene {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: 
-    radial-gradient(60% 70% at 30% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
-    radial-gradient(40% 50% at 70% 60%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
-    linear-gradient(180deg, rgba(5, 5, 7, 0.85) 0%, rgba(10, 11, 15, 0.9) 100%),
+/* SCOPED: chỉ áp cho trang sách */
+.philo-book .book-scene {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #e6edf3;
+
+  /* 4 lớp nền: 3 gradient + 1 ảnh ở LỚP DƯỚI CÙNG */
+  background-image:
+    radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
+    linear-gradient(180deg, #0b0c10 0%, #0c1116 100%),
     url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  color: #f0f0f0;
-  font-family: 'Georgia', 'Times New Roman', serif;
+  background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+  background-position: center, center, center, center;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
 }
 
-.book-scene::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.35) 100%);
-  pointer-events: none;
+/* ĐỪNG ghi đè lại bằng .book-scene không có url ở desktop.
+   Nếu cần tách riêng cho desktop, vẫn phải include url như dưới: */
+@media (min-width: 1024px) {
+  .philo-book .book-scene {
+    background-image:
+      radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
+      radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
+      linear-gradient(180deg, #0b0c10 0%, #0c1116 100%),
+      url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+    background-size: 100% 100%, 100% 100%, 100% 100%, cover;
+  }
 }
 
-.book-container {
+
+.philo-book .book-container{
   position: relative;
-  width: 95vw;
-  height: 90vh;
-  max-width: 1400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-  perspective: 2500px;
-  filter: drop-shadow(0 30px 80px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 60px rgba(245, 158, 11, 0.1));
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: clamp(320px, 92vw, 1100px);
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 24px 70px rgba(0,0,0,.6));
 }
 
-.book-container:hover {
-  transform: rotateY(-2deg) rotateX(1deg) scale(1.01);
+/* Optional spine (trang trí) */
+.philo-book .book-spine{
+  position:absolute;
+  left:50%;
+  top:-18px;
+  transform:translateX(-50%);
+  font-size:12px;
+  letter-spacing:4px;
+  opacity:.6;
 }
 
-.book {
+/* ===================== HTMLFlipBook host ===================== */
+/* Thư viện dùng các lớp .stf__*, giữ overflow để bóng không bị cắt */
+.philo-book .stf__parent{ overflow: visible !important; }
+
+/* Container của flipbook (thêm className="html-flip-book" trong JSX) */
+.philo-book .html-flip-book{
   position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
+  z-index: 10;
+  border-radius:12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.05) inset;
+  background: transparent;
 }
 
-/* Book Spine */
-.book-spine {
-  position: absolute;
-  left: -3%;
-  top: 0;
-  width: 6%;
-  height: 100%;
-  transform: rotateY(-90deg);
-  transform-origin: right center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(to right, #1a1a2e, #b45309, #d97706, #b45309, #1a1a2e);
-  box-shadow: 
-    inset -15px 0 30px rgba(0, 0, 0, 0.7),
-    inset 15px 0 30px rgba(255, 255, 255, 0.05);
-  border-radius: 0 4px 4px 0;
+/* Mỗi page do bạn render */
+.philo-book .page{
+  background: transparent; /* chúng ta đã có .page-content */
 }
 
-.spine-text {
-  writing-mode: vertical-lr;
-  text-orientation: mixed;
-  color: #fff;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 3px;
-  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-}
-
-/* Book Pages */
-.book-page {
-  position: absolute;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(135deg, #0f1015 0%, #151520 100%);
-  color: #f0f0f0;
-  border-radius: 12px;
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  box-shadow: 
-    inset 0 0 80px rgba(255, 255, 255, 0.03),
-    0 0 40px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(245, 158, 11, 0.1);
-  overflow: hidden;
-  backdrop-filter: blur(1px);
-  transform-style: preserve-3d;
-}
-
-.book-page.left {
-  left: 0;
-  border-radius: 10px 0 0 10px;
-  transform-origin: right center;
-}
-
-.book-page.right {
-  right: 0;
-  border-radius: 0 10px 10px 0;
-  transform-origin: left center;
-}
-
-/* Page Content */
-.page-content {
+/* Nội dung bên trong page */
+.philo-book .page-content{
   position: relative;
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  padding: 5% 6%;
-  overflow-y: auto;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  padding: clamp(14px, 3.5vw, 24px);
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:12px;
+  border-radius:10px;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f7fb 100%);
+  color:#0f172a;
+  overflow:auto;
   scrollbar-width: thin;
   scrollbar-color: #475569 transparent;
+}
+.philo-book .page-content::-webkit-scrollbar{ width:6px; }
+.philo-book .page-content::-webkit-scrollbar-thumb{ background:#475569; border-radius:3px; }
+
+/* Biến thể layout trái/phải & cover */
+.philo-book .page-left, 
+.philo-book .page-right{ 
+  background: linear-gradient(145deg, #fff 0%, #f6f8ff 100%); 
+}
+.philo-book .cover-front, 
+.philo-book .cover-back{
   background:
-    radial-gradient(circle at 15% 15%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.04) 0%, transparent 50%);
+    radial-gradient(600px 240px at 50% -20%, rgba(255,255,255,.18), transparent 60%),
+    linear-gradient(135deg, #2d3a8c, #5b21b6 45%, #9333ea);
+  color:#fff;
+}
+.philo-book .cover-design, 
+.philo-book .back-cover-design{ 
+  position:relative; width:100%; height:100%; display:grid; place-items:center; 
+}
+.philo-book .main-title{ font-size: clamp(28px,4vw,44px); line-height:1.02; text-align:center; text-shadow:0 8px 28px rgba(0,0,0,.4); }
+.philo-book .subtitle{ opacity:.9; margin-top:8px; text-align:center; }
+
+/* Quote / box / summary */
+.philo-book .philosophy-quote{
+  margin-top:12px; padding:12px 14px;
+  border-left:4px solid #7c3aed; background:#f3e8ff; color:#4c1d95;
+  border-radius:8px;
+}
+.philo-book .reflection-box{ padding:12px; border:1px dashed #94a3b8; border-radius:8px; background:#f8fafc; }
+.philo-book .reflection-title{ font-weight:700; margin-bottom:6px; color:#0f172a; }
+.philo-book .wisdom-section h4{ margin:12px 0 8px; color:#1f2937; }
+.philo-book .wisdom-item{ display:grid; grid-template-columns:28px 1fr; gap:8px; align-items:start; margin:6px 0; }
+.philo-book .wisdom-number{
+  width:24px; height:24px; display:grid; place-items:center;
+  border-radius:6px; background:#ede9fe; color:#5b21b6; font-size:12px; font-weight:700;
+}
+.philo-book .final-content .life-summary{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-top:10px; }
+.philo-book .summary-item{ background:#f1f5f9; border-radius:10px; padding:10px; text-align:center; color:#0f172a; }
+.philo-book .summary-icon{ font-size:18px; display:block; margin-bottom:6px; }
+
+/* Page number (trang trong) */
+.philo-book .page-number{
+  justify-self:center;
+  align-self:end;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#64748b;
 }
 
-.page-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.page-content::-webkit-scrollbar-thumb {
-  background: #475569;
-  border-radius: 3px;
-}
-
-.page-content::before {
-  content: "";
-  position: absolute;
-  inset: 0 8% 0 8%;
-  border-left: 1px solid rgba(245, 158, 11, 0.25);
-  border-right: 1px solid rgba(245, 158, 11, 0.25);
-  pointer-events: none;
-}
-
-.page-content.page-left::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 2px;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, rgba(245, 158, 11, 0.25) 20%, rgba(245, 158, 11, 0.25) 80%, transparent);
-}
-
-/* Navigation */
-.navigation {
+/* ===================== Navigation & Actions ===================== */
+/* Nút điều hướng luôn ở trên cùng và nhận click */
+.philo-book .navigation {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 100;
+  z-index: 50;              /* cao hơn flipbook */
+  pointer-events: none;     /* chính container thì tắt pointer */
+}
+.philo-book .navigation .nav-button {
+  pointer-events: auto;     /* chỉ nút mới nhận click */
 }
 
-.nav-prev { left: -90px; }
-.nav-next { right: -90px; }
-
-.nav-button {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(251, 191, 36, 0.95));
-  color: #111;
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-  transition: 0.25s;
-  backdrop-filter: blur(10px);
-}
-
-.nav-button:hover {
-  transform: scale(1.12);
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  box-shadow: 0 12px 35px rgba(245, 158, 11, 0.45);
-}
-
-.nav-button:active {
-  transform: scale(0.97);
-}
-
-.nav-button:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Page Indicator */
-.page-indicator {
-  position: absolute;
-  bottom: -12%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(245, 158, 11, 0.88);
-  color: #111;
-  font-weight: 700;
-  padding: 10px 22px;
-  border-radius: 22px;
-  font-size: clamp(12px, 2vw, 14px);
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: 0.2s;
-}
-
-.page-indicator:hover {
-  transform: translateX(-50%) translateY(-2px);
-}
-
-/* Buttons */
-.global-back-btn {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 1000;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #f59e0b, #d97706);
-  color: #fff;
-  border: none;
-  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.global-back-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(217, 119, 6, 0.45);
-  filter: brightness(1.03);
-}
-
-.quiz-btn {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1000;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, #16a34a, #15803d);
-  color: #fff;
-  border: none;
-  box-shadow: 0 10px 24px rgba(21, 128, 61, 0.35);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.quiz-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(21, 128, 61, 0.45);
-  filter: brightness(1.04);
-}
-
-/* Page Number */
-.page-number {
-  position: absolute;
-  bottom: 20px;
-  right: 25px;
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border-radius: 12px;
-  padding: 4px 12px;
-  font-weight: 700;
-  font-size: clamp(11px, 1.8vw, 13px);
-  text-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
-}
-
-.page-left .page-number {
-  left: 25px;
-  right: auto;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .nav-prev { left: -70px; }
-  .nav-next { right: -70px; }
-}
+.philo-book .nav-prev { left: -8px; }
+.philo-book .nav-next { right: -8px; }
 
 @media (max-width: 768px) {
-  .book-container {
-    width: 95vw;
-    height: 75vh;
-  }
-  .page-indicator {
-    bottom: -15%;
-  }
+  .philo-book .nav-prev { left: 8px; }
+  .philo-book .nav-next { right: 8px; }
 }
 
-@media (max-width: 480px) {
-  .book-container {
-    width: 98vw;
-    height: 70vh;
-  }
-  .nav-prev { left: -60px; }
-  .nav-next { right: -60px; }
-  .nav-button {
-    width: 45px;
-    height: 45px;
-  }
-  .page-indicator {
-    bottom: -18%;
-    padding: 8px 16px;
-  }
+.philo-book .nav-button{
+  pointer-events:auto;
+  display:grid; place-items:center;
+  width: clamp(40px, 6vw, 52px);
+  height: clamp(40px, 6vw, 52px);
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(8px);
+  color:#e6edf3;
+  transition: transform .18s ease, background .18s ease, opacity .18s ease;
+}
+.philo-book .nav-button:hover{ transform: translateY(-2px); background: rgba(255,255,255,.14); }
+.philo-book .nav-button:disabled{ opacity:.35; pointer-events:none; }
+
+.philo-book .page-indicator{
+  position:absolute;
+  bottom:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size: 12px;
+  letter-spacing:1px;
+  opacity:.7;
+}
+
+/* Floating Actions (nếu bạn còn dùng) */
+.philo-book .global-back-btn{
+  position: absolute; 
+  top: 16px; 
+  left: 16px;
+  z-index: 60;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-radius: 10px;
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+  color: #fff; border: none;
+  box-shadow: 0 6px 16px rgba(217,119,6,.35);
+}
+.philo-book .global-back-btn:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(217,119,6,.45); filter: brightness(1.03); }
+
+.philo-book .quiz-btn{
+  position: absolute;
+  right: 24px; bottom: 24px;
+  z-index: 60;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-radius: 10px;
+  background: linear-gradient(180deg, #16a34a, #15803d);
+  color: #fff; border: none;
+  box-shadow: 0 10px 24px rgba(21,128,61,.35);
+}
+.philo-book .quiz-btn:hover{ transform: translateY(-1px); box-shadow: 0 14px 28px rgba(21,128,61,.45); filter: brightness(1.04); }
+
+/* ===================== Mobile tweaks ===================== */
+@media (max-width: 768px){
+  .philo-book .book-container{ width: min(96vw, 560px); }
+  .philo-book .nav-prev{ left:4px; }
+  .philo-book .nav-next{ right:4px; }
+}
+@media (max-width: 480px){
+  .philo-book .nav-button{ width:42px; height:42px; }
+}
+
+/* ===================== Reduced motion ===================== */
+@media (prefers-reduced-motion: reduce){
+  .philo-book *{ animation-duration:0ms !important; transition-duration:0ms !important; }
+}
+/* ẢNH NỀN: tách riêng thành lớp dưới cùng để không bị gradient che */
+.philo-book .bg-photo {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: #e6edf3;
+
+  /* ảnh ở dưới cùng, luôn cover */
+  background-image: url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* thích thì giữ, không thì bỏ */
+}
+
+/* LỚP OVERLAY: đặt gradient lên bằng ::before (không che ảnh) */
+.philo-book .bg-photo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  /* gradient có alpha, không che ảnh */
+  background:
+    radial-gradient(60% 70% at 30% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245, 158, 11, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(11,12,16,0.85) 0%, rgba(12,17,22,0.9) 100%);
+  /* có thể tăng/giảm độ tối bằng alpha của linear-gradient trên */
+}
+/* đảm bảo viewport full-height hoạt động chuẩn */
+html, body, #root { height: 100%; }
+
+/* ẢNH NỀN TOÀN MÀN HÌNH CHỈ KHI Ở TRANG SÁCH */
+body.philo-bg { position: relative; }
+
+/* Lớp ảnh (full màn) */
+body.philo-bg::before{
+  content:"";
+  position: fixed;  /* bám viewport, không scroll theo nội dung */
+  inset: 0;
+  z-index: -2;
+  background-image: url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* nếu iOS bị giật khi scroll, bỏ dòng dưới */
+  background-attachment: fixed;
+}
+
+/* Lớp overlay (tối nhẹ + gradient màu) */
+body.philo-bg::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(11,12,16,.85) 0%, rgba(12,17,22,.9) 100%);
+}
+
+/* Để background body lộ ra hoàn toàn */
+.philo-book .book-scene{
+  min-height: 100dvh;
+  background: transparent !important;
 }
