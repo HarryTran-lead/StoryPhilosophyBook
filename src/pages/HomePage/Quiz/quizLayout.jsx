@@ -1,7 +1,10 @@
+// src/pages/MarxistPhilosophyQuiz.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { AnimatePresence, motion } from "framer-motion";
+import TestSetupModal from "./TestModal";
 
-// Other section
+// Sections
 import QuizSidebar from "./Quiz_Sidebar";
 import StudyHeader from "./Study_Header";
 import Flashcard from "./Card/Flash_Card";
@@ -20,6 +23,20 @@ import {
 } from "@redux/features/quizSlice";
 
 const MarxistPhilosophyQuiz = () => {
+  // Test Modal
+  const [testOpen, setTestOpen] = React.useState(false);
+  const handleStartTest = (cfg) => {
+    // ví dụ: lưu cấu hình + chuyển sang chế độ tương ứng
+    localStorage.setItem(
+      "test_config",
+      JSON.stringify({ ...cfg, chapterIndex: activeChapter })
+    );
+    // Chuyển mode theo lựa chọn (mixed -> quiz trước)
+    const nextMode = cfg.mode === "fill" ? "fill" : "quiz";
+    dispatch(setStudyMode(nextMode));
+    dispatch(setCurrentPage(0));
+  };
+
   const dispatch = useDispatch();
   const { chapters, activeChapter, currentPage, questionStates, studyMode } =
     useSelector(selectQuiz);
@@ -27,7 +44,7 @@ const MarxistPhilosophyQuiz = () => {
   const currentChapter = chapters[activeChapter];
   const currentQuestion = currentChapter.questions[currentPage];
 
-  // (Giữ lại: nếu component con cần UI tổng quát)
+  // (Giữ nếu component con cần UI tổng quát)
   const ui = useSelector((state) =>
     selectQuestionUI(state, activeChapter, currentPage)
   );
@@ -41,7 +58,7 @@ const MarxistPhilosophyQuiz = () => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
-  // TÍNH PROGRESS CHO SIDEBAR = trung bình (quiz, fill, flashcard) mỗi chương
+  // Progress cho Sidebar = trung bình 3 mode
   const chapterAvgProgress = useSelector((state) =>
     state.quiz.chapters.map((_, ci) => {
       const quizP = selectModeAttemptPercent(state, ci, "quiz");
@@ -50,18 +67,15 @@ const MarxistPhilosophyQuiz = () => {
       return Math.round((quizP + fillP + cardP) / 3);
     })
   );
-
-  // Hàm cung cấp cho Sidebar
   const calculateProgress = (chapterIndex) =>
     chapterAvgProgress?.[chapterIndex] ?? 0;
 
-  // Sidebar vẫn cần setter page/chapter
+  // Sidebar state/helpers
   const [expandedChapters, setExpandedChapters] = React.useState({ 0: true });
   const toggleDarkMode = () => setDarkMode((v) => !v);
   const toggleChapterExpanded = (idx) =>
     setExpandedChapters((s) => ({ ...s, [idx]: !s[idx] }));
 
-  // Prev/Next (nếu còn dùng ở nơi khác)
   const restart = () => dispatch(resetChapter(activeChapter));
 
   const themeClasses = darkMode ? "dark bg-slate-800" : "bg-slate-100";
@@ -93,7 +107,7 @@ const MarxistPhilosophyQuiz = () => {
     return <div className="w-4 h-4 rounded-full border-2 border-slate-400" />;
   };
 
-  // (Tuỳ ý) tổng completed toàn app
+  // Tổng completed toàn app (optional)
   const getTotalProgress = () => {
     let totalCompleted = 0;
     let totalQ = 0;
@@ -107,51 +121,93 @@ const MarxistPhilosophyQuiz = () => {
     return { completed: totalCompleted, total: totalQ };
   };
 
-  // MOBILE drawer state
+  // ===== Mobile Drawer state =====
   const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
+
+  // Khóa body scroll khi mở + ESC để đóng
+  React.useEffect(() => {
+    document.body.style.overflow = mobileSidebarOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileSidebarOpen]);
+
+  React.useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setMobileSidebarOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
     <div
       className={`${themeClasses} transition-all duration-300 min-h-[100svh]`}
     >
-      {/* Drawer Sidebar — mở bằng nút trong StudyHeader (chỉ mobile) */}
-      {mobileSidebarOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setMobileSidebarOpen(false)}
-            aria-hidden
-          />
-          <div
-            className={`absolute left-0 top-0 h-full w-[86vw] max-w-[360px] shadow-xl overflow-y-auto ${
-              darkMode ? "bg-slate-900" : "bg-slate-50"
-            }`}
+      {/* ===== Drawer Sidebar (mobile) — smooth open/close with motion ===== */}
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.div
+            className="fixed inset-0 z-50 lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <QuizSidebar
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              chapters={chapters}
-              activeChapter={activeChapter}
-              setActiveChapter={(i) => {
-                setMobileSidebarOpen(false);
-                dispatch(setActiveChapter(i));
-                dispatch(setCurrentPage(0));
-              }}
-              setCurrentQuestionIndex={(i) => {
-                setMobileSidebarOpen(false);
-                dispatch(setCurrentPage(i));
-              }}
-              expandedChapters={expandedChapters}
-              toggleChapterExpanded={toggleChapterExpanded}
-              getTotalProgress={getTotalProgress}
-              calculateProgress={calculateProgress}
-              getStateIcon={getStateIcon}
-              sidebarClasses={sidebarClasses}
-              themeClasses={themeClasses}
+            {/* Overlay */}
+            <motion.button
+              type="button"
+              aria-label="Đóng menu"
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setMobileSidebarOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             />
-          </div>
-        </div>
-      )}
+
+            {/* Panel */}
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              className={`custom-scrollbar absolute left-0 top-0 h-full w-80.5 max-w-[360px] shadow-xl overflow-y-auto
+                ${darkMode ? "bg-slate-900" : "bg-slate-50"}`}
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "tween", ease: "easeOut", duration: 0.28 }}
+              drag="x"
+              dragDirectionLock
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.03}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -80) setMobileSidebarOpen(false);
+              }}
+            >
+              <QuizSidebar
+                darkMode={darkMode}
+                toggleDarkMode={toggleDarkMode}
+                chapters={chapters}
+                activeChapter={activeChapter}
+                setActiveChapter={(i) => {
+                  setMobileSidebarOpen(false);
+                  dispatch(setActiveChapter(i));
+                  dispatch(setCurrentPage(0));
+                }}
+                setCurrentQuestionIndex={(i) => {
+                  setMobileSidebarOpen(false);
+                  dispatch(setCurrentPage(i));
+                }}
+                expandedChapters={expandedChapters}
+                toggleChapterExpanded={toggleChapterExpanded}
+                getTotalProgress={getTotalProgress}
+                calculateProgress={calculateProgress}
+                getStateIcon={getStateIcon}
+                sidebarClasses={sidebarClasses}
+                themeClasses={themeClasses}
+                onClose={() => setMobileSidebarOpen(false)}
+                onOpenTestModal={() => setTestOpen(true)}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex flex-col lg:flex-row">
         {/* Sidebar desktop GIỮ NGUYÊN */}
@@ -170,6 +226,7 @@ const MarxistPhilosophyQuiz = () => {
             getStateIcon={getStateIcon}
             sidebarClasses={sidebarClasses}
             themeClasses={themeClasses}
+            onOpenTestModal={() => setTestOpen(true)}
           />
         </div>
 
@@ -191,7 +248,7 @@ const MarxistPhilosophyQuiz = () => {
             }}
             activeChapter={activeChapter}
             cardClasses={cardClasses}
-            onOpenSidebar={() => setMobileSidebarOpen(true)} // nút menu trong header
+            onOpenSidebar={() => setMobileSidebarOpen(true)} // nút menu trong header (mobile)
           />
 
           <div className="max-w-4xl mx-auto">
@@ -215,6 +272,13 @@ const MarxistPhilosophyQuiz = () => {
               <QuestionNavigation darkMode={darkMode} />
             </div>
           </div>
+          <TestSetupModal
+            open={testOpen}
+            onClose={() => setTestOpen(false)}
+            onStart={handleStartTest}
+            darkMode={darkMode}
+            totalQuestions={currentChapter?.questions?.length || 0}
+          />
         </main>
       </div>
     </div>

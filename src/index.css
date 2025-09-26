@@ -120,3 +120,18 @@
     }
 }
 
+@keyframes pulse-fade {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.animate-pulse {
+    animation: pulse-fade 2.5s ease-in-out infinite;
+}
