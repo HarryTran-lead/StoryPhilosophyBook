@@ -3,34 +3,44 @@ import React, { useMemo, useRef, useState, useEffect } from "react";
 import HTMLFlipBook from "react-pageflip";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Header from "@components/Header";
+import BookToolbox from "../StoryBook/BookToolbox"; // hoặc "../StoryBook/BookToolbox.jsx" tùy alias của bạn
 
-import { spreads as PHILO_SPREADS, spreadsToPages } from "./philosophySpreads.jsx"; // <-- dùng data tách riêng
+// Dùng file spreads đã tách (JSX), nếu bạn để nơi khác thì sửa lại path
+import { spreads as PHILO_SPREADS, spreadsToPages } from "./philosophySpreads.jsx";
 
-import "@styles/BookTheme.css";
-import "@styles/BookAnimations.css";
-import "@styles/PhilosophyStoryBook.css"; // import CUỐI
+import "@styles/BookTheme.css";         // style chung (không chạm layout)
+import "@styles/BookAnimations.css";    // hiệu ứng (không chạm layout)
+import "@styles/PhilosophyStoryBook.css"; // style SCOPED, đặt CUỐI
 
-const PhilosophyStoryBook = () => {
+export default function PhilosophyStoryBook() {
   const flipRef = useRef(null);
   const [pageSize, setPageSize] = useState({ w: 520, h: 700 });
 
   // Map spreads -> pages cho FlipBook
   const pages = useMemo(() => spreadsToPages(PHILO_SPREADS), []);
-  const [currentPage, setCurrentPage] = useState(0);
 
-  // spread hiện tại để hiển thị chỉ số
+  const [currentPage, setCurrentPage] = useState(0);
   const currentSpread = Math.min(PHILO_SPREADS.length - 1, Math.ceil(currentPage / 2));
   const canPrev = currentPage > 0;
   const canNext = currentPage < pages.length - 1;
 
-  // responsive size
+  const PAGE_RATIO = 0.74;   // width / height (520/700)
+const BOOK_ZOOM  = 0.90;   // ~ giống 90% zoom trình duyệt (chỉnh 0.88–0.92 tùy mắt)
+  // Nền toàn màn chỉ khi ở trang này
+  useEffect(() => {
+    document.body.classList.add("philo-bg");
+    return () => document.body.classList.remove("philo-bg");
+  }, []);
+
+  
+  // Responsive book size
   useEffect(() => {
     const calc = () => {
       const vw = Math.min(window.innerWidth, 1400);
       const vh = window.innerHeight;
       const targetBookH = Math.min(Math.round(vh * 0.8), 900);
       const pageWFromH = Math.round(targetBookH * 0.74);
-      const pageWFromW = Math.round(vw * 0.4);
+      const pageWFromW = Math.round(vw * 0.40);
       const w = Math.min(680, Math.max(360, Math.min(pageWFromH, pageWFromW)));
       const h = Math.round(w / 0.74);
       setPageSize({ w, h });
@@ -42,7 +52,7 @@ const PhilosophyStoryBook = () => {
 
   const onFlip = (e) => setCurrentPage(e.data);
 
-  // lật bằng bàn phím
+  // Lật bằng phím
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "ArrowRight") flipRef.current?.pageFlip().flipNext();
@@ -55,11 +65,14 @@ const PhilosophyStoryBook = () => {
   return (
     <div className="philo-book">
       <Header />
+<BookToolbox />
 
+      {/* Phần nội dung nằm dưới header cố định */}
       <main className="page-with-header">
-        {/* CHỈ MỘT .book-scene + bg-photo */}
-        <section className="book-scene bg-photo">
-          <div className="book-container book-dark">
+        {/* Chỉ 1 block scene, KHÔNG thêm bg-photo ở đây */}
+        <section className="book-scene">
+          
+          <div className="book-container book-dark theme-amber">
             {/* gáy sách (trang trí) */}
             <div className="book-spine">
               <div className="spine-text">TRIẾT LÝ CUỘC SỐNG</div>
@@ -113,6 +126,4 @@ const PhilosophyStoryBook = () => {
       </main>
     </div>
   );
-};
-
-export default PhilosophyStoryBook;
+}

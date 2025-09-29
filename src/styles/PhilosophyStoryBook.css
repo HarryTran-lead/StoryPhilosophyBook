@@ -2,6 +2,10 @@
 
 /* Scene & Wrapper */
 /* SCOPED: chỉ áp cho trang sách */
+.philo-book .page-with-header{
+  min-height: 100dvh;          /* đủ cao bằng viewport */
+  padding-top: var(--header-h);/* đẩy nội dung xuống dưới header cố định */
+}
 .philo-book .book-scene {
   min-height: 100svh;
   display: grid;
@@ -84,7 +88,7 @@
   border-radius:10px;
   background: linear-gradient(145deg, #ffffff 0%, #f5f7fb 100%);
   color:#0f172a;
-  overflow:auto;
+  overflow:hidden;
   scrollbar-width: thin;
   scrollbar-color: #475569 transparent;
 }
@@ -290,4 +294,360 @@ body.philo-bg::after{
 .philo-book .book-scene{
   min-height: 100dvh;
   background: transparent !important;
+}
+/* ===== LAYOUT FIX: tránh header đè & luôn full màn ===== */
+:root { --header-h: 72px; } /* cao header desktop */
+@media (max-width: 640px){ :root { --header-h: 60px; } }
+
+.philo-book .page-with-header{
+  min-height: 100dvh;
+  padding-top: var(--header-h); /* đẩy nội dung xuống dưới header fixed */
+}
+
+.philo-book .book-scene{
+  min-height: calc(100dvh - var(--header-h));
+  display: grid;
+  place-items: center;
+  background: transparent;   /* để lộ nền body hoặc lớp bg-photo */
+  position: relative;
+  z-index: 0;
+}
+
+/* Z-index để nút lật luôn click được, không bị header che */
+.philo-book header{ z-index: 40; position: fixed; top:0; left:0; right:0; }
+.philo-book .html-flip-book{ z-index: 10; }
+.philo-book .navigation{ z-index: 60; } /* nút lật luôn click được */
+/* ===================== SCOPED LAYOUT — KHÔNG ĐÈ TRANG KHÁC ===================== */
+
+/* Chiều cao header chỉ cho trang này */
+.philo-book { --philo-header-h: 72px; }
+@media (max-width: 640px){ .philo-book { --philo-header-h: 60px; } }
+
+/* Đẩy nội dung xuống dưới header cố định */
+.philo-book .page-with-header{
+  min-height: 100dvh;
+  padding-top: var(--philo-header-h);
+}
+
+/* Khu vực flipbook: full chiều cao còn lại, không nền để lộ background body */
+.philo-book .book-scene{
+  min-height: calc(100dvh - var(--philo-header-h));
+  display: grid;
+  place-items: center;
+  background: transparent;
+  position: relative;
+  z-index: 0;
+}
+
+/* Header luôn nổi, nút lật luôn click được */
+.philo-book header{ position: fixed; top:0; left:0; right:0; z-index: 100; }
+.philo-book .html-flip-book{ z-index: 10; }
+.philo-book .navigation{ z-index: 60; pointer-events: none; }
+.philo-book .navigation .nav-button{ pointer-events: auto; }
+
+/* ========== NỀN TOÀN MÀN HÌNH CHỈ KHI Ở TRANG SÁCH ========== */
+html, body, #root { height: 100%; }
+
+body.philo-bg { position: relative; }
+
+/* Lớp ảnh */
+body.philo-bg::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: url("https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1920&auto=format&fit=crop&q=80");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Nếu iOS giật khi scroll, bỏ dòng dưới */
+  background-attachment: fixed;
+}
+
+/* Lớp overlay (tối + gradient) */
+body.philo-bg::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 70% at 30% 40%, rgba(124,58,237,.08) 0%, transparent 60%),
+    radial-gradient(40% 50% at 70% 60%, rgba(245,158,11,.06) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(11,12,16,.85) 0%, rgba(12,17,22,.9) 100%);
+}
+
+/* ========== CONTAINER & FLIPBOOK ========== */
+.philo-book .book-container{
+  position: relative;
+  width: clamp(320px, 92vw, 1100px);
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 24px 70px rgba(0,0,0,.6));
+}
+
+.philo-book .book-spine{
+  position:absolute;
+  left:50%;
+  top:-18px;
+  transform:translateX(-50%);
+  font-size:12px;
+  letter-spacing:4px;
+  opacity:.6;
+}
+
+/* Simple PageFlip fixes */
+.philo-book .stf__parent{ overflow: visible !important; }
+
+.philo-book .html-flip-book{
+  border-radius:12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.05) inset;
+  background: transparent;
+}
+
+/* ====== Nút điều hướng ====== */
+.philo-book .nav-prev { left: -8px; position:absolute; top:50%; transform:translateY(-50%); }
+.philo-book .nav-next { right: -8px; position:absolute; top:50%; transform:translateY(-50%); }
+
+@media (max-width: 768px) {
+  .philo-book .nav-prev { left: 8px; }
+  .philo-book .nav-next { right: 8px; }
+}
+
+.philo-book .nav-button{
+  display:grid; place-items:center;
+  width: clamp(40px, 6vw, 52px);
+  height: clamp(40px, 6vw, 52px);
+  border-radius: 999px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.08);
+  backdrop-filter: blur(8px);
+  color:#e6edf3;
+  transition: transform .18s ease, background .18s ease, opacity .18s ease;
+}
+.philo-book .nav-button:hover{ transform: translateY(-2px); background: rgba(255,255,255,.14); }
+.philo-book .nav-button:disabled{ opacity:.35; }
+
+.philo-book .page-indicator{
+  position:absolute;
+  bottom:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size: 12px;
+  letter-spacing:1px;
+  opacity:.75;
+}
+
+/* ========== (Giữ style page/cover nếu bạn cần — hoặc lấy từ BookTheme.css) ========== */
+.philo-book .page{ background: transparent; }
+.philo-book .page-content{
+  position: relative;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  padding: clamp(14px, 3.5vw, 24px);
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:12px;
+  border-radius:10px;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f7fb 100%);
+  color:#0f172a;
+  overflow:auto;
+  scrollbar-width: thin;
+  scrollbar-color: #475569 transparent;
+}
+.philo-book .page-content::-webkit-scrollbar{ width:6px; }
+.philo-book .page-content::-webkit-scrollbar-thumb{ background:#475569; border-radius:3px; }
+.philo-book .page-left, 
+.philo-book .page-right{ background: linear-gradient(145deg, #fff 0%, #f6f8ff 100%); }
+
+.philo-book .cover-front, 
+.philo-book .cover-back{
+  background:
+    radial-gradient(600px 240px at 50% -20%, rgba(255,255,255,.18), transparent 60%),
+    linear-gradient(135deg, #2d3a8c, #5b21b6 45%, #9333ea);
+  color:#fff;
+}
+/* Không cho trang cuộn, cắt phần dư nếu quá dài */
+.philo-book .page-content{
+  overflow: hidden !important;
+}
+
+/* (tuỳ chọn) nếu muốn ẩn luôn thanh cuộn ở các trình duyệt lạ */
+.philo-book .page-content { scrollbar-width: none; }
+.philo-book .page-content::-webkit-scrollbar { display: none; }
+/* ===== WEB THEME (Amber) – dùng chung cho cover & điểm nhấn ===== */
+.theme-amber{
+  --web-amber-300:#fcd34d;
+  --web-amber-400:#fbbf24;
+  --web-amber-500:#f59e0b;  /* màu chủ đạo */
+  --web-amber-600:#d97706;
+  --web-ink:#f8fafc;
+  --web-bg-1:#0a0d12;       /* nền tối sát màu web */
+  --web-bg-2:#10151d;
+}
+
+/* Bìa trước: nền tối + phát sáng vàng */
+.theme-amber .cover-front{
+  color: var(--web-ink);
+  border: 2px solid var(--web-amber-600);
+  background:
+    radial-gradient(70% 60% at 22% 22%, rgba(245,158,11,.12) 0%, transparent 60%),
+    radial-gradient(70% 60% at 78% 78%, rgba(245,158,11,.10) 0%, transparent 60%),
+    linear-gradient(135deg, var(--web-bg-1) 0%, var(--web-bg-2) 60%, var(--web-bg-1) 100%);
+}
+
+/* Bìa sau: cùng tông */
+.theme-amber .cover-back{
+  color: var(--web-ink);
+  border: 2px solid var(--web-amber-600);
+  background:
+    radial-gradient(60% 60% at 30% 30%, rgba(245,158,11,.10) 0%, transparent 60%),
+    radial-gradient(60% 60% at 70% 70%, rgba(245,158,11,.08) 0%, transparent 60%),
+    linear-gradient(135deg, var(--web-bg-1) 0%, var(--web-bg-2) 60%, var(--web-bg-1) 100%);
+}
+
+/* Tiêu đề bìa (TRẮNG lớn, nhấn vàng giống web) */
+.theme-amber .title-line-1,
+.theme-amber .title-line-2{
+  color:#fff;
+  text-shadow: 0 10px 28px rgba(0,0,0,.5), 0 0 60px rgba(245,158,11,.35);
+}
+.theme-amber .title-line-2{ color:#fff; }
+.theme-amber .subtitle{ color:#fde68a; }
+
+.theme-amber .cover-ornament{
+  background:linear-gradient(to right, transparent, rgba(255,255,255,.85) 20%, rgba(255,255,255,.85) 80%, transparent);
+}
+.theme-amber .quote-marks{ color: var(--web-amber-300); }
+.theme-amber .cover-quote{ border-color: rgba(245,158,11,.22); }
+
+/* Gáy sách & nút lật ăn theo màu web */
+.theme-amber .book-spine{ color: #e5e7eb; }
+.theme-amber .spine-text{
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  color:#fde68a;
+  text-shadow: 0 0 10px rgba(245,158,11,.35);
+}
+.theme-amber .nav-button{
+  border-color: rgba(255,255,255,.12);
+  background: rgba(255,255,255,.08);
+}
+.theme-amber .nav-button:hover{
+  background: rgba(255,255,255,.14);
+  box-shadow: 0 0 18px rgba(245,158,11,.35);
+}
+
+/* Viền & bóng trang hơi ngả amber cho đồng bộ */
+.theme-amber .page-content{
+  border: 1px solid rgba(255,255,255,.06);
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.35) inset,
+    0 6px 24px rgba(2,6,23,.22),
+    0 0 0 1px rgba(245,158,11,.10);
+}
+
+/* Các điểm nhấn trong trang đổi tông amber nhẹ */
+.theme-amber .page-body h3{ color:#fdba74; text-shadow:0 0 8px rgba(253,186,116,.35); }
+.theme-amber .page-body h4{ color:#fb923c; text-shadow:0 0 6px rgba(251,146,60,.35); }
+.theme-amber .philosophy-quote{ border-left-color: var(--web-amber-500); }
+.theme-amber .wisdom-number{ background: var(--web-amber-600); }
+.philo-book .book-container{
+  position: relative;
+  padding-bottom: 36px;           /* <— quan trọng */
+}
+/* ===== BookToolbox: vertical, docked left-outside ===== */
+.philo-book .booktools{
+  position: absolute;
+  top: 50%;
+  left: 0;                 /* bám mép trái của .book-container */
+  right: auto;
+  /* đẩy toàn bộ toolbar ra ngoài bên trái cuốn sách + chừa 12px khoảng cách */
+  transform: translate(-100%, -50%) translateX(-12px);
+  z-index: 90;
+
+  display: flex;
+  flex-direction: column;  /* xếp dọc */
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+
+  background: rgba(18,20,26,.55);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(8px);
+  color: #e6edf3;
+}
+
+/* mỗi nhóm nút xếp dọc */
+.philo-book .booktools-group{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* separator đổi sang kẻ ngang (vì layout dọc) */
+.philo-book .booktools-sep{
+  width: 22px;
+  height: 1px;
+  background: rgba(255,255,255,.22);
+}
+
+/* palette màu xếp dọc */
+.philo-book .booktools-colors{
+  display: grid;
+  grid-auto-rows: 18px;
+  grid-template-columns: 18px;
+  gap: 6px;
+  margin: 2px 0 6px;
+}
+
+/* số % zoom hiển thị gọn ở layout dọc */
+.philo-book .booktools-zoom{
+  min-width: 0;
+  font-size: 12px;
+  opacity: .9;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+/* nút giữ nguyên kích thước */
+.philo-book .booktools-btn{
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: inherit;
+  display: grid; place-items: center;
+  transition: background .15s ease, transform .15s ease;
+}
+.philo-book .booktools-btn:hover{
+  background: rgba(255,255,255,.14);
+  transform: translateY(-1px);
+}
+.philo-book .booktools-btn.danger{ border-color: rgba(239,68,68,.4); }
+.philo-book .booktools-btn.danger:hover{ background: rgba(239,68,68,.18); }
+
+/* Lớp overlay highlight giữ nguyên */
+.philo-book .philo-highlight-layer{
+  position: absolute; inset: 0; z-index: 70; pointer-events: none;
+}
+.philo-book .philo-hl{
+  position: absolute; border-radius: 3px; pointer-events: auto;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.08) inset, 0 2px 8px rgba(0,0,0,.18);
+  cursor: pointer;
+}
+.philo-book .philo-hl:hover{ outline: 1px dashed rgba(255,255,255,.3); }
+
+/* ===== Mobile: vẫn dọc nhưng nằm trong màn hình bên trái ===== */
+@media (max-width: 768px){
+  .philo-book .booktools{
+    position: fixed;           /* bám màn hình để không bị khuất */
+    left: 10px;
+    top: 50%;
+    transform: translate(0, -50%);  /* không đẩy ra ngoài ở mobile */
+    gap: 8px;
+  }
 }

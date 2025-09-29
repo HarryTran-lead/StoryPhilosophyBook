@@ -247,3 +247,131 @@
   border-color: rgba(255,255,255,.08);
   color:#e6edf3;
 }
+/* ===== THEME: Amber like the screenshot ===== */
+.theme-amber{
+  --accent-50:#fff7ed;
+  --accent-200:#fed7aa;
+  --accent-300:#fdba74;
+  --accent-400:#fb923c;   /* dùng cho nhấn nhẹ */
+  --accent-500:#f59e0b;   /* vàng hổ phách chính */
+  --accent-600:#d97706;
+  --accent-700:#b45309;
+
+  --surface-900:#0b0c10;  /* nền tối */
+  --surface-800:#0f1319;
+}
+
+/* Trang bên trong: đổi tông heading/nhấn sang amber */
+.theme-amber .page-body h3{ color: var(--accent-300); text-shadow: 0 0 8px rgba(253,186,116,.35); }
+.theme-amber .page-body h4{ color: var(--accent-400); text-shadow: 0 0 6px rgba(251,146,60,.35); }
+.theme-amber .wisdom-number{ background: var(--accent-600); }
+.theme-amber .philosophy-quote{ border-left-color: var(--accent-500); }
+
+/* ===== Cover (Front) – classic amber style ===== */
+.theme-amber .cover-front.cover--amber{
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--accent-600);
+  color:#f8fafc;
+  background:
+    radial-gradient(70% 60% at 20% 20%, rgba(245,158,11,.12) 0%, transparent 60%),
+    radial-gradient(70% 60% at 80% 80%, rgba(245,158,11,.10) 0%, transparent 60%),
+    linear-gradient(135deg, #0a0d12 0%, #10151d 60%, #0a0d12 100%);
+}
+
+/* lớp hero ở giữa bìa */
+.theme-amber .cover-hero{
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: clamp(8px, 1.5vh, 16px);
+  padding: clamp(16px, 3vh, 28px);
+}
+
+/* “CHƯƠNG 1” */
+.theme-amber .chapter-pill{
+  display:inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  letter-spacing: .2em;
+  font-weight: 800;
+  font-size: clamp(10px, 1.6vw, 12px);
+  color: #fef3c7;
+  background: linear-gradient(180deg, var(--accent-500), var(--accent-600));
+  box-shadow: 0 6px 18px rgba(217,119,6,.35);
+}
+
+/* Heading trắng lớn */
+.theme-amber .cover-heading{
+  margin: 0;
+  font-weight: 900;
+  line-height: .98;
+  letter-spacing: .4px;
+  font-size: clamp(24px, 5.8vw, 40px);
+  color:#ffffff;
+  text-shadow: 0 10px 30px rgba(0,0,0,.55);
+}
+
+/* Sub-title vàng */
+.theme-amber .cover-subtitle{
+  margin-top: 4px;
+  font-size: clamp(12px, 2.2vw, 16px);
+  color: #fde68a;
+  font-weight: 700;
+}
+
+/* Divider  — line • line */
+.theme-amber .cover-divider{
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  align-items: center;
+  margin: 2px auto 0;
+}
+.theme-amber .cover-divider span{
+  width: clamp(44px, 6vw, 60px);
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent-500), transparent);
+  display: block;
+  border-radius: 2px;
+  filter: drop-shadow(0 0 6px rgba(245,158,11,.5));
+}
+.theme-amber .cover-divider i{
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-500);
+  box-shadow: 0 0 10px rgba(245,158,11,.8);
+}
+
+/* tagline mô tả */
+.theme-amber .cover-tagline{
+  max-width: 88%;
+  margin-inline: auto;
+  color: #e5e7eb;
+  opacity: .9;
+  line-height: 1.7;
+  font-size: clamp(11px, 1.9vw, 14px);
+}
+
+/* trích dẫn */
+.theme-amber .cover-quote-hero{
+  margin: 2px auto 0;
+  padding: 12px 14px;
+  max-width: 80%;
+  color:#fff7ed;
+  font-size: clamp(11px, 1.8vw, 14px);
+  border: 1px solid rgba(245,158,11,.22);
+  border-radius: 10px;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+}
+.theme-amber .cover-quote-hero span{ color: var(--accent-300); font-weight: 700; }
+
+/* Back cover giữ cùng palette (tùy bạn đã có) */
+.theme-amber .cover-back{
+  border: 2px solid var(--accent-600);
+  background:
+    radial-gradient(60% 60% at 30% 30%, rgba(245,158,11,.10) 0%, transparent 60%),
+    radial-gradient(60% 60% at 70% 70%, rgba(245,158,11,.08) 0%, transparent 60%),
+    linear-gradient(135deg, #0a0d12 0%, #10151d 60%, #0a0d12 100%);
+}
