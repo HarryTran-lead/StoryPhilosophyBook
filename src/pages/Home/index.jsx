@@ -1,67 +1,64 @@
 import { useEffect, useRef, useState } from "react";
 import sections from "./data";
-// import { motion, AnimatePresence } from "framer-motion";
-// import MarxismIntro from "./MarxismIntro";
 import { Link } from "react-router-dom";
+
 export default function MarxismPhilosophyPage() {
-  const steps = 5;
-  const [step, setStep] = useState(-1); // Bắt đầu từ intro = 0
+  const steps = sections.length; // đếm động theo data
+  const [step, setStep] = useState(-1); // bắt đầu = intro
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const scrollTargetRef = useRef(0); // intro
-  const scrollPosRef = useRef(0);
+  const [showGuide, setShowGuide] = useState(false); // chip gợi ý ngắn khi sang trang
+  const scrollTargetRef = useRef(0); // index mục tiêu
+  const scrollPosRef = useRef(0);    // vị trí "mềm"
   const lastScrollTime = useRef(0);
 
-  // animation loop
+  const nextIndex = step >= 0 ? (step + 1) % steps : 0;
+  const prevIndex = step >= 0 ? (step - 1 + steps) % steps : 0;
+
+  /* ---------------- RAF: chỉ khởi tạo 1 lần ---------------- */
   useEffect(() => {
+    let rafId;
     const animate = () => {
       const diff = scrollTargetRef.current - scrollPosRef.current;
       scrollPosRef.current += diff * 0.06;
       const newStep = Math.round(scrollPosRef.current);
       if (newStep !== step) setStep(newStep);
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, []); // ⬅️ không phụ thuộc step để tránh nhân đôi loop
+
+  /* -------- khi sang trang mới: bật chip gợi ý ngắn -------- */
+  useEffect(() => {
+    if (step < 0) return;
+    setShowGuide(true);
+    const t = setTimeout(() => setShowGuide(false), 1600);
+    return () => clearTimeout(t);
   }, [step]);
 
-  // useEffect(() => {
-  //   const animate = () => {
-  //     const diff = scrollTargetRef.current - scrollPosRef.current;
-  //     scrollPosRef.current += diff * 0.06;
-  //     const newStep = Math.round(scrollPosRef.current);
-  //     if (newStep !== step) setStep(newStep);
-  //     requestAnimationFrame(animate);
-  //   };
-  //   requestAnimationFrame(animate);
-  // }, []); // <-- chỉ chạy 1 lần
-
-  // tiện ích chuyển step
+  /* --------------------- tiện ích đổi step ------------------ */
   const goToStep = (newTarget) => {
-    if (isTransitioning) return;
-
-    if (newTarget >= steps) newTarget = 0; // đi tới cuối → về đầu
-    if (newTarget < 0) newTarget = steps - 1; // đi ngược từ đầu → nhảy tới cuối
-
+    if (isTransitioning || steps <= 0) return;
+    if (newTarget >= steps) newTarget = 0;           // loop
+    if (newTarget < 0) newTarget = steps - 1;        // loop ngược
     scrollTargetRef.current = newTarget;
     setIsTransitioning(true);
     setTimeout(() => setIsTransitioning(false), 2000); // lock 2s
   };
 
-  // --- scroll + keyboard + click ---
+  /* ---------------- scroll + keyboard + click --------------- */
   useEffect(() => {
     const handleWheel = (e) => {
       if (step === -1 || isTransitioning) return;
       e.preventDefault();
-
       const now = Date.now();
       if (now - lastScrollTime.current < 300) return;
       lastScrollTime.current = now;
-
       goToStep(scrollTargetRef.current + (e.deltaY > 0 ? 1 : -1));
     };
 
     const handleKey = (e) => {
       if (step === -1 || isTransitioning) return;
-
       if (["ArrowDown", "PageDown", " "].includes(e.key)) {
         e.preventDefault();
         goToStep(scrollTargetRef.current + 1);
@@ -74,10 +71,9 @@ export default function MarxismPhilosophyPage() {
 
     const handleClick = (e) => {
       if (step === -1 || isTransitioning) return;
-      // Nếu click nằm trong header thì bỏ qua
-      if (e.target.closest("header")) {
-        return;
-      }
+      // nếu click trong header hoặc overlay điều hướng thì bỏ qua
+      if (e.target.closest("header")) return;
+      // các overlay tự chặn bằng stopPropagation (đặt ở component)
       if (scrollTargetRef.current === steps - 1) {
         goToStep(0);
       } else {
@@ -88,24 +84,32 @@ export default function MarxismPhilosophyPage() {
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKey);
     window.addEventListener("click", handleClick);
-
     return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKey);
       window.removeEventListener("click", handleClick);
     };
-  }, [step, isTransitioning]);
+  }, [step, isTransitioning, steps]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Intro Overlay */}
-      {/* <AnimatePresence mode="wait">
-        {step === -1 && (
-          <MarxismIntro key="intro" onFinish={() => goToStep(0)} />
-        )}
-      </AnimatePresence> */}
+      {/* ------------------------- Top hint ------------------------- */}
+      <div
+        className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none
+        transition-all duration-600 ${step >= 0 ? "opacity-100" : "opacity-0"}`}
+      >
+        <div
+          className={`px-3 py-1 rounded border border-white/10 bg-black/40 text-white/85
+          text-[12px] tracking-wide backdrop-blur
+          transition-all duration-600 ${showGuide ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}
+        >
+          {step >= 0
+            ? (sections[step]?.hint ?? "Space/PageDown để tiếp • PageUp để lùi")
+            : ""}
+        </div>
+      </div>
 
-      {/* Background Layers */}
+      {/* -------------------- Background Layers --------------------- */}
       <div className="absolute inset-0">
         {sections.map((section, i) => (
           <div
@@ -122,11 +126,9 @@ export default function MarxismPhilosophyPage() {
                 backgroundImage: `url(${section.backgroundImage})`,
                 filter: "brightness(0.65) contrast(1.15) saturate(1.15)",
               }}
-            ></div>
-
+            />
             {/* Gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60"></div>
-
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/60" />
             {/* Scholarly Pattern Overlay */}
             <div className="absolute inset-0 opacity-10">
               <div
@@ -135,7 +137,7 @@ export default function MarxismPhilosophyPage() {
                   backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm0-20c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm20 0c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm0 20c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2z'/%3E%3C/g%3E%3C/svg%3E")`,
                   backgroundSize: "40px 40px",
                 }}
-              ></div>
+              />
             </div>
 
             {/* Animated Academic Elements */}
@@ -144,20 +146,17 @@ export default function MarxismPhilosophyPage() {
                 i === step ? "opacity-100" : "opacity-0"
               }`}
             >
-              {/* Floating shapes */}
-              <div className="absolute top-20 left-20 w-2 h-2 bg-yellow-400/30 rounded-full animate-pulse"></div>
-              <div className="absolute bottom-32 right-32 w-3 h-3 bg-red-400/30 rounded-full animate-pulse"></div>
-              <div className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse"></div>
-
-              {/* Light rays */}
-              <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-white/20 to-transparent transform -rotate-12 opacity-30"></div>
-              <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-white/15 to-transparent transform rotate-12 opacity-30"></div>
+              <div className="absolute top-20 left-20 w-2 h-2 bg-yellow-400/30 rounded-full animate-pulse" />
+              <div className="absolute bottom-32 right-32 w-3 h-3 bg-red-400/30 rounded-full animate-pulse" />
+              <div className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse" />
+              <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-white/20 to-transparent -rotate-12 opacity-30" />
+              <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-white/15 to-transparent rotate-12 opacity-30" />
             </div>
           </div>
         ))}
       </div>
 
-      {/* Content Sections */}
+      {/* --------------------- Content Sections --------------------- */}
       <div className="relative z-10 h-full">
         {sections.map((section, i) => (
           <div
@@ -175,9 +174,7 @@ export default function MarxismPhilosophyPage() {
               {/* Academic Header */}
               <div
                 className={`mb-6 transition-all duration-1200 delay-100 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
               >
                 <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-6"></div>
@@ -189,9 +186,7 @@ export default function MarxismPhilosophyPage() {
               {/* Main Title */}
               <h1
                 className={`text-4xl md:text-6xl font-bold text-white mb-6 transition-all duration-1200 delay-300 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
                 style={{
                   textShadow: "3px 3px 12px rgba(0,0,0,0.8)",
@@ -206,9 +201,7 @@ export default function MarxismPhilosophyPage() {
               {/* Subtitle */}
               <h2
                 className={`text-xl md:text-2xl text-amber-300 mb-7 font-light transition-all duration-1200 delay-500 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
                 style={{
                   textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
@@ -222,9 +215,7 @@ export default function MarxismPhilosophyPage() {
               {/* Decorative divider */}
               <div
                 className={`flex items-center justify-center mb-7 transition-all duration-1200 delay-700 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
               >
                 <div className="w-8 h-px bg-amber-400"></div>
@@ -235,9 +226,7 @@ export default function MarxismPhilosophyPage() {
               {/* Description */}
               <p
                 className={`text-lg md:text-xl text-gray-100 leading-relaxed max-w-4xl mx-auto mb-7 transition-all duration-1200 delay-900 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
                 style={{
                   textShadow: "1px 1px 6px rgba(0,0,0,0.8)",
@@ -252,9 +241,7 @@ export default function MarxismPhilosophyPage() {
               {/* Famous Quote */}
               <div
                 className={`max-w-3xl mx-auto mb-7 transition-all duration-1200 delay-1100 ${
-                  i === step
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-12 opacity-0"
+                  i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                 }`}
               >
                 <blockquote className="relative">
@@ -282,24 +269,21 @@ export default function MarxismPhilosophyPage() {
               {i === steps - 1 && (
                 <div
                   className={`mt-12 md:mt-16 transition-all duration-1200 delay-1300 flex justify-center ${
-                    i === step
-                      ? "translate-y-0 opacity-100"
-                      : "translate-y-12 opacity-0"
+                    i === step ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
                   }`}
                 >
                   <Link to="/storybook">
                     <button
                       className="
-      group relative
-      bg-gradient-to-r from-amber-600 to-amber-500 
-      border-2 border-amber-400 text-white 
-      px-4 py-2 md:py-2
-      rounded-full 
-      text-sm sm:text-base md:text-lg font-semibold
-      shadow-2xl overflow-hidden
-      transition-all duration-500
-      hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90
-    "
+                        group relative
+                        bg-gradient-to-r from-amber-600 to-amber-500 
+                        border-2 border-amber-400 text-white 
+                        px-4 py-2 md:py-2
+                        rounded-full 
+                        text-sm sm:text-base md:text-lg font-semibold
+                        shadow-2xl overflow-hidden
+                        transition-all duration-500
+                        hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90"
                       style={{
                         fontFamily:
                           '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -314,7 +298,6 @@ export default function MarxismPhilosophyPage() {
 
                       {/* Ánh sáng chạy ngang */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-full pointer-events-none"></div>
-
                       {/* Glow phía trên */}
                       <div className="absolute inset-0 rounded-full bg-white/20 blur-xl opacity-0 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none"></div>
                     </button>
@@ -326,9 +309,90 @@ export default function MarxismPhilosophyPage() {
         ))}
       </div>
 
-      {/* Academic Navigation hint */}
+      {/* ---------------- Chip “Tiếp theo …” (đáy giữa) ------------- */}
       <div
-        className={`fixed bottom-16 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-30 transition-all duration-1000 ${
+        onClick={(e) => e.stopPropagation()} // chặn lan ra click global
+        className={`fixed bottom-16 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-700
+        ${step >= 0 ? "opacity-100" : "opacity-0"}`}
+      >
+        <div
+          className={`flex items-center gap-3 px-4 py-2 rounded-full
+          border border-white/12 bg-black/55 backdrop-blur
+          shadow-[0_8px_24px_rgba(0,0,0,.35)]
+          transition-all duration-700
+          ${showGuide ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"}`}
+        >
+          <span className="text-xs text-amber-200">
+            Chương {Math.max(1, step + 1)}/{steps}
+          </span>
+          <span className="text-white/40">•</span>
+          <span className="text-sm text-white/90 line-clamp-1 max-w-[52vw] md:max-w-none">
+            Tiếp theo: {sections[nextIndex]?.title}
+          </span>
+
+          <button
+            onClick={() => goToStep(nextIndex)}
+            className="px-3 py-1 rounded-full border border-amber-400/50
+                       text-amber-100 hover:bg-amber-400/10 transition"
+          >
+            Tiếp
+          </button>
+        </div>
+      </div>
+
+      {/* ------------------- Progress bar (seek) -------------------- */}
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          if (step < 0 || steps <= 1) return;
+          const rect = e.currentTarget.getBoundingClientRect();
+          const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+          const target = Math.round((steps - 1) * ratio);
+          goToStep(target);
+        }}
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-40 w-[66vw] max-w-xl h-[4px]
+        rounded-full bg-white/12 overflow-hidden transition-opacity duration-700
+        ${step >= 0 ? "opacity-100" : "opacity-0"}`}
+      >
+        <div
+          className="h-full bg-amber-400 transition-all duration-700"
+          style={{ width: step >= 0 ? `${((step + 1) / steps) * 100}%` : "0%" }}
+        />
+      </div>
+
+      {/* -------------------- Dot nav (bên phải) -------------------- */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="fixed right-5 top-1/2 -translate-y-1/2 z-40"
+      >
+        <ul className="flex flex-col gap-3">
+          {sections.map((s, idx) => (
+            <li key={idx} className="relative group">
+              <button
+                onClick={() => goToStep(idx)}
+                aria-label={`Đi tới chương ${idx + 1}`}
+                className={`w-3 h-3 rounded-full border transition-all
+                  ${idx === step
+                    ? "scale-125 bg-amber-400 border-amber-300 shadow-[0_0_0_4px_rgba(251,191,36,.2)]"
+                    : "bg-white/30 border-white/40 hover:bg-white/60"}`}
+              />
+              {/* tooltip tiêu đề */}
+              <span
+                className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2
+                           opacity-0 group-hover:opacity-100 transition
+                           text-xs text-white/85 bg-black/60 border border-white/10
+                           rounded px-2 py-1 whitespace-nowrap backdrop-blur"
+              >
+                {s.title}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* --------------- Academic Navigation hint ------------------- */}
+      <div
+        className={`fixed bottom-16 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-all duration-1000 ${
           step === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
@@ -338,7 +402,7 @@ export default function MarxismPhilosophyPage() {
         </div>
       </div>
 
-      {/* Academic footer watermark */}
+      {/* ---------------- Academic footer watermark ----------------- */}
       <div className="fixed bottom-3 left-3 z-30 opacity-60">
         <div
           className="text-white/60 text-xs"
@@ -351,10 +415,10 @@ export default function MarxismPhilosophyPage() {
         </div>
       </div>
 
-      {/* Sophisticated depth overlay */}
+      {/* ------------------ Sophisticated depth overlay ------------- */}
       <div className="fixed inset-0 pointer-events-none z-5">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40"></div>
-        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/20" />
       </div>
     </div>
   );

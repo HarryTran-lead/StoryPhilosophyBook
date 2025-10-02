@@ -437,7 +437,7 @@ export default function Header() {
       group-hover:text-amber-100 transition-all duration-300 hover:scale-105
       hover:drop-shadow-[0_0_2px_rgba(255,191,0,0.7)]"
               >
-                BookStory
+                PhiloBookStory
               </h2>
             </a>
           </div>
