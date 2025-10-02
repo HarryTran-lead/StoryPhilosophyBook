@@ -1,221 +1,513 @@
-// src/StoryBook/BookToolbox.jsx
-import React, { useEffect, useRef, useState } from "react";
-import { ZoomIn, ZoomOut, RefreshCcw, Maximize2, Minimize2, GripVertical } from "lucide-react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import {
+  ZoomIn,
+  ZoomOut,
+  RefreshCcw,
+  Maximize2,
+  Minimize2,
+  GripVertical,
+} from "lucide-react";
 import { createPortal } from "react-dom";
+import Tooltip from "@mui/material/Tooltip";
 
-const ZMIN = 0.8, ZMAX = 1.6, ZSTEP = 0.1;
+/** Zoom tổng (Unified) hiển thị cho người dùng */
+const ZMIN = 0.8,
+  ZMAX = 1.6,
+  ZSTEP = 0.1;
+const SCROLL_THRESHOLD = 1.1; // kéo dọc nếu zoom tổng > 110% HOẶC thực sự vượt viewport
+
+/** Nút & khoảng cách cơ sở (scale theo "zoom tổng") */
+const BTN_BASE = 48;
+const GAP_BASE = 24;
+const IND_GAP_BASE = 12;
+
 const clamp = (n, a, b) => Math.min(Math.max(n, a), b);
 const pct = (n) => Math.round(n * 100);
 
 export default function BookToolbox() {
-  const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState(null);   // .philo-book .book-container
-  const [bookEl, setBookEl] = useState(null);         // .philo-book .html-flip-book
-  const [zoom, setZoom] = useState(1);
-  const [isFS, setIsFS] = useState(Boolean(document.fullscreenElement));
-  const [dock, setDock] = useState(() => localStorage.getItem("book:dock") || "left");
-  const toolRef = useRef(null);
+  /** zoomModel = "zoom TỔNG" (đồng bộ với desktop). Mặc định 100% */
+  const [zoomModel, setZoomModel] = useState(1);
 
-  // mount
-  useEffect(() => {
-    const root = document.querySelector(".philo-book .book-container");
-    const book = document.querySelector(".philo-book .html-flip-book");
-    if (!root || !book) return;
-    setContainer(root);
-    setBookEl(book);
-    setMounted(true);
-  }, []);
+  /** browserRel = mức zoom của trình duyệt so với baseline lúc load */
+  const [browserRel, setBrowserRel] = useState(1);
 
-  // flag dock (nếu cần style)
-  useEffect(() => {
-    if (!container) return;
-    container.classList.toggle("tool-left", dock === "left");
-    container.classList.toggle("tool-right", dock === "right");
-  }, [container, dock]);
+  // Portal để toolbox không biến mất khi fullscreen
+  const [portalTarget, setPortalTarget] = useState(
+    () => document.fullscreenElement || document.body
+  );
 
-  // zoom
-  useEffect(() => {
-    if (!bookEl) return;
-    bookEl.style.transform = `scale(${zoom})`;
-    bookEl.style.transformOrigin = "center center";
-    bookEl.style.transition = "transform .18s ease";
-  }, [zoom, bookEl]);
-
-  // fullscreen
-  useEffect(() => {
-    const h = () => setIsFS(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", h);
-    return () => document.removeEventListener("fullscreenchange", h);
-  }, []);
-  const toggleFullscreen = async () => {
+  // vị trí toolbox (lưu lại)
+  const [pos, setPos] = useState(() => {
     try {
-      const scene = document.querySelector(".philo-book .book-scene");
-      if (!document.fullscreenElement) await scene?.requestFullscreen();
-      else await document.exitFullscreen();
+      const p = JSON.parse(localStorage.getItem("book:pos"));
+      if (p && typeof p.left === "number" && typeof p.top === "number")
+        return p;
     } catch {}
-  };
+    const left = 16;
+    const top = Math.max(16, Math.round((window.innerHeight - 200) / 2));
+    return { left, top };
+  });
 
-  // ====== Layout: canh GIỮA THEO SÁCH + đặt nav theo mép sách ======
-  const layout = () => {
-    if (!container || !toolRef.current || !bookEl) return;
+  const toolRef = useRef(null);
+  const containerRef = useRef(null); // .book-container
+  const bookRef = useRef(null); // .html-flip-book
+  const sceneRef = useRef(null); // .book-scene
 
-    const crect = container.getBoundingClientRect();
-    const brect = bookEl.getBoundingClientRect();
-    const tool  = toolRef.current;
-    const trect = tool.getBoundingClientRect();
+  // Baseline để đo zoom desktop tương đối
+  const baseRef = useRef({
+    dpr: window.devicePixelRatio || 1,
+    vv: window.visualViewport?.scale || 1,
+    iw: window.innerWidth || 1,
+  });
 
-    // top = top_sach (so với container) + (cao_sach - cao_tool)/2
-    let top = (brect.top - crect.top) + Math.round((brect.height - trect.height) / 2);
+  // anchors
+  useEffect(() => {
+    containerRef.current = document.querySelector(
+      ".philo-book .book-container"
+    );
+    bookRef.current = document.querySelector(".philo-book .html-flip-book");
+    sceneRef.current = document.querySelector(".philo-book .book-scene");
+  }, []);
 
-    // tránh đè nút lật (ở giữa)
-    const prev = container.querySelector(".navigation.nav-prev");
-    const next = container.querySelector(".navigation.nav-next");
-    const bump = (btn) => {
-      if (!btn) return;
-      const r = btn.getBoundingClientRect();
-      const btnMid = r.top + r.height / 2 - crect.top;
-      const toolMid = top + trect.height / 2;
-      const overlap = Math.abs(btnMid - toolMid) < (r.height/2 + trect.height/2 + 8);
-      if (overlap) top = Math.min(crect.height - trect.height - 16, btnMid + r.height/2 + 16 - trect.height/2);
+  // lưu vị trí
+  useEffect(() => localStorage.setItem("book:pos", JSON.stringify(pos)), [pos]);
+
+  /** Tính browserRel: ưu tiên visualViewport, sau đó DPR, cuối cùng innerWidth */
+  const computeBrowserRel = useCallback(() => {
+    const { dpr: dpr0, vv: vv0, iw: iw0 } = baseRef.current;
+
+    const vv = window.visualViewport?.scale;
+    if (typeof vv === "number" && vv0 > 0) return vv / vv0;
+
+    const dpr = window.devicePixelRatio || 1;
+    if (dpr0 > 0 && dpr) return dpr / dpr0;
+
+    const iw = window.innerWidth || 1;
+    return iw0 / iw; // zoom up -> innerWidth giảm -> tỉ lệ tăng
+  }, []);
+
+  // Theo dõi zoom desktop
+  useEffect(() => {
+    const updateBrowserRel = () => setBrowserRel(computeBrowserRel());
+    updateBrowserRel();
+
+    window.addEventListener("resize", updateBrowserRel);
+    window.visualViewport?.addEventListener("resize", updateBrowserRel);
+    window.visualViewport?.addEventListener("scroll", updateBrowserRel); // đề phòng pinch-zoom
+
+    return () => {
+      window.removeEventListener("resize", updateBrowserRel);
+      window.visualViewport?.removeEventListener("resize", updateBrowserRel);
+      window.visualViewport?.removeEventListener("scroll", updateBrowserRel);
     };
-    bump(prev); bump(next);
+  }, [computeBrowserRel]);
 
-    // mobile: dạt đáy trái cho gọn
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) top = crect.height - trect.height - 16;
+  /** scale thực sự áp lên SÁCH để đạt zoom tổng mong muốn */
+  const bookScale = zoomModel / (browserRel || 1);
 
-    // clamp trong container
-    top = clamp(top, 16, crect.height - trect.height - 16);
+  // Áp scale lên sách
+  const applyZoom = useCallback(() => {
+    const book = bookRef.current;
+    if (!book) return;
+    book.style.transform = `scale(${bookScale})`;
+    book.style.transformOrigin = "center center";
+    book.style.transition = "transform .18s ease";
+  }, [bookScale]);
 
-    tool.style.top = `${top}px`;
-    const margin = 16;
-    tool.style.left = dock === "left"
-      ? `${margin}px`
-      : `calc(100% - ${trect.width + margin}px)`;
+  // Bố trí prev/next + indicator theo mép sách, scale theo "zoom tổng"
+  const layoutNav = useCallback(() => {
+    const container = containerRef.current;
+    const book = bookRef.current;
+    if (!container || !book) return;
 
-    // ===== NAV: theo mép sách =====
     const navPrev = container.querySelector(".navigation.nav-prev");
     const navNext = container.querySelector(".navigation.nav-next");
-    if (!navPrev || !navNext) return;
+    const indicator = container.querySelector(".page-indicator");
+    if (!navPrev || !navNext || !indicator) return;
 
-    const navPrevW = navPrev.getBoundingClientRect().width || 48;
-    const navNextW = navNext.getBoundingClientRect().width || 48;
-    const GAP  = 16;  // cách mép sách
-    const SAFE = 12;  // né tool
+    const crect = container.getBoundingClientRect();
+    const brect = book.getBoundingClientRect(); // đã gồm cả scale
 
-    const bookLeft  = brect.left  - crect.left;
-    const bookRight = brect.right - crect.left;
+    const btnSize = Math.max(36, Math.round(BTN_BASE * zoomModel));
+    const gap = Math.max(10, Math.round(GAP_BASE * zoomModel));
+    const indGap = Math.max(8, Math.round(IND_GAP_BASE * zoomModel));
 
-    let prevLeft = bookLeft  - GAP - navPrevW;
-    let nextLeft = bookRight + GAP;
+    const btnPrev = navPrev.querySelector(".nav-button");
+    const btnNext = navNext.querySelector(".nav-button");
+    if (btnPrev) {
+      btnPrev.style.width = `${btnSize}px`;
+      btnPrev.style.height = `${btnSize}px`;
+    }
+    if (btnNext) {
+      btnNext.style.width = `${btnSize}px`;
+      btnNext.style.height = `${btnSize}px`;
+    }
 
-    const toolLeft  = tool.getBoundingClientRect().left  - crect.left;
-    const toolRight = tool.getBoundingClientRect().right - crect.left;
+    const prevLeft = brect.left - crect.left - gap - btnSize;
+    const nextLeft = brect.right - crect.left + gap;
 
-    if (dock === "left")  prevLeft = Math.max(prevLeft, toolRight + SAFE);
-    else                  nextLeft = Math.min(nextLeft, toolLeft - SAFE - navNextW);
+    Object.assign(navPrev.style, {
+      left: `${Math.round(prevLeft)}px`,
+      right: "auto",
+      top: "50%",
+      transform: "translateY(-50%)",
+    });
+    Object.assign(navNext.style, {
+      left: `${Math.round(nextLeft)}px`,
+      right: "auto",
+      top: "50%",
+      transform: "translateY(-50%)",
+    });
 
-    prevLeft = Math.max(8, prevLeft);
-    nextLeft = Math.min(crect.width - navNextW - 8, nextLeft);
+    const indLeft = brect.left - crect.left + brect.width / 2;
+    Object.assign(indicator.style, {
+      left: `${Math.round(indLeft)}px`,
+      right: "auto",
+      bottom: "auto",
+      top: `${Math.round(brect.bottom - crect.top + indGap)}px`,
+      transform: "translateX(-50%)",
+      fontSize: `${Math.max(12, Math.round(13 * zoomModel))}px`,
+    });
+  }, [zoomModel]);
 
-    Object.assign(navPrev.style, { left: `${Math.round(prevLeft)}px`, right: "auto" });
-    Object.assign(navNext.style, { left: `${Math.round(nextLeft)}px`,  right: "auto" });
-  };
+  // === CHÍNH SÁCH SCROLL (mới): dựa trên kích thước THỰC của sách sau transform ===
+  const applyScrollPolicy = useCallback(() => {
+    const body = document.body;
+    const scene = sceneRef.current;
+    const book = bookRef.current;
+    if (!scene || !book) return;
 
-  // re-layout khi thay đổi kích thước/zoom/dock
+    // reset class trước
+    body.classList.remove("philo-scroll", "philo-hscroll");
+
+    // đo kích thước hiển thị THỰC tế của sách (đã tính transform & zoom desktop)
+    const brect = book.getBoundingClientRect();
+
+    // chiều cao khả dụng (trừ header)
+    const headerH =
+      document.querySelector(".philo-book header")?.offsetHeight || 0;
+    const baseEl =
+      document.fullscreenElement === scene ? scene : document.documentElement;
+    const availH =
+      (document.fullscreenElement === scene
+        ? scene.clientHeight
+        : window.innerHeight) - headerH;
+    const availW = baseEl.clientWidth;
+
+    // Khi nào mở scroll?
+    const pad = 80; // thở dưới
+    const needY =
+      zoomModel > SCROLL_THRESHOLD || Math.round(brect.height) + pad > availH;
+    const needX = Math.round(brect.width) > availW - 32;
+
+    // Áp dụng
+    if (needY) {
+      body.classList.add("philo-scroll");
+      const minH = Math.max(Math.round(brect.height) + pad, availH);
+      scene.style.minHeight = `${minH}px`;
+    } else {
+      scene.style.minHeight = "";
+    }
+
+    if (needX) {
+      body.classList.add("philo-hscroll");
+    }
+
+    if (document.fullscreenElement === scene) {
+      scene.style.overflowY = needY ? "auto" : "hidden";
+      scene.style.overflowX = needX ? "auto" : "hidden";
+    } else {
+      scene.style.overflow = "visible";
+    }
+  }, [zoomModel]);
+
+  // Re-apply khi zoom/resize
   useEffect(() => {
-    layout();
-    window.addEventListener("resize", layout);
-    const ro1 = new ResizeObserver(layout);
-    const ro2 = new ResizeObserver(layout);
-    if (container) ro1.observe(container);
-    if (bookEl)    ro2.observe(bookEl);
-    return () => {
-      window.removeEventListener("resize", layout);
-      ro1.disconnect(); ro2.disconnect();
+    const runAll = () => {
+      applyZoom();
+      layoutNav();
+      applyScrollPolicy();
     };
-  }, [container, dock, bookEl]);
-  useEffect(() => { requestAnimationFrame(layout); }, [zoom, dock]);
+    runAll();
 
-  // kéo thả đổi dock
+    const onResize = () => runAll(); // zoom desktop -> resize -> chạy
+    const onScroll = () => layoutNav(); // cuộn trang -> cập nhật nav
+    window.addEventListener("resize", onResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    const book = bookRef.current;
+    const onEnd = (e) => e.propertyName === "transform" && layoutNav();
+    book?.addEventListener("transitionend", onEnd);
+
+    const raf = requestAnimationFrame(runAll);
+    return () => {
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("scroll", onScroll);
+      book?.removeEventListener("transitionend", onEnd);
+      cancelAnimationFrame(raf);
+    };
+  }, [applyZoom, layoutNav, applyScrollPolicy]);
+
+  // Fullscreen: giữ toolbox + re-apply
+  useEffect(() => {
+    const onFS = () => {
+      setPortalTarget(document.fullscreenElement || document.body);
+      setTimeout(() => {
+        const el = toolRef.current;
+        if (!el) return;
+        const base = document.fullscreenElement || document.documentElement;
+        const vw = base.clientWidth,
+          vh = base.clientHeight;
+        const rect = el.getBoundingClientRect();
+        const left = Math.max(8, Math.min(rect.left, vw - rect.width - 8));
+        const top = Math.max(8, Math.min(rect.top, vh - rect.height - 8));
+        el.style.left = `${left}px`;
+        el.style.top = `${top}px`;
+      }, 0);
+      applyZoom();
+      layoutNav();
+      applyScrollPolicy();
+    };
+    document.addEventListener("fullscreenchange", onFS);
+    return () => document.removeEventListener("fullscreenchange", onFS);
+  }, [applyZoom, layoutNav, applyScrollPolicy]);
+
+  // Kéo chỉ khi giữ grip
   useEffect(() => {
     const el = toolRef.current;
-    if (!el || !container) return;
-
-    let dragging = false;
-    let startX = 0, startLeft = 0;
-
-    const down = (e) => {
-      dragging = true;
-      startX = e.clientX || (e.touches && e.touches[0].clientX);
-      startLeft = el.getBoundingClientRect().left;
-      el.classList.add("dragging");
-      document.addEventListener("mousemove", move);
-      document.addEventListener("mouseup", up);
-      document.addEventListener("touchmove", move, { passive: false });
-      document.addEventListener("touchend", up);
-    };
-    const move = (e) => {
-      if (!dragging) return;
-      const x = e.clientX || (e.touches && e.touches[0].clientX);
-      if (!x) return;
-      const delta = x - startX;
-      el.style.left = `${startLeft + delta - container.getBoundingClientRect().left}px`;
-      e.preventDefault?.();
-    };
-    const up = () => {
-      if (!dragging) return;
-      dragging = false;
-      el.classList.remove("dragging");
-      const mid = container.getBoundingClientRect().width / 2;
-      const leftNow = el.getBoundingClientRect().left - container.getBoundingClientRect().left;
-      const nextDock = leftNow < mid ? "left" : "right";
-      setDock(nextDock);
-      localStorage.setItem("book:dock", nextDock);
-      layout();
-      document.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseup", up);
-      document.removeEventListener("touchmove", move);
-      document.removeEventListener("touchend", up);
-    };
-
+    if (!el) return;
     const grip = el.querySelector(".booktools-grip");
-    grip?.addEventListener("mousedown", down);
-    grip?.addEventListener("touchstart", down, { passive: true });
-    return () => {
-      grip?.removeEventListener("mousedown", down);
-      grip?.removeEventListener("touchstart", down);
+    if (!grip) return;
+
+    let startX = 0,
+      startY = 0;
+    let startLeft = 0,
+      startTop = 0;
+
+    const baseEl = () => document.fullscreenElement || document.documentElement;
+    const clampInto = (left, top) => {
+      const vw = baseEl().clientWidth;
+      const vh = baseEl().clientHeight;
+      const rect = el.getBoundingClientRect();
+      return {
+        left: Math.max(8, Math.min(left, vw - rect.width - 8)),
+        top: Math.max(8, Math.min(top, vh - rect.height - 8)),
+      };
     };
-  }, [container]);
 
-  if (!mounted || !container) return null;
+    const onPointerDown = (e) => {
+      if (e.target !== grip && !grip.contains(e.target)) return;
+      grip.setPointerCapture(e.pointerId);
+      const rect = el.getBoundingClientRect();
+      startLeft = rect.left;
+      startTop = rect.top;
+      startX = e.clientX;
+      startY = e.clientY;
+      el.classList.add("dragging");
+    };
 
-  return createPortal(
-    <div className={`booktools dock-${dock}`} ref={toolRef} role="toolbar" aria-label="Công cụ sách">
-      <button className="booktools-grip" title="Kéo để đổi vị trí" aria-label="Kéo để đổi vị trí">
-        <GripVertical size={16} />
-      </button>
+    const onPointerMove = (e) => {
+      if (!grip.hasPointerCapture?.(e.pointerId)) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const { left, top } = clampInto(startLeft + dx, startTop + dy);
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      e.preventDefault();
+    };
 
-      <button className="booktools-btn" onClick={() => setZoom((z) => clamp(parseFloat((z - ZSTEP).toFixed(2)), ZMIN, ZMAX))} title="Thu nhỏ (Ctrl -)" aria-label="Thu nhỏ">
-        <ZoomOut size={16} />
-      </button>
+    const onPointerUp = (e) => {
+      if (!grip.hasPointerCapture?.(e.pointerId)) return;
+      grip.releasePointerCapture(e.pointerId);
+      el.classList.remove("dragging");
+      const rect = el.getBoundingClientRect();
+      const { left, top } = clampInto(rect.left, rect.top);
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      setPos({ left, top });
+    };
 
-      <div className="booktools-zoom" aria-live="polite">{pct(zoom)}%</div>
+    const init = () => {
+      const { left, top } = clampInto(pos.left, pos.top);
+      el.style.position = "fixed";
+      el.style.left = `${left}px`;
+      el.style.top = `${top}px`;
+      el.style.touchAction = "none";
+      setPos({ left, top });
+    };
 
-      <button className="booktools-btn" onClick={() => setZoom((z) => clamp(parseFloat((z + ZSTEP).toFixed(2)), ZMIN, ZMAX))} title="Phóng to (Ctrl +)" aria-label="Phóng to">
-        <ZoomIn size={16} />
-      </button>
+    grip.addEventListener("pointerdown", onPointerDown);
+    grip.addEventListener("pointermove", onPointerMove);
+    grip.addEventListener("pointerup", onPointerUp);
+    grip.addEventListener("pointercancel", onPointerUp);
+    init();
 
-      <button className="booktools-btn" onClick={() => setZoom(1)} title="Về 100%" aria-label="Về 100%">
-        <RefreshCcw size={16} />
-      </button>
+    return () => {
+      grip.removeEventListener("pointerdown", onPointerDown);
+      grip.removeEventListener("pointermove", onPointerMove);
+      grip.removeEventListener("pointerup", onPointerUp);
+      grip.removeEventListener("pointercancel", onPointerUp);
+    };
+  }, [portalTarget, pos.left, pos.top]);
 
-      <div className="booktools-sep" aria-hidden="true" />
+  // Tooltip chung
+  const tipCommon = {
+    arrow: true,
+    placement: "right",
+    componentsProps: {
+      tooltip: { sx: { whiteSpace: "nowrap", zIndex: 99999 } },
+      arrow: { sx: { color: "rgba(15,23,42,.95)" } },
+    },
+  };
 
-      <button className="booktools-btn" onClick={toggleFullscreen} title="Toàn màn hình (F)" aria-label="Toàn màn hình">
-        {isFS ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-      </button>
-    </div>,
-    container
+  /** Thao tác trên "zoom tổng" */
+  const inc = () =>
+    setZoomModel((z) => clamp(Number((z + ZSTEP).toFixed(2)), ZMIN, ZMAX));
+  const dec = () =>
+    setZoomModel((z) => clamp(Number((z - ZSTEP).toFixed(2)), ZMIN, ZMAX));
+  const reset = () => setZoomModel(1);
+
+  const ringProgress = Math.max(
+    0,
+    Math.min(1, (zoomModel - ZMIN) / (ZMAX - ZMIN))
   );
+
+  const content = (
+    <>
+      <div
+        ref={toolRef}
+        className="booktools"
+        role="toolbar"
+        aria-label="Công cụ sách"
+        style={{ zIndex: 99999 }}
+      >
+        <Tooltip {...tipCommon} title="Giữ để kéo di chuyển" arrow>
+          <button
+            className="booktools-grip"
+            aria-label="Di chuyển (giữ và kéo)"
+          >
+            <GripVertical size={18} />
+          </button>
+        </Tooltip>
+
+        <Tooltip {...tipCommon} title="Thu nhỏ (Ctrl -)" arrow>
+          <button className="booktools-btn" onClick={dec} aria-label="Thu nhỏ">
+            <ZoomOut size={18} />
+          </button>
+        </Tooltip>
+
+        <Tooltip {...tipCommon} title={`Tỷ lệ phóng ${pct(zoomModel)}%`} arrow>
+          <div
+            className="booktools-zoom-ring"
+            style={{ ["--zoom-p"]: `${ringProgress}` }}
+            aria-live="polite"
+          >
+            <div className="booktools-zoom-text">{pct(zoomModel)}%</div>
+          </div>
+        </Tooltip>
+
+        <Tooltip {...tipCommon} title="Phóng to (Ctrl +)" arrow>
+          <button className="booktools-btn" onClick={inc} aria-label="Phóng to">
+            <ZoomIn size={18} />
+          </button>
+        </Tooltip>
+
+        <Tooltip {...tipCommon} title="Về 100%" arrow>
+          <button
+            className="booktools-btn"
+            onClick={reset}
+            aria-label="Về 100%"
+          >
+            <RefreshCcw size={18} />
+          </button>
+        </Tooltip>
+
+        <div className="booktools-sep" aria-hidden="true" />
+
+        <Tooltip
+          {...tipCommon}
+          title={
+            document.fullscreenElement ? "Thoát toàn màn hình" : "Toàn màn hình"
+          }
+          arrow
+        >
+          <button
+            className="booktools-btn"
+            onClick={async () => {
+              const scene = document.querySelector(".philo-book .book-scene");
+              try {
+                if (!document.fullscreenElement)
+                  await scene?.requestFullscreen();
+                else await document.exitFullscreen();
+              } catch {}
+            }}
+            aria-label={
+              document.fullscreenElement
+                ? "Thoát toàn màn hình"
+                : "Toàn màn hình"
+            }
+          >
+            {document.fullscreenElement ? (
+              <Minimize2 size={18} />
+            ) : (
+              <Maximize2 size={18} />
+            )}
+          </button>
+        </Tooltip>
+      </div>
+
+      {/* styles riêng cho toolbox */}
+      <style>{`
+        .booktools{
+          --s:44px;
+          position: fixed;
+          display:flex; flex-direction:column; gap:10px;
+          padding:10px; border-radius:18px;
+          border:1px solid rgba(255,255,255,.12);
+          background:linear-gradient(180deg, rgba(15,23,42,.72), rgba(15,23,42,.55));
+          color:#e6edf3; box-shadow:0 10px 30px rgba(0,0,0,.35);
+          backdrop-filter: blur(10px) saturate(1.05);
+        }
+        .booktools .booktools-grip,
+        .booktools .booktools-btn,
+        .booktools .booktools-zoom-ring{
+          display:grid; place-items:center;
+          width:var(--s); height:var(--s); border-radius:12px;
+        }
+        .booktools .booktools-grip{
+          cursor: grab;
+          border:1px dashed rgba(255,255,255,.16);
+          background:rgba(255,255,255,.04);
+        }
+        .booktools .booktools-grip:active{ cursor:grabbing; }
+        .booktools .booktools-grip:hover{ background:rgba(255,255,255,.08) }
+
+        .booktools .booktools-btn{
+          border:1px solid rgba(255,255,255,.12);
+          background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+          color:inherit; transition:transform .12s ease, background .2s ease, box-shadow .2s ease;
+        }
+        .booktools .booktools-btn:hover{ background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05)); box-shadow:0 4px 16px rgba(0,0,0,.25) }
+        .booktools .booktools-btn:active{ transform:scale(.96) }
+
+        .booktools .booktools-sep{ height:1px; width:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); margin:2px 0 }
+
+        .booktools .booktools-zoom-ring{
+          --p: var(--zoom-p, 0);
+          position:relative; color:#e5e7eb;
+          background:conic-gradient(#22d3ee calc(var(--p) * 360deg), rgba(255,255,255,.12) 0);
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 8px 20px rgba(0,0,0,.25)
+        }
+        .booktools .booktools-zoom-ring::before{ content:""; position:absolute; inset:6px; border-radius:inherit; background:rgba(0,0,0,.35); }
+        .booktools .booktools-zoom-text{ position:relative; font-size:11px; font-weight:800; letter-spacing:.2px }
+
+        @media (max-width: 768px){
+          .booktools{ flex-direction:row; align-items:center; padding:8px 10px; border-radius:12px }
+          .booktools .booktools-sep{ height:24px; width:1px }
+        }
+      `}</style>
+    </>
+  );
+
+  return createPortal(content, portalTarget);
 }
