@@ -26,19 +26,21 @@ export const spreads = [
           <div className="cover-title">
             <div className="title-backdrop" />
             <h1 className="main-title">
-              <span className="title-line-1">TRIẾT LÝ</span>
-              <span className="title-line-2">CUỘC SỐNG</span>
+              <span className="title-line-1">CHỦ NGHĨA</span>
+              <span className="title-line-2">DUY VẬT LỊCH SỬ</span>
             </h1>
-            <div className="subtitle">Những Suy Ngẫm Về Đời Người</div>
+            <div className="subtitle">
+              Đời sống vật chất &amp; tinh thần của xã hội vận động ra sao?
+            </div>
           </div>
 
           <div className="cover-quote">
             <div className="quote-marks">"</div>
             <div className="quote-text">
-              Cuộc sống không phải là tìm kiếm bản thân,<br />
-              mà là tạo dựng bản thân
+              Không phải ý thức của con người quyết định tồn tại của họ;<br />
+              trái lại, chính tồn tại xã hội của họ quyết định ý thức của họ
             </div>
-            <div className="quote-author">— George Bernard Shaw</div>
+            <div className="quote-author">— Karl Marx</div>
             <div className="quote-marks closing">"</div>
           </div>
 
@@ -49,7 +51,64 @@ export const spreads = [
     ),
   },
 
-  // ============ Spread 1: Chương I — Bản chất con người ============
+  // ============ Spread 1: Dẫn nhập — “Cặp kính” duy vật lịch sử ============
+  {
+    left: (
+      <AutoFitPage className="page-left">
+        <div className="page-header">
+          <h2>Dẫn nhập</h2>
+          <div className="chapter-ornament">❦</div>
+        </div>
+
+        <div className="page-body">
+          <h3>Một “cặp kính” để nhìn xã hội</h3>
+          <p className="first-letter">
+            Vì sao mỗi thời đại lại có phong tục, luật pháp, niềm tin khác nhau?
+            Vì sao suy nghĩ hôm nay khác xa cha ông? Chủ nghĩa duy vật lịch sử
+            trao cho ta “cặp kính” để thấy sợi dây nối giữa đời sống vật chất
+            và đời sống tinh thần: cách con người sản xuất, sinh sống và quan hệ
+            với nhau định hình những gì họ tin, họ nghĩ, họ mơ ước.
+          </p>
+
+          <div className="philosophy-quote">
+            <div className="quote-symbol">❝</div>
+            <p>“Cách chúng ta sống và lao động sẽ quyết định cách chúng ta suy nghĩ.”</p>
+            <div className="quote-author">— Tóm lược tinh thần duy vật lịch sử</div>
+          </div>
+        </div>
+
+        <div className="page-number">2</div>
+      </AutoFitPage>
+    ),
+    right: (
+      <AutoFitPage className="page-right">
+        <div className="life-principles">
+          <h4>Mục tiêu học</h4>
+          <div className="principle">
+            <span className="principle-icon">🎯</span>
+            <div><strong>Nắm khái niệm:</strong> Tồn tại xã hội (TTXH) &amp; Ý thức xã hội (YTXH).</div>
+          </div>
+          <div className="principle">
+            <span className="principle-icon">🧭</span>
+            <div><strong>Hiểu quan hệ:</strong> Vật chất quyết định tinh thần và tác động trở lại.</div>
+          </div>
+          <div className="principle">
+            <span className="principle-icon">🔎</span>
+            <div><strong>Biết vận dụng:</strong> Giải thích biến đổi tư tưởng qua biến đổi sản xuất.</div>
+          </div>
+        </div>
+
+        <div className="reflection-box">
+          <div className="reflection-title">Từ khóa</div>
+          <p>Phương thức sản xuất • Lực lượng sản xuất • Quan hệ sản xuất • Tâm lý xã hội • Hệ tư tưởng</p>
+        </div>
+
+        <div className="page-number">3</div>
+      </AutoFitPage>
+    ),
+  },
+
+  // ============ Spread 2: Chương I — Tồn tại xã hội ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -59,73 +118,58 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Bản Chất Con Người</h3>
-
+          <h3>Tồn Tại Xã Hội (TTXH) — Nền móng vật chất</h3>
           <p className="first-letter">
-            Con người sinh ra không phải để tồn tại, mà để sống.
-            Sự khác biệt giữa “tồn tại” và “sống” chính là ý thức về bản thân
-            và khả năng tạo ra ý nghĩa.
+            Hãy hình dung xã hội như một ngôi nhà: để vững chắc cần nền móng tốt.
+            Tồn tại xã hội chính là “nền móng” ấy — toàn bộ đời sống vật chất và
+            những điều kiện sinh hoạt vật chất của xã hội.
           </p>
 
-          <p>
-            Aristotle từng nói: “Con người là động vật có lý trí”.
-            Nhưng lý trí không chỉ là khả năng suy nghĩ, mà còn là khả năng chọn lựa,
-            quyết định và chịu trách nhiệm cho những lựa chọn đó.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Tôi tư duy, vậy tôi tồn tại”</p>
-            <div className="quote-author">— René Descartes</div>
+          <div className="wisdom-section">
+            <h4>Ba yếu tố cơ bản</h4>
+            <div className="wisdom-item">
+              <span className="wisdom-number">1</span>
+              <div><strong>Phương thức sản xuất của cải vật chất:</strong> yếu tố quyết định nhất; gồm <em>lực lượng sản xuất</em> và <em>quan hệ sản xuất</em>.</div>
+            </div>
+            <div className="wisdom-item">
+              <span className="wisdom-number">2</span>
+              <div><strong>Hoàn cảnh địa lý &amp; điều kiện tự nhiên:</strong> tạo thuận lợi/khó khăn nhưng không quyết định tất cả.</div>
+            </div>
+            <div className="wisdom-item">
+              <span className="wisdom-number">3</span>
+              <div><strong>Dân cư:</strong> mật độ, cơ cấu, tăng trưởng — “những người thợ” dựng nhà xã hội.</div>
+            </div>
           </div>
         </div>
 
-        <div className="page-number">2</div>
+        <div className="page-number">4</div>
       </AutoFitPage>
     ),
-
     right: (
       <AutoFitPage className="page-right">
         <div className="reflection-box">
-          <div className="reflection-title">Suy Ngẫm</div>
-          <p>
-            Mỗi con người đều mang trong mình một vũ trụ riêng — với những ước mơ,
-            nỗi sợ, niềm vui và nỗi buồn. Hiểu được bản thân không phải là đích đến,
-            mà là một hành trình suốt đời.
-          </p>
+          <div className="reflection-title">Gợi ý hình ảnh</div>
+          <p>Infographic công cụ sản xuất từ thô sơ → hiện đại; làng chài ven biển &amp; ruộng bậc thang vùng cao; khu phố đông đúc.</p>
         </div>
 
-        <div className="wisdom-section">
-          <h4>Ba Tầng Ý Thức</h4>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">1</span>
-            <div>
-              <strong>Ý thức bề mặt:</strong> Những gì chúng ta nhận biết trực tiếp
-            </div>
+        <div className="life-principles">
+          <h4>Phương thức sản xuất</h4>
+          <div className="principle">
+            <span className="principle-icon">🛠️</span>
+            <div><strong>Lực lượng sản xuất (LLSX):</strong> công cụ, công nghệ, tay nghề, tri thức.</div>
           </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">2</span>
-            <div>
-              <strong>Tiềm thức:</strong> Những kinh nghiệm và ký ức được lưu giữ
-            </div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">3</span>
-            <div>
-              <strong>Vô thức tập thể:</strong> Trí tuệ chung của nhân loại
-            </div>
+          <div className="principle">
+            <span className="principle-icon">🤝</span>
+            <div><strong>Quan hệ sản xuất (QHSX):</strong> sở hữu, tổ chức quản lý, phân phối.</div>
           </div>
         </div>
 
-        <div className="page-number">3</div>
+        <div className="page-number">5</div>
       </AutoFitPage>
     ),
   },
 
-  // ============ Spread 2: Chương II — Ý nghĩa & Mục đích ============
+  // ============ Spread 3: Chương II — Ý thức xã hội ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -135,81 +179,22 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Ý Nghĩa &amp; Mục Đích</h3>
+          <h3>Ý Thức Xã Hội (YTXH) — “Linh hồn” của xã hội</h3>
           <p className="first-letter">
-            Con người có thể chịu đựng hầu như bất cứ điều gì nếu tìm thấy một
-            “vì sao” đủ lớn để tiếp tục. Khi có ý nghĩa, khó khăn trở thành bài học;
-            khi vô nghĩa, cả tiện nghi cũng trở nên nặng nề.
+            Nếu TTXH là “thân thể”, YTXH là toàn bộ đời sống tinh thần nảy sinh từ
+            và phản ánh TTXH ở mỗi giai đoạn: tư tưởng, quan điểm, niềm tin, phong tục, luật lệ…
           </p>
 
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Ai có một lý do ‘vì sao’ để sống có thể chịu đựng hầu như mọi ‘như thế nào’.”</p>
-            <div className="quote-author">— Viktor E. Frankl</div>
-          </div>
-        </div>
-
-        <div className="page-number">4</div>
-      </AutoFitPage>
-    ),
-    right: (
-      <AutoFitPage className="page-right">
-        <div className="wisdom-section">
-          <h4>3 Cách Nuôi Dưỡng Ý Nghĩa</h4>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">1</span>
-            <div>
-              <strong>Phục vụ:</strong> Đặt năng lực vào việc giúp ích người khác.
+          <div className="wisdom-section">
+            <h4>Cấu trúc hai tầng</h4>
+            <div className="wisdom-item">
+              <span className="wisdom-number">1</span>
+              <div><strong>Tâm lý xã hội:</strong> tình cảm, thói quen, truyền thống — hình thành tự phát trong đời sống hằng ngày.</div>
             </div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">2</span>
-            <div>
-              <strong>Thăng tiến nội tâm:</strong> Học, luyện, lớn lên mỗi ngày 1%.
+            <div className="wisdom-item">
+              <span className="wisdom-number">2</span>
+              <div><strong>Hệ tư tưởng xã hội:</strong> quan điểm đã được hệ thống hóa (chính trị, pháp luật, triết học…).</div>
             </div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">3</span>
-            <div>
-              <strong>Hiện diện:</strong> Làm trọn vẹn việc đang làm, không chạy theo so sánh.
-            </div>
-          </div>
-        </div>
-
-        <div className="reflection-box">
-          <div className="reflection-title">Gợi ý tự hỏi</div>
-          <p>Điều gì, nếu thực hiện thường xuyên, khiến mình thấy cuộc đời đáng sống?</p>
-        </div>
-
-        <div className="page-number">5</div>
-      </AutoFitPage>
-    ),
-  },
-
-  // ============ Spread 3: Chương III — Tự do & Trách nhiệm ============
-  {
-    left: (
-      <AutoFitPage className="page-left">
-        <div className="page-header">
-          <h2>Chương III</h2>
-          <div className="chapter-ornament">❦</div>
-        </div>
-
-        <div className="page-body">
-          <h3>Tự Do &amp; Trách Nhiệm</h3>
-          <p className="first-letter">
-            Tự do không phải muốn gì làm nấy, mà là khả năng chọn điều đúng đắn
-            và giữ lời với chính mình. Mỗi lựa chọn đều kéo theo trách nhiệm —
-            đó là giá của trưởng thành.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Con người bị kết án phải tự do; sau đó anh ta chịu trách nhiệm về mọi điều mình làm.”</p>
-            <div className="quote-author">— Jean-Paul Sartre</div>
           </div>
         </div>
 
@@ -219,22 +204,20 @@ export const spreads = [
     right: (
       <AutoFitPage className="page-right">
         <div className="life-principles">
-          <h4>Nguyên Tắc Sống</h4>
-
+          <h4>Tính giai cấp của YTXH</h4>
           <div className="principle">
-            <span className="principle-icon">🧭</span>
-            <div><strong>Rõ giá trị:</strong> Biết điều gì là “không thoả hiệp”.</div>
+            <span className="principle-icon">🏛️</span>
+            <div><strong>Giai cấp thống trị</strong> về kinh tế thường <em>thống trị</em> đời sống tinh thần.</div>
           </div>
-
           <div className="principle">
-            <span className="principle-icon">📅</span>
-            <div><strong>Hứa ít, làm chắc:</strong> Cam kết nhỏ nhưng đều đặn.</div>
+            <span className="principle-icon">⚖️</span>
+            <div>Các giai cấp bị trị có <strong>hệ tư tưởng riêng</strong> → đấu tranh tư tưởng.</div>
           </div>
+        </div>
 
-          <div className="principle">
-            <span className="principle-icon">🧱</span>
-            <div><strong>Chịu trách nhiệm:</strong> Không đổ lỗi; hỏi “mình làm được gì?”.</div>
-          </div>
+        <div className="reflection-box">
+          <div className="reflection-title">Gợi ý hình ảnh</div>
+          <p>Tranh đối sánh: xa hoa của giới quý tộc ↔ đời sống nông dân thời phong kiến.</p>
         </div>
 
         <div className="page-number">7</div>
@@ -242,7 +225,51 @@ export const spreads = [
     ),
   },
 
-  // ============ Spread 4: Chương IV — Hạnh phúc & Khổ đau ============
+  // ============ Spread 4: Chương III — Các hình thái ý thức xã hội ============
+  {
+    left: (
+      <AutoFitPage className="page-left">
+        <div className="page-header">
+          <h2>Chương III</h2>
+          <div className="chapter-ornament">❦</div>
+        </div>
+
+        <div className="page-body">
+          <h3>Những “hình thái” chủ yếu</h3>
+          <div className="wisdom-section">
+            <h4>Danh mục nhanh</h4>
+            <div className="wisdom-item"><span className="wisdom-number">1</span><div><strong>Ý thức chính trị</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">2</span><div><strong>Ý thức pháp quyền</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">3</span><div><strong>Ý thức đạo đức</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">4</span><div><strong>Ý thức nghệ thuật (thẩm mỹ)</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">5</span><div><strong>Ý thức tôn giáo</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">6</span><div><strong>Ý thức khoa học</strong></div></div>
+            <div className="wisdom-item"><span className="wisdom-number">7</span><div><strong>Ý thức triết học</strong> — hạt nhân lý luận của thế giới quan.</div></div>
+          </div>
+        </div>
+
+        <div className="page-number">8</div>
+      </AutoFitPage>
+    ),
+    right: (
+      <AutoFitPage className="page-right">
+        <div className="reflection-box">
+          <div className="reflection-title">Liên hệ chéo</div>
+          <p>Chính trị ảnh hưởng nghệ thuật; khoa học chi phối triết học; tôn giáo, đạo đức tác động pháp luật…</p>
+        </div>
+
+        <div className="philosophy-quote">
+          <div className="quote-symbol">❝</div>
+          <p>“Mỗi hình thái phản ánh TTXH theo cách riêng — bằng quyền lực, quy tắc, giá trị, niềm tin, chân lý…”</p>
+          <div className="quote-author">— Tóm lược</div>
+        </div>
+
+        <div className="page-number">9</div>
+      </AutoFitPage>
+    ),
+  },
+
+  // ============ Spread 5: Chương IV — Vật chất quyết định tinh thần ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -252,49 +279,45 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Hạnh Phúc &amp; Khổ Đau</h3>
+          <h3>Nguyên tắc cơ bản</h3>
           <p className="first-letter">
-            Hạnh phúc không phải là không có vấn đề, mà là có năng lực xử lý vấn đề.
-            Khổ đau dạy ta khiêm nhường, biết ơn và trân trọng những điều bình dị.
+            Tồn tại xã hội quyết định ý thức xã hội. TTXH có trước và là nguồn gốc,
+            YTXH có sau và là sự phản ánh. Khi phương thức sản xuất thay đổi,
+            sớm hay muộn YTXH cũng thay đổi theo.
           </p>
 
           <div className="philosophy-quote">
             <div className="quote-symbol">❝</div>
-            <p>“Không phải sự vật làm ta rối loạn, mà là cách ta nhìn về chúng.”</p>
-            <div className="quote-author">— Epictetus</div>
+            <p>“Nhà máy mọc lên — tư tưởng về quyền của người lao động &amp; dân chủ hiện đại lan rộng.”</p>
+            <div className="quote-author">— Ví dụ minh hoạ</div>
           </div>
         </div>
 
-        <div className="page-number">8</div>
+        <div className="page-number">10</div>
       </AutoFitPage>
     ),
     right: (
       <AutoFitPage className="page-right">
-        <h4>Cân Bằng</h4>
+        <h4>Sơ đồ mũi tên</h4>
         <div className="balance-grid">
           <div className="balance-item">
-            <span className="balance-symbol">🌿</span>
-            <strong>Chấp nhận</strong>
-            Những gì ngoài kiểm soát — buông.
+            <span className="balance-symbol">🏭</span>
+            <strong>Biến đổi sản xuất</strong>
+            Công nghệ, tổ chức, phân công lao động…
           </div>
           <div className="balance-item">
-            <span className="balance-symbol">🔥</span>
-            <strong>Chủ động</strong>
-            Những gì trong tầm với — hành động.
+            <span className="balance-symbol">➡️</span>
+            <strong>Biến đổi ý thức</strong>
+            Quyền, luật, đạo đức, nghệ thuật, tôn giáo…
           </div>
         </div>
 
-        <div className="reflection-box">
-          <div className="reflection-title">Bài tập 2 phút</div>
-          <p>Ghi 3 điều biết ơn hôm nay. Một niềm vui nhỏ cũng đáng ghi.</p>
-        </div>
-
-        <div className="page-number">9</div>
+        <div className="page-number">11</div>
       </AutoFitPage>
     ),
   },
 
-  // ============ Spread 5: Chương V — Thói quen & Kỷ luật ============
+  // ============ Spread 6: Chương V — Tính độc lập tương đối của YTXH ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -304,54 +327,39 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Thói Quen &amp; Kỷ Luật</h3>
-          <p className="first-letter">
-            Tính cách là tổng các thói quen. Ta không vươn lên mức mục tiêu,
-            ta rơi xuống mức hệ thống hằng ngày. Kỷ luật là lòng tự trọng trong hành động.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Mỗi ngày tốt hơn 1% — sau một năm, bạn khác hẳn.”</p>
-            <div className="quote-author">— James Clear</div>
+          <h3>Không chỉ là tấm gương thụ động</h3>
+          <div className="wisdom-section">
+            <h4>Năm biểu hiện chính</h4>
+            <div className="wisdom-item"><span className="wisdom-number">1</span><div><strong>Lạc hậu:</strong> thói quen cũ tiếp tục tồn tại (vd. định kiến giới) dù cơ sở đã đổi.</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">2</span><div><strong>Vượt trước:</strong> tư tưởng khoa học/tiến bộ dự báo tương lai.</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">3</span><div><strong>Kế thừa:</strong> thế hệ sau không bắt đầu từ số 0.</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">4</span><div><strong>Tác động lẫn nhau:</strong> chính trị ↔ nghệ thuật, khoa học ↔ triết học…</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">5</span><div><strong>Tác động trở lại TTXH:</strong> tư tưởng tiến bộ thúc đẩy phát triển; tư tưởng lạc hậu kìm hãm.</div></div>
           </div>
         </div>
 
-        <div className="page-number">10</div>
+        <div className="page-number">12</div>
       </AutoFitPage>
     ),
     right: (
       <AutoFitPage className="page-right">
-        <div className="wisdom-section">
-          <h4>Chu Trình 4 Bước</h4>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">1</span>
-            <div><strong>Tín hiệu:</strong> Làm nó rõ ràng — đặt sổ/giày ngay tầm mắt.</div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">2</span>
-            <div><strong>Khao khát:</strong> Liên hệ với bản sắc “tôi là người…”.</div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">3</span>
-            <div><strong>Hành vi:</strong> Bắt đầu cực nhỏ — 2 phút đầu tiên.</div>
-          </div>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">4</span>
-            <div><strong>Phần thưởng:</strong> Đánh dấu &amp; ăn mừng nhỏ để củng cố.</div>
-          </div>
+        <div className="reflection-box">
+          <div className="reflection-title">Gợi ý hình ảnh</div>
+          <p>Đồ thị “thói quen cũ” kéo chậm cải cách; tia chớp “ý tưởng mới” mở đường.</p>
         </div>
 
-        <div className="page-number">11</div>
+        <div className="philosophy-quote">
+          <div className="quote-symbol">❝</div>
+          <p>“Ý tưởng đúng lúc là đòn bẩy của lịch sử.”</p>
+          <div className="quote-author">— Ẩn dụ biện chứng</div>
+        </div>
+
+        <div className="page-number">13</div>
       </AutoFitPage>
     ),
   },
 
-  // ============ Spread 6: Chương VI — Tư duy phản biện ============
+  // ============ Spread 7: Chương VI — Ví dụ & vận dụng ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -361,74 +369,12 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Tư Duy Phản Biện</h3>
-          <p className="first-letter">
-            Tin nhanh là bản năng; hiểu chậm là trí tuệ. Phản biện không để bác bỏ,
-            mà để tiếp cận sự thật gần hơn.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Điều đáng sợ nhất là tin chắc những điều không đúng.”</p>
-            <div className="quote-author">— Voltaire</div>
-          </div>
-        </div>
-
-        <div className="page-number">12</div>
-      </AutoFitPage>
-    ),
-    right: (
-      <AutoFitPage className="page-right">
-        <div className="wisdom-section">
-          <h4>5 Câu Hỏi Socrates</h4>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">1</span>
-            <div>Bằng chứng là gì?</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">2</span>
-            <div>Có cách hiểu nào khác không?</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">3</span>
-            <div>Điều gì mình đang giả định?</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">4</span>
-            <div>Hệ quả nếu điều này đúng/sai?</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">5</span>
-            <div>Một ví dụ ngược phản biện quan điểm?</div>
-          </div>
-        </div>
-
-        <div className="page-number">13</div>
-      </AutoFitPage>
-    ),
-  },
-
-  // ============ Spread 7: Chương VII — Giao tiếp tử tế ============
-  {
-    left: (
-      <AutoFitPage className="page-left">
-        <div className="page-header">
-          <h2>Chương VII</h2>
-          <div className="chapter-ornament">❦</div>
-        </div>
-
-        <div className="page-body">
-          <h3>Giao Tiếp Tử Tế</h3>
-          <p className="first-letter">
-            Lời nói có thể làm nở hoa một ngày, cũng có thể khép lại một cánh cửa.
-            Tử tế không tốn kém, nhưng vô giá.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Trước khi nói, hãy đi qua ba cổng: Có thật không? Có tử tế không? Có cần thiết không?”</p>
-            <div className="quote-author">— Tục ngữ</div>
+          <h3>Minh họa nhanh</h3>
+          <div className="wisdom-section">
+            <h4>TTXH → YTXH</h4>
+            <div className="wisdom-item"><span className="wisdom-number">1</span><div>Internet phổ cập → tư duy mở, văn hoá số, mô hình làm việc mới.</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">2</span><div>Đô thị hoá → chuẩn mực sống, pháp luật, lối sống hiện đại.</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">3</span><div>Chuỗi cung ứng toàn cầu → ý thức về quyền lao động và tiêu dùng bền vững.</div></div>
           </div>
         </div>
 
@@ -438,19 +384,18 @@ export const spreads = [
     right: (
       <AutoFitPage className="page-right">
         <div className="life-principles">
-          <h4>Thực Hành Nhanh</h4>
-
+          <h4>YTXH → TTXH (tác động trở lại)</h4>
           <div className="principle">
-            <span className="principle-icon">👂</span>
-            <div><strong>Lắng nghe:</strong> Nhắc lại ý người nói: “Bạn đang thấy rằng…”</div>
+            <span className="principle-icon">🚀</span>
+            <div>Phong trào khoa học, giáo dục mở thúc đẩy năng suất &amp; đổi mới.</div>
           </div>
           <div className="principle">
-            <span className="principle-icon">💬</span>
-            <div><strong>Nói “tôi”:</strong> “Tôi cảm thấy… khi… và tôi cần…”</div>
+            <span className="principle-icon">🛑</span>
+            <div>Tập tục lạc hậu kìm hãm lao động nữ, lãng phí nguồn lực xã hội.</div>
           </div>
           <div className="principle">
-            <span className="principle-icon">🤝</span>
-            <div><strong>Tìm điểm chung:</strong> “Chúng ta cùng muốn điều gì?”</div>
+            <span className="principle-icon">📜</span>
+            <div>Cải cách pháp luật phản chiếu tư tưởng mới, đồng thời tạo môi trường sản xuất mới.</div>
           </div>
         </div>
 
@@ -459,7 +404,45 @@ export const spreads = [
     ),
   },
 
-  // ============ Spread 8: Chương VIII — Thời gian & Tập trung ============
+  // ============ Spread 8: Chương VII — Câu hỏi Socrates & thảo luận ============
+  {
+    left: (
+      <AutoFitPage className="page-left">
+        <div className="page-header">
+          <h2>Chương VII</h2>
+          <div className="chapter-ornament">❦</div>
+        </div>
+
+        <div className="page-body">
+          <h3>Gợi ý tranh biện &amp; tư duy phản biện</h3>
+          <div className="wisdom-section">
+            <h4>5 câu hỏi kiểu Socrates</h4>
+            <div className="wisdom-item"><span className="wisdom-number">1</span><div>Bằng chứng TTXH nào đang đổi (công nghệ, tổ chức, lao động)?</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">2</span><div>Những thay đổi YTXH nào đi kèm (luật, đạo đức, nghệ thuật)?</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">3</span><div>Mình đang giả định gì về “nguyên nhân–hệ quả”?</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">4</span><div>Ví dụ phản chứng: nơi TTXH tương tự nhưng YTXH khác?</div></div>
+            <div className="wisdom-item"><span className="wisdom-number">5</span><div>Hệ quả thực tiễn nếu nhận định đúng/sai?</div></div>
+          </div>
+        </div>
+
+        <div className="page-number">16</div>
+      </AutoFitPage>
+    ),
+    right: (
+      <AutoFitPage className="page-right">
+        <div className="reflection-box">
+          <div className="reflection-title">Câu hỏi thảo luận</div>
+          <p>
+            Khi mức sống vật chất tăng, vì sao một số tập tục vẫn bền bỉ? Hãy chỉ ra yếu tố “kế thừa”, “lạc hậu”, hay “vượt trước”.
+          </p>
+        </div>
+
+        <div className="page-number">17</div>
+      </AutoFitPage>
+    ),
+  },
+
+  // ============ Spread 9: Chương VIII — Bảng tóm tắt & so sánh ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -469,54 +452,51 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Thời Gian &amp; Tập Trung</h3>
-          <p className="first-letter">
-            Ta không thiếu thời gian, ta chỉ thiếu ưu tiên. Mỗi “có” với điều không quan trọng
-            đều là một “không” với điều quan trọng.
-          </p>
+          <h3>Tóm tắt nhanh</h3>
+
+          <div className="balance-grid">
+            <div className="balance-item">
+              <span className="balance-symbol">🏗️</span>
+              <strong>TTXH</strong>
+              Nền móng vật chất: phương thức sản xuất, tự nhiên, dân cư.
+            </div>
+            <div className="balance-item">
+              <span className="balance-symbol">🧠</span>
+              <strong>YTXH</strong>
+              Đời sống tinh thần: tâm lý xã hội &amp; hệ tư tưởng; mang tính giai cấp.
+            </div>
+          </div>
 
           <div className="philosophy-quote">
             <div className="quote-symbol">❝</div>
-            <p>“Những gì đo đếm được sẽ cải thiện.”</p>
-            <div className="quote-author">— Peter Drucker</div>
+            <p>“Vật chất quyết định tinh thần — tinh thần tác động trở lại vật chất.”</p>
+            <div className="quote-author">— Quy luật tổng quát</div>
           </div>
         </div>
 
-        <div className="page-number">16</div>
+        <div className="page-number">18</div>
       </AutoFitPage>
     ),
     right: (
       <AutoFitPage className="page-right">
-        <h4>Ma Trận Ưu Tiên (Eisenhower)</h4>
-        <div className="balance-grid">
-          <div className="balance-item">
-            <span className="balance-symbol">⚡</span>
-            <strong>Khẩn &amp; Quan trọng</strong>
-            Làm ngay.
+        <div className="life-principles">
+          <h4>Vận dụng ôn tập</h4>
+          <div className="principle">
+            <span className="principle-icon">📝</span>
+            <div><strong>3′–Bài tập:</strong> Nêu 1 biến đổi sản xuất tại địa phương và 2 biến đổi tinh thần đi kèm.</div>
           </div>
-          <div className="balance-item">
-            <span className="balance-symbol">🗓️</span>
-            <strong>Không Khẩn &amp; Quan trọng</strong>
-            Lên lịch.
-          </div>
-          <div className="balance-item">
-            <span className="balance-symbol">📤</span>
-            <strong>Khẩn &amp; Không quan trọng</strong>
-            Ủy quyền.
-          </div>
-          <div className="balance-item">
-            <span className="balance-symbol">🗑️</span>
-            <strong>Không Khẩn &amp; Không quan trọng</strong>
-            Loại bỏ.
+          <div className="principle">
+            <span className="principle-icon">🧩</span>
+            <div><strong>So khớp:</strong> Ghi 2 ví dụ YTXH “lạc hậu” và 1 ví dụ “vượt trước”.</div>
           </div>
         </div>
 
-        <div className="page-number">17</div>
+        <div className="page-number">19</div>
       </AutoFitPage>
     ),
   },
 
-  // ============ Spread 9: Chương IX — Sáng tạo & Nghệ thuật ============
+  // ============ Spread 10: Chương IX — Lời kết học thuật ============
   {
     left: (
       <AutoFitPage className="page-left">
@@ -526,66 +506,16 @@ export const spreads = [
         </div>
 
         <div className="page-body">
-          <h3>Sáng Tạo &amp; Nghệ Thuật</h3>
+          <h3>Ý nghĩa phương pháp</h3>
           <p className="first-letter">
-            Sáng tạo nảy nở khi ta cho phép mình sai, thử và chơi.
-            Ý tưởng thích những cuốn sổ tay và những bước đi ngoài trời.
+            Hiểu quan hệ TTXH–YTXH giúp ta nhìn thấy “cơ chế sâu” của biến đổi xã hội,
+            từ đó cải cách không chỉ kinh tế–kỹ thuật mà còn văn hoá–tư tưởng,
+            để phát triển toàn diện và bền vững.
           </p>
 
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Sáng tạo là trí thông minh đang vui đùa.”</p>
-            <div className="quote-author">— Albert Einstein</div>
-          </div>
-        </div>
-
-        <div className="page-number">18</div>
-      </AutoFitPage>
-    ),
-    right: (
-      <AutoFitPage className="page-right">
-        <div className="wisdom-section">
-          <h4>3 Thói Quen Nuôi Sáng Tạo</h4>
-
-          <div className="wisdom-item">
-            <span className="wisdom-number">1</span>
-            <div><strong>Nhật ký ý tưởng:</strong> Ghi lại mọi tia loé, chưa cần hoàn hảo.</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">2</span>
-            <div><strong>Input đa dạng:</strong> Đọc khác lĩnh vực, gặp người khác ngành.</div>
-          </div>
-          <div className="wisdom-item">
-            <span className="wisdom-number">3</span>
-            <div><strong>Chu kỳ làm-nghỉ:</strong> Pomodoro 25′ làm, 5′ thả lỏng.</div>
-          </div>
-        </div>
-
-        <div className="page-number">19</div>
-      </AutoFitPage>
-    ),
-  },
-
-  // ============ Spread 10: Chương X — Sống chậm & Chánh niệm ============
-  {
-    left: (
-      <AutoFitPage className="page-left">
-        <div className="page-header">
-          <h2>Chương X</h2>
-          <div className="chapter-ornament">❦</div>
-        </div>
-
-        <div className="page-body">
-          <h3>Sống Chậm &amp; Chánh Niệm</h3>
-          <p className="first-letter">
-            Khi ta thật sự có mặt, từng hơi thở cũng là phép màu.
-            Chậm lại để thấy rõ, rồi bước đi cho đúng.
-          </p>
-
-          <div className="philosophy-quote">
-            <div className="quote-symbol">❝</div>
-            <p>“Bình an có mặt trong từng bước chân tỉnh thức.”</p>
-            <div className="quote-author">— Thiền sư Thích Nhất Hạnh</div>
+          <div className="reflection-box">
+            <div className="reflection-title">Gợi ý thực tiễn</div>
+            <p>Phát triển kinh tế đi đôi xây dựng đời sống tinh thần lành mạnh; coi trọng giáo dục, khoa học, pháp quyền.</p>
           </div>
         </div>
 
@@ -595,16 +525,11 @@ export const spreads = [
     right: (
       <AutoFitPage className="page-right">
         <div className="meditation-box">
-          <div className="meditation-title">Thực Hành 1 Phút</div>
+          <div className="meditation-title">Một phút suy ngẫm</div>
           <p>
-            Hít vào đếm 4 — Giữ 2 — Thở ra 6. Quan sát cảm giác toàn thân.
-            Trở lại với âm thanh, ánh sáng, nhịp tim.
+            Trong lớp, trong gia đình, trong công việc — điều kiện vật chất nào đang dẫn dắt lối nghĩ của bạn?
+            Và bạn có thể dùng tư tưởng tiến bộ nào để tác động ngược, cải thiện điều kiện ấy?
           </p>
-        </div>
-
-        <div className="connection-wisdom">
-          <div className="connection-title">Kết Nối Lại</div>
-          <p>Gọi cho một người thân và nói “cảm ơn vì…”. Lòng biết ơn là chiếc cầu.</p>
         </div>
 
         <div className="page-number">21</div>
@@ -618,31 +543,30 @@ export const spreads = [
       <AutoFitPage className="page-left">
         <div className="final-content">
           <div className="conclusion-title">
-            <h2>Hành Trình Không Điểm Đến</h2>
+            <h2>Vật chất &amp; tinh thần — Nhịp đôi của lịch sử</h2>
           </div>
 
           <div className="final-wisdom">
             <p>
-              Triết học không phải là bộ sưu tập những câu trả lời,
-              mà là nghệ thuật đặt ra những câu hỏi đúng.
-              Cuộc sống không phải là vấn đề cần giải quyết,
-              mà là bí ẩn cần trải nghiệm.
+              Để thay đổi xã hội toàn diện, không chỉ phát triển sản xuất,
+              mà còn nuôi dưỡng đời sống tinh thần tiến bộ. Hai mặt ấy
+              song hành, tác động qua lại, tạo nên sự vận động không ngừng của lịch sử.
             </p>
 
             <div className="life-summary">
               <div className="summary-item">
-                <span className="summary-icon">🎭</span>
-                <p><strong>Sống chân thật</strong> với chính mình</p>
+                <span className="summary-icon">🏗️</span>
+                <p><strong>Xây nền móng vật chất</strong> hiện đại</p>
               </div>
 
               <div className="summary-item">
-                <span className="summary-icon">🌟</span>
-                <p><strong>Tạo ra ý nghĩa</strong> qua hành động</p>
+                <span className="summary-icon">🧠</span>
+                <p><strong>Bồi đắp ý thức</strong> khoa học &amp; nhân văn</p>
               </div>
 
               <div className="summary-item">
-                <span className="summary-icon">💝</span>
-                <p><strong>Yêu thương</strong> không điều kiện</p>
+                <span className="summary-icon">🔄</span>
+                <p><strong>Phối hợp biện chứng</strong> để phát triển bền vững</p>
               </div>
             </div>
           </div>
@@ -665,22 +589,22 @@ export const spreads = [
 
           <div className="back-title">
             <div className="back-title-backdrop" />
-            <h1>VÔ TẬN</h1>
+            <h1>BIỆN CHỨNG</h1>
             <div className="infinity-symbol">∞</div>
           </div>
 
           <div className="back-quote">
             <div className="back-quote-text">
-              “Cuối mỗi cuốn sách<br />là khởi đầu của một cuốn khác”
+              “Mỗi bước tiến vật chất<br />gợi mở một chân trời tinh thần mới”
             </div>
             <div className="back-quote-divider" />
             <div className="back-quote-text">
-              “Cuộc sống là hành trình,<br />không phải điểm đến”
+              “Kết thúc một trang sách<br />là khởi đầu của trang khác”
             </div>
           </div>
 
           <div className="back-message">
-            Hãy tiếp tục khám phá<br />những triết lý mới mỗi ngày
+            Tiếp tục quan sát TTXH &amp; YTXH<br />trong đời sống hằng ngày
           </div>
 
           <div className="back-ornament bottom" />

@@ -1,260 +1,220 @@
 // src/StoryBook/BookToolbox.jsx
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ZoomIn, ZoomOut, RefreshCcw, Maximize2, Minimize2, Highlighter, StickyNote, Trash2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { ZoomIn, ZoomOut, RefreshCcw, Maximize2, Minimize2, GripVertical } from "lucide-react";
 import { createPortal } from "react-dom";
 
-const COLORS = ["#fde047", "#93c5fd", "#86efac", "#fca5a5"]; // vàng, xanh dương, xanh lá, đỏ nhạt
 const ZMIN = 0.8, ZMAX = 1.6, ZSTEP = 0.1;
+const clamp = (n, a, b) => Math.min(Math.max(n, a), b);
+const pct = (n) => Math.round(n * 100);
 
-function clamp(n, a, b){ return Math.min(Math.max(n, a), b); }
-function pct(n){ return Math.round(n * 100); }
-
-export default function BookToolbox(){
+export default function BookToolbox() {
   const [mounted, setMounted] = useState(false);
-  const [container, setContainer] = useState(null);     // .philo-book .book-container
-  const [bookEl, setBookEl] = useState(null);           // .philo-book .html-flip-book
-  const [overlayEl, setOverlayEl] = useState(null);     // overlay layer for highlights
-
+  const [container, setContainer] = useState(null);   // .philo-book .book-container
+  const [bookEl, setBookEl] = useState(null);         // .philo-book .html-flip-book
   const [zoom, setZoom] = useState(1);
   const [isFS, setIsFS] = useState(Boolean(document.fullscreenElement));
-  const [color, setColor] = useState(COLORS[0]);
-  const [highlights, setHighlights] = useState([]);
+  const [dock, setDock] = useState(() => localStorage.getItem("book:dock") || "left");
+  const toolRef = useRef(null);
 
-  const storageKey = useMemo(() => {
-    // Bạn có thể đổi key nếu có nhiều sách
-    return `storybook-highlights:${window.location.pathname}`;
-  }, []);
-
-  // mount vào .book-container bằng portal (không sửa JSX cũ)
+  // mount
   useEffect(() => {
     const root = document.querySelector(".philo-book .book-container");
     const book = document.querySelector(".philo-book .html-flip-book");
-
     if (!root || !book) return;
-
     setContainer(root);
     setBookEl(book);
-
-    // tạo lớp overlay highlight nằm *trên* cuốn sách
-    const layer = document.createElement("div");
-    layer.className = "philo-highlight-layer";
-    root.appendChild(layer);
-    setOverlayEl(layer);
-
     setMounted(true);
-
-    return () => {
-      layer.remove();
-    };
   }, []);
 
-  // load/save highlights
+  // flag dock (nếu cần style)
   useEffect(() => {
-    try{
-      const raw = localStorage.getItem(storageKey);
-      if (raw) setHighlights(JSON.parse(raw));
-    }catch{}
-  }, [storageKey]);
+    if (!container) return;
+    container.classList.toggle("tool-left", dock === "left");
+    container.classList.toggle("tool-right", dock === "right");
+  }, [container, dock]);
 
-  useEffect(() => {
-    try{
-      localStorage.setItem(storageKey, JSON.stringify(highlights));
-    }catch{}
-    drawAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [highlights]);
-
-  // theo dõi fullscreen
-  useEffect(() => {
-    const h = () => setIsFS(Boolean(document.fullscreenElement));
-    document.addEventListener("fullscreenchange", h);
-    return () => document.removeEventListener("fullscreenchange", h);
-  }, []);
-
-  // áp zoom bằng transform trực tiếp lên flipbook (không chạm JSX)
+  // zoom
   useEffect(() => {
     if (!bookEl) return;
     bookEl.style.transform = `scale(${zoom})`;
     bookEl.style.transformOrigin = "center center";
     bookEl.style.transition = "transform .18s ease";
-    // để nav/button không lệch quá nhiều, ta để nguyên — chênh nhẹ ok
   }, [zoom, bookEl]);
 
-  const zoomIn = () => setZoom(z => clamp(parseFloat((z + ZSTEP).toFixed(2)), ZMIN, ZMAX));
-  const zoomOut = () => setZoom(z => clamp(parseFloat((z - ZSTEP).toFixed(2)), ZMIN, ZMAX));
-  const zoomReset = () => setZoom(1);
-
+  // fullscreen
+  useEffect(() => {
+    const h = () => setIsFS(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", h);
+    return () => document.removeEventListener("fullscreenchange", h);
+  }, []);
   const toggleFullscreen = async () => {
-    try{
+    try {
       const scene = document.querySelector(".philo-book .book-scene");
       if (!document.fullscreenElement) await scene?.requestFullscreen();
       else await document.exitFullscreen();
-    }catch{}
+    } catch {}
   };
 
-  // =============== HIGHLIGHT ===============
-  const getSelectionRects = () => {
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return null;
+  // ====== Layout: canh GIỮA THEO SÁCH + đặt nav theo mép sách ======
+  const layout = () => {
+    if (!container || !toolRef.current || !bookEl) return;
 
-    // chỉ xử lý nếu selection nằm trong .page-content
-    const anchor = sel.anchorNode?.parentElement;
-    if (!anchor) return null;
-    const page = anchor.closest(".page-content");
-    if (!page || !container) return null;
+    const crect = container.getBoundingClientRect();
+    const brect = bookEl.getBoundingClientRect();
+    const tool  = toolRef.current;
+    const trect = tool.getBoundingClientRect();
 
-    const cRect = container.getBoundingClientRect();
-    const rects = [];
-    for (let i = 0; i < sel.rangeCount; i++){
-      const r = sel.getRangeAt(i);
-      Array.from(r.getClientRects()).forEach(rc => {
-        // bỏ qua rect quá bé
-        if (rc.width < 2 || rc.height < 2) return;
-        rects.push({
-          left: rc.left - cRect.left,
-          top:  rc.top  - cRect.top,
-          width: rc.width,
-          height: rc.height
-        });
-      });
-    }
-    if (!rects.length) return null;
+    // top = top_sach (so với container) + (cao_sach - cao_tool)/2
+    let top = (brect.top - crect.top) + Math.round((brect.height - trect.height) / 2);
 
-    return {
-      rects,
-      pageIndexHint: findPageIndexFromNode(page)
+    // tránh đè nút lật (ở giữa)
+    const prev = container.querySelector(".navigation.nav-prev");
+    const next = container.querySelector(".navigation.nav-next");
+    const bump = (btn) => {
+      if (!btn) return;
+      const r = btn.getBoundingClientRect();
+      const btnMid = r.top + r.height / 2 - crect.top;
+      const toolMid = top + trect.height / 2;
+      const overlap = Math.abs(btnMid - toolMid) < (r.height/2 + trect.height/2 + 8);
+      if (overlap) top = Math.min(crect.height - trect.height - 16, btnMid + r.height/2 + 16 - trect.height/2);
     };
+    bump(prev); bump(next);
+
+    // mobile: dạt đáy trái cho gọn
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobile) top = crect.height - trect.height - 16;
+
+    // clamp trong container
+    top = clamp(top, 16, crect.height - trect.height - 16);
+
+    tool.style.top = `${top}px`;
+    const margin = 16;
+    tool.style.left = dock === "left"
+      ? `${margin}px`
+      : `calc(100% - ${trect.width + margin}px)`;
+
+    // ===== NAV: theo mép sách =====
+    const navPrev = container.querySelector(".navigation.nav-prev");
+    const navNext = container.querySelector(".navigation.nav-next");
+    if (!navPrev || !navNext) return;
+
+    const navPrevW = navPrev.getBoundingClientRect().width || 48;
+    const navNextW = navNext.getBoundingClientRect().width || 48;
+    const GAP  = 16;  // cách mép sách
+    const SAFE = 12;  // né tool
+
+    const bookLeft  = brect.left  - crect.left;
+    const bookRight = brect.right - crect.left;
+
+    let prevLeft = bookLeft  - GAP - navPrevW;
+    let nextLeft = bookRight + GAP;
+
+    const toolLeft  = tool.getBoundingClientRect().left  - crect.left;
+    const toolRight = tool.getBoundingClientRect().right - crect.left;
+
+    if (dock === "left")  prevLeft = Math.max(prevLeft, toolRight + SAFE);
+    else                  nextLeft = Math.min(nextLeft, toolLeft - SAFE - navNextW);
+
+    prevLeft = Math.max(8, prevLeft);
+    nextLeft = Math.min(crect.width - navNextW - 8, nextLeft);
+
+    Object.assign(navPrev.style, { left: `${Math.round(prevLeft)}px`, right: "auto" });
+    Object.assign(navNext.style, { left: `${Math.round(nextLeft)}px`,  right: "auto" });
   };
 
-  const findPageIndexFromNode = (node) => {
-    // tìm .page gần nhất rồi lấy thứ tự tương đối (để hiển thị/info)
-    const page = node.closest(".page");
-    if (!page) return null;
-    const all = Array.from(page.parentElement?.children || []);
-    const idx = all.indexOf(page);
-    return idx >= 0 ? idx : null;
-  };
+  // re-layout khi thay đổi kích thước/zoom/dock
+  useEffect(() => {
+    layout();
+    window.addEventListener("resize", layout);
+    const ro1 = new ResizeObserver(layout);
+    const ro2 = new ResizeObserver(layout);
+    if (container) ro1.observe(container);
+    if (bookEl)    ro2.observe(bookEl);
+    return () => {
+      window.removeEventListener("resize", layout);
+      ro1.disconnect(); ro2.disconnect();
+    };
+  }, [container, dock, bookEl]);
+  useEffect(() => { requestAnimationFrame(layout); }, [zoom, dock]);
 
-  const addHighlight = (withNote = false) => {
-    const data = getSelectionRects();
-    if (!data) return;
+  // kéo thả đổi dock
+  useEffect(() => {
+    const el = toolRef.current;
+    if (!el || !container) return;
 
-    const id = `hl_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
-    const payload = {
-      id,
-      rects: data.rects,
-      color,
-      pageIndex: data.pageIndexHint,
-      note: ""
+    let dragging = false;
+    let startX = 0, startLeft = 0;
+
+    const down = (e) => {
+      dragging = true;
+      startX = e.clientX || (e.touches && e.touches[0].clientX);
+      startLeft = el.getBoundingClientRect().left;
+      el.classList.add("dragging");
+      document.addEventListener("mousemove", move);
+      document.addEventListener("mouseup", up);
+      document.addEventListener("touchmove", move, { passive: false });
+      document.addEventListener("touchend", up);
+    };
+    const move = (e) => {
+      if (!dragging) return;
+      const x = e.clientX || (e.touches && e.touches[0].clientX);
+      if (!x) return;
+      const delta = x - startX;
+      el.style.left = `${startLeft + delta - container.getBoundingClientRect().left}px`;
+      e.preventDefault?.();
+    };
+    const up = () => {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove("dragging");
+      const mid = container.getBoundingClientRect().width / 2;
+      const leftNow = el.getBoundingClientRect().left - container.getBoundingClientRect().left;
+      const nextDock = leftNow < mid ? "left" : "right";
+      setDock(nextDock);
+      localStorage.setItem("book:dock", nextDock);
+      layout();
+      document.removeEventListener("mousemove", move);
+      document.removeEventListener("mouseup", up);
+      document.removeEventListener("touchmove", move);
+      document.removeEventListener("touchend", up);
     };
 
-    if (withNote){
-      const txt = prompt("Nhập ghi chú cho đoạn đã bôi:");
-      if (txt && txt.trim()) payload.note = txt.trim();
-    }
-
-    setHighlights(prev => [...prev, payload]);
-    window.getSelection()?.removeAllRanges();
-  };
-
-  const clearAll = () => {
-    if (!window.confirm("Xóa tất cả highlight & ghi chú trên trang này?")) return;
-    setHighlights([]);
-  };
-
-  const drawAll = () => {
-    if (!overlayEl) return;
-    overlayEl.innerHTML = ""; // clear
-    highlights.forEach(drawOne);
-  };
-
-  const drawOne = (item) => {
-    if (!overlayEl) return;
-    item.rects.forEach((r) => {
-      const el = document.createElement("div");
-      el.className = "philo-hl";
-      el.style.left   = `${r.left}px`;
-      el.style.top    = `${r.top}px`;
-      el.style.width  = `${r.width}px`;
-      el.style.height = `${r.height}px`;
-      el.style.background = item.color + "66"; // 40% alpha
-      el.dataset.id = item.id;
-
-      // tooltip note (nếu có)
-      if (item.note){
-        el.title = item.note;
-      }
-
-      el.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const action = prompt(
-          "Chọn tác vụ:\n1 = Sửa ghi chú\n2 = Đổi màu\n3 = Xóa highlight\n(để trống = hủy)"
-        );
-        if (action === "1"){
-          const newTxt = prompt("Ghi chú mới:", item.note || "");
-          setHighlights(prev => prev.map(h => h.id === item.id ? {...h, note: (newTxt||"")} : h));
-        }else if (action === "2"){
-          const pick = prompt("Nhập màu hex (vd #fde047) hoặc chọn 1-4:\n1 vàng, 2 xanh dương, 3 xanh lá, 4 đỏ nhạt", "1");
-          let newColor = item.color;
-          if (pick === "1") newColor = COLORS[0];
-          else if (pick === "2") newColor = COLORS[1];
-          else if (pick === "3") newColor = COLORS[2];
-          else if (pick === "4") newColor = COLORS[3];
-          else if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(pick||"")) newColor = pick;
-          setHighlights(prev => prev.map(h => h.id === item.id ? {...h, color: newColor} : h));
-        }else if (action === "3"){
-          setHighlights(prev => prev.filter(h => h.id !== item.id));
-        }
-      });
-
-      overlayEl.appendChild(el);
-    });
-  };
+    const grip = el.querySelector(".booktools-grip");
+    grip?.addEventListener("mousedown", down);
+    grip?.addEventListener("touchstart", down, { passive: true });
+    return () => {
+      grip?.removeEventListener("mousedown", down);
+      grip?.removeEventListener("touchstart", down);
+    };
+  }, [container]);
 
   if (!mounted || !container) return null;
 
-  // PORTAL: render toolbar vào trong .book-container (nằm trên sách)
   return createPortal(
-    <div className="booktools">
-      <div className="booktools-group">
-        <button className="booktools-btn" onClick={() => setZoom(z => clamp(z - ZSTEP, ZMIN, ZMAX))} title="Thu nhỏ (Ctrl -)">
-          <ZoomOut size={16} />
-        </button>
-        <div className="booktools-zoom">{pct(zoom)}%</div>
-        <button className="booktools-btn" onClick={() => setZoom(z => clamp(z + ZSTEP, ZMIN, ZMAX))} title="Phóng to (Ctrl +)">
-          <ZoomIn size={16} />
-        </button>
-        <button className="booktools-btn" onClick={zoomReset} title="Về 100%">
-          <RefreshCcw size={16} />
-        </button>
-        <div className="booktools-sep" />
-        <button className="booktools-btn" onClick={toggleFullscreen} title="Toàn màn hình (F)">
-          {isFS ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}
-        </button>
-      </div>
+    <div className={`booktools dock-${dock}`} ref={toolRef} role="toolbar" aria-label="Công cụ sách">
+      <button className="booktools-grip" title="Kéo để đổi vị trí" aria-label="Kéo để đổi vị trí">
+        <GripVertical size={16} />
+      </button>
 
-      <div className="booktools-group">
-        <div className="booktools-colors">
-          {COLORS.map(c => (
-            <button
-              key={c}
-              className={"booktools-color" + (c===color ? " is-active": "")}
-              style={{ backgroundColor: c }}
-              onClick={() => setColor(c)}
-              title={`Màu ${c}`}
-            />
-          ))}
-        </div>
-        <button className="booktools-btn" onClick={() => addHighlight(false)} title="Tô sáng vùng đang bôi đen">
-          <Highlighter size={16} />
-        </button>
-        <button className="booktools-btn" onClick={() => addHighlight(true)} title="Tô sáng + ghi chú">
-          <StickyNote size={16} />
-        </button>
-        <button className="booktools-btn danger" onClick={clearAll} title="Xóa tất cả highlight/note">
-          <Trash2 size={16} />
-        </button>
-      </div>
+      <button className="booktools-btn" onClick={() => setZoom((z) => clamp(parseFloat((z - ZSTEP).toFixed(2)), ZMIN, ZMAX))} title="Thu nhỏ (Ctrl -)" aria-label="Thu nhỏ">
+        <ZoomOut size={16} />
+      </button>
+
+      <div className="booktools-zoom" aria-live="polite">{pct(zoom)}%</div>
+
+      <button className="booktools-btn" onClick={() => setZoom((z) => clamp(parseFloat((z + ZSTEP).toFixed(2)), ZMIN, ZMAX))} title="Phóng to (Ctrl +)" aria-label="Phóng to">
+        <ZoomIn size={16} />
+      </button>
+
+      <button className="booktools-btn" onClick={() => setZoom(1)} title="Về 100%" aria-label="Về 100%">
+        <RefreshCcw size={16} />
+      </button>
+
+      <div className="booktools-sep" aria-hidden="true" />
+
+      <button className="booktools-btn" onClick={toggleFullscreen} title="Toàn màn hình (F)" aria-label="Toàn màn hình">
+        {isFS ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+      </button>
     </div>,
     container
   );

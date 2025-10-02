@@ -63,7 +63,7 @@ const BOOK_ZOOM  = 0.90;   // ~ giống 90% zoom trình duyệt (chỉnh 0.88–
   }, []);
 
   return (
-    <div className="philo-book">
+    <div className="philo-book" lang="vi">
       <Header />
 <BookToolbox />
 
