@@ -2,8 +2,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
-import TestSetupModal from "./TestModal";
-
 // Sections
 import QuizSidebar from "./Quiz_Sidebar";
 import StudyHeader from "./Study_Header";
@@ -202,7 +200,7 @@ const MarxistPhilosophyQuiz = () => {
                 sidebarClasses={sidebarClasses}
                 themeClasses={themeClasses}
                 onClose={() => setMobileSidebarOpen(false)}
-                onOpenTestModal={() => setTestOpen(true)}
+              
               />
             </motion.div>
           </motion.div>
@@ -226,7 +224,7 @@ const MarxistPhilosophyQuiz = () => {
             getStateIcon={getStateIcon}
             sidebarClasses={sidebarClasses}
             themeClasses={themeClasses}
-            onOpenTestModal={() => setTestOpen(true)}
+   
           />
         </div>
 
@@ -272,13 +270,7 @@ const MarxistPhilosophyQuiz = () => {
               <QuestionNavigation darkMode={darkMode} />
             </div>
           </div>
-          <TestSetupModal
-            open={testOpen}
-            onClose={() => setTestOpen(false)}
-            onStart={handleStartTest}
-            darkMode={darkMode}
-            totalQuestions={currentChapter?.questions?.length || 0}
-          />
+       
         </main>
       </div>
     </div>
