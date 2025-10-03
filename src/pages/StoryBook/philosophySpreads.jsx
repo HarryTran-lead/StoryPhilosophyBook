@@ -1,6 +1,7 @@
 // src/StoryBook/philosophySpreads.jsx
 import React from "react";
 import AutoFitPage from "./AutoFitPage";
+import Coverbook from "../../assets/picture/Coverbook.png";
 
 /**
  * Mỗi phần tử là 1 "spread" (cặp trang): { left: JSX|null, right: JSX|null }
@@ -11,8 +12,20 @@ export const spreads = [
   {
     left: null,
     right: (
-      <AutoFitPage className="cover-front">
-        <div className="cover-design">
+<AutoFitPage
+  className="cover-front"
+  style={{
+    background: `
+      radial-gradient(circle at 20% 20%, rgba(124,58,237,.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(245,158,11,.12) 0%, transparent 40%),
+      url(${Coverbook}) center / cover no-repeat,
+      linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0f0f1a 100%)
+    `
+  }}
+>
+    {/* Nếu muốn chỉ hiển thị ảnh full-bleed, xóa các khối dưới đi.
+        Nếu vẫn muốn giữ tiêu đề/quote chồng lên ảnh, giữ nguyên nội dung. */}
+    <div className="cover-design">     <div className="cover-design">
           <div className="cover-stars">
             <div className="star star-1" />
             <div className="star star-2" />
@@ -46,8 +59,8 @@ export const spreads = [
 
           <div className="cover-ornament bottom" />
           <div className="cover-glow" />
-        </div>
-      </AutoFitPage>
+        </div></div>
+  </AutoFitPage>
     ),
   },
 

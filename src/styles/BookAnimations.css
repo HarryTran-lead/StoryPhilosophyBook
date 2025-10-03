@@ -57,14 +57,20 @@
 }
 
 /* --- Cover Front --- */
+/* --- Cover Front --- */
 .cover-front {
   position: relative;
   overflow: hidden;
   color: #fff;
   border: 2px solid #d97706;
+
+  /* 1) hai radial ở TRÊN (overlay) 
+     2) ảnh ở GIỮA (cover) 
+     3) linear gradient ở DƯỚI (nền) */
   background:
     radial-gradient(circle at 20% 20%, rgba(124, 58, 237, .15) 0%, transparent 40%),
     radial-gradient(circle at 80% 80%, rgba(245, 158, 11, .12) 0%, transparent 40%),
+    url("../assets/picture/Coverbook.png") center / cover no-repeat,
     linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0f0f1a 100%);
 }
 
@@ -394,4 +400,11 @@
 .sheet,
 .page-face {
   display: none !important;
+}
+/* Làm trong suốt phần content trên bìa trước/sau */
+.cover-front .page-content,
+.cover-back  .page-content{
+  background: transparent !important;
+  border: none;
+  box-shadow: none;
 }
