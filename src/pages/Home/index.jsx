@@ -69,17 +69,25 @@ export default function MarxismPhilosophyPage() {
       }
     };
 
-    const handleClick = (e) => {
-      if (step === -1 || isTransitioning) return;
-      // nếu click trong header hoặc overlay điều hướng thì bỏ qua
-      if (e.target.closest("header")) return;
-      // các overlay tự chặn bằng stopPropagation (đặt ở component)
-      if (scrollTargetRef.current === steps - 1) {
-        goToStep(0);
-      } else {
-        goToStep(scrollTargetRef.current + 1);
-      }
-    };
+ const handleClick = (e) => {
+  if (step === -1 || isTransitioning) return;
+
+  // ⛔ Bỏ qua các phần tử tương tác để không auto-next
+  if (
+    e.target.closest(
+      "header, a, button, [role='button'], input, select, textarea, .no-advance"
+    )
+  ) {
+    return;
+  }
+
+  if (scrollTargetRef.current === steps - 1) {
+    goToStep(0);
+  } else {
+    goToStep(scrollTargetRef.current + 1);
+  }
+};
+
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     window.addEventListener("keydown", handleKey);
