@@ -141,7 +141,7 @@ const QuestionNavigation = ({ darkMode = false }) => {
               </span>
             ) : (
               <button
-                key={`p-t-${page}`}
+                key={`p-t-${activeChapter}-${idx}`}
                 onClick={() => dispatch(setCurrentPage(page))}
                 className={`w-8 h-8 rounded-md text-xs font-medium transition-colors border
                   ${
@@ -195,10 +195,10 @@ const QuestionNavigation = ({ darkMode = false }) => {
 
         {/* Pagination đầy đủ */}
         <div className="flex gap-1">
-          {pagesDesktop.map((page, index) =>
+          {pagesDesktop.map((page, idx) =>
             page === "..." ? (
               <span
-                key={`ellipsis-${index}`}
+                key={`ellipsis-${idx}`}
                 className={`w-10 h-10 flex items-center justify-center ${
                   darkMode ? "text-slate-500" : "text-slate-400"
                 }`}
@@ -207,7 +207,7 @@ const QuestionNavigation = ({ darkMode = false }) => {
               </span>
             ) : (
               <button
-                key={page}
+                key={`p-d-${activeChapter}-${idx}`}
                 onClick={() => dispatch(setCurrentPage(page))}
                 className={`w-9 h-9 rounded-md text-sm font-medium transition-colors border
                   ${
