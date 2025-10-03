@@ -1,3 +1,4 @@
+// src/pages/Study_Header.jsx
 import React, { memo, useCallback, useMemo } from "react";
 import {
   RotateCcw,
@@ -11,6 +12,7 @@ import {
   Menu,
 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify"; // ✅ dùng toast mặc định
 import {
   selectModeAttemptPercent,
   selectModeCorrectCount,
@@ -27,7 +29,7 @@ function StudyHeader({
   toggleFullscreen,
   activeChapter,
   cardClasses,
-  onOpenSidebar, // <-- dùng để mở drawer mobile
+  onOpenSidebar,
 }) {
   const { currentPage } = useSelector(selectQuiz);
   const totalQuestions = currentChapter?.questions?.length ?? 0;
@@ -58,13 +60,34 @@ function StudyHeader({
     []
   );
 
+  // ===== Toast mặc định (không custom UI) =====
+  const handleShuffle = useCallback(() => {
+    if (typeof shuffleQuestions === "function") {
+      shuffleQuestions();
+      toast.success(
+        "Đã tráo thẻ! Thứ tự câu hỏi/thẻ đã được xáo trộn ngẫu nhiên.",
+        { toastId: "toast-shuffle" }
+      );
+    }
+  }, [shuffleQuestions]);
+
+  const handleRestart = useCallback(() => {
+    if (typeof restartChapter === "function") {
+      restartChapter();
+      toast.success(
+        "Đã làm lại! Tất cả câu hỏi được đặt về trạng thái & thứ tự ban đầu.",
+        { toastId: "toast-restart" }
+      );
+    }
+  }, [restartChapter]);
+
   const actions = useMemo(
     () => [
-      { onClick: shuffleQuestions, icon: Shuffle, label: "Tráo thẻ" },
-      { onClick: restartChapter, icon: RefreshCw, label: "Làm lại" },
+      { onClick: handleShuffle, icon: Shuffle, label: "Tráo thẻ" },
+      { onClick: handleRestart, icon: RefreshCw, label: "Làm lại" },
       { onClick: toggleFullscreen, icon: Maximize2, label: "Toàn màn hình" },
     ],
-    [shuffleQuestions, restartChapter, toggleFullscreen]
+    [handleShuffle, handleRestart, toggleFullscreen]
   );
 
   const handleChangeMode = useCallback(
@@ -86,7 +109,7 @@ function StudyHeader({
       {/* Title + Progress */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 gap-2">
         <div className="min-w-0">
-          {/* Hàng đầu tiêu đề + nút menu (nút chỉ hiện trên mobile) */}
+          {/* Tiêu đề + menu mobile */}
           <div className="flex items-center gap-4 sm:gap-3">
             <button
               type="button"
@@ -104,15 +127,15 @@ function StudyHeader({
                 }`}
               />
             </button>
-            <h2 className={`text-3xl font-bold mb-3 ${textColor} break-words `}>
-              Chương {activeChapter + 1}: {currentChapter.title}
+            <h2 className={`text-3xl font-bold mb-3 ${textColor} break-words`}>
+              {currentChapter.title}
             </h2>
           </div>
-          <p className={`${subTextColor} break-words  `}>
+          <p className={`${subTextColor} break-words`}>
             {currentChapter.description}
           </p>
 
-          {/* Mobile-only: progress dưới mô tả */}
+          {/* Mobile progress */}
           <div className="lg:hidden mt-2 py-1">
             <div
               className={`text-sm mb-2 ${
@@ -142,7 +165,7 @@ function StudyHeader({
           </div>
         </div>
 
-        {/* Desktop: progress bên phải */}
+        {/* Desktop progress */}
         <div className="hidden lg:block text-right mt-6">
           <div
             className={`text-sm mb-2 ${
@@ -183,18 +206,17 @@ function StudyHeader({
                 onClick={() => handleChangeMode(mode)}
                 aria-pressed={isActive}
                 aria-label={`Chuyển sang chế độ ${label}`}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 border rounded-lg transition-all duration-200 transform hover:scale-[1.03] 
-                  ${
-                    isActive
-                      ? darkMode
-                        ? "bg-gradient-to-r from-amber-300/20 via-amber-300/15 to-amber-400/10 text-amber-100 shadow-inner border-amber-200/20"
-                        : "bg-gradient-to-r from-amber-200/40 via-amber-200/30 to-amber-300/40 text-amber-800 shadow-md border-amber-300/70"
-                      : `${cardClasses} ${
-                          darkMode
-                            ? "hover:bg-slate-600 border-slate-600/20"
-                            : "hover:bg-amber-50 border-slate-200/40"
-                        } shadow-md`
-                  }`}
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 border rounded-lg transition-all duration-200 transform hover:scale-[1.03] ${
+                  isActive
+                    ? darkMode
+                      ? "bg-gradient-to-r from-amber-300/20 via-amber-300/15 to-amber-400/10 text-amber-100 shadow-inner border-amber-200/20"
+                      : "bg-gradient-to-r from-amber-200/40 via-amber-200/30 to-amber-300/40 text-amber-800 shadow-md border-amber-300/70"
+                    : `${cardClasses} ${
+                        darkMode
+                          ? "hover:bg-slate-600 border-slate-600/20"
+                          : "hover:bg-amber-50 border-slate-200/40"
+                      } shadow-md`
+                }`}
               >
                 <Icon className="w-4 h-4" />
                 <span className="text-sm sm:text-base">{label}</span>

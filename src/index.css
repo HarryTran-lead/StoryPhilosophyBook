@@ -24,6 +24,40 @@
     background-color: rgba(128, 128, 128, 0.6);
 }
 
+/* ----- react-toastify: slide-down + fade ----- */
+.toast-slide-down-enter {
+    animation: toast-slide-down-in 320ms both;
+}
+
+.toast-slide-down-exit {
+    animation: toast-slide-down-out 260ms both;
+}
+
+@keyframes toast-slide-down-in {
+    from {
+        transform: translateY(-14px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-slide-down-out {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-8px);
+        opacity: 0;
+    }
+}
+
+
 @keyframes kenburns {
     0% {
         transform: scale(1.05) translate(0, 0);

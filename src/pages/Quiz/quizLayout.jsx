@@ -1,4 +1,3 @@
-// src/pages/MarxistPhilosophyQuiz.jsx
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,6 +17,7 @@ import {
   setStudyMode,
   resetChapter,
   selectModeAttemptPercent,
+  shuffleChapterQuestions, // <-- THÊM IMPORT
 } from "@redux/features/quizSlice";
 
 const MarxistPhilosophyQuiz = () => {
@@ -31,6 +31,7 @@ const MarxistPhilosophyQuiz = () => {
     );
     // Chuyển mode theo lựa chọn (mixed -> quiz trước)
     const nextMode = cfg.mode === "fill" ? "fill" : "quiz";
+    const dispatch = useDispatch();
     dispatch(setStudyMode(nextMode));
     dispatch(setCurrentPage(0));
   };
@@ -200,7 +201,6 @@ const MarxistPhilosophyQuiz = () => {
                 sidebarClasses={sidebarClasses}
                 themeClasses={themeClasses}
                 onClose={() => setMobileSidebarOpen(false)}
-              
               />
             </motion.div>
           </motion.div>
@@ -224,7 +224,6 @@ const MarxistPhilosophyQuiz = () => {
             getStateIcon={getStateIcon}
             sidebarClasses={sidebarClasses}
             themeClasses={themeClasses}
-   
           />
         </div>
 
@@ -235,7 +234,9 @@ const MarxistPhilosophyQuiz = () => {
             currentChapter={currentChapter}
             studyMode={studyMode}
             setStudyMode={(m) => dispatch(setStudyMode(m))}
-            shuffleQuestions={() => dispatch(setCurrentPage(0))}
+            shuffleQuestions={() =>
+              dispatch(shuffleChapterQuestions(activeChapter))
+            } // <-- GỌI ACTION TRÁO THẺ
             restartChapter={restart}
             toggleFullscreen={() => {
               if (!document.fullscreenElement) {
@@ -270,7 +271,6 @@ const MarxistPhilosophyQuiz = () => {
               <QuestionNavigation darkMode={darkMode} />
             </div>
           </div>
-       
         </main>
       </div>
     </div>

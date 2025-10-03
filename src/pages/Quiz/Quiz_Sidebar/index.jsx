@@ -464,7 +464,7 @@ export default function QuizSidebar({
   return (
     <>
       <aside
-        className={`grid grid-rows-[auto,1fr,auto] h-[100svh] w-80 sm:w-88 transition-colors duration-500
+        className={`grid grid-rows-[auto,1fr,auto] h-full w-80 sm:w-88 transition-colors duration-500
           ${
             darkMode
               ? "bg-slate-900 text-slate-200"
@@ -604,7 +604,7 @@ export default function QuizSidebar({
                                 : "text-slate-800"
                             }`}
                         >
-                          Chương {i + 1}: {ch.title}
+                        {ch.title}
                         </h3>
                         <span
                           className={`ml-2.5 px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-medium

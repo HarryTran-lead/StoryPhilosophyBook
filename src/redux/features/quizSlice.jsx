@@ -34,6 +34,15 @@ const ensureUI = (state, mode, c, q) => {
   return { k, ui: state.uiState[mode][k] };
 };
 
+// Fisher–Yates shuffle
+const shuffleArray = (arr) => {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
+
 const quizSlice = createSlice({
   name: "quiz",
   initialState,
@@ -166,6 +175,36 @@ const quizSlice = createSlice({
       }
       state.currentPage = 0;
     },
+
+    // TRÁO THẺ / XÁO THỨ TỰ CÂU HỎI CỦA CHƯƠNG HIỆN TẠI
+    shuffleChapterQuestions: (state, action) => {
+      const chapterIndex =
+        typeof action.payload === "number"
+          ? action.payload
+          : state.activeChapter;
+
+      const ch = state.chapters[chapterIndex];
+      if (!ch || !Array.isArray(ch.questions)) return;
+
+      // Lưu độ dài cũ để reset key UI/tiến trình theo index
+      const originalLen = ch.questions.length;
+
+      // 1) Xáo trộn mảng questions
+      const shuffled = shuffleArray(ch.questions.slice());
+      state.chapters[chapterIndex] = { ...ch, questions: shuffled };
+
+      // 2) Reset toàn bộ UI & tổng trạng thái của chương
+      for (let i = 0; i < originalLen; i++) {
+        const k = keyOf(chapterIndex, i);
+        delete state.uiState.quiz[k];
+        delete state.uiState.fill[k];
+        delete state.uiState.flashcard[k];
+        delete state.questionStates[k];
+      }
+
+      // 3) Quay về trang đầu
+      state.currentPage = 0;
+    },
   },
 });
 
@@ -182,6 +221,7 @@ export const {
   flipFlashcard,
   resetQuestionUI,
   resetChapter,
+  shuffleChapterQuestions, // <-- export action mới
 } = quizSlice.actions;
 
 // -------- Selectors --------

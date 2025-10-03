@@ -1,28 +1,36 @@
+import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { store, persistor } from "@redux/store"; // alias tới src/store/store.js
-import { DATASET_VERSION } from "@redux/features/data";
-import { clearAllQuizStorage } from "./utils/quizStorage";
+import { store, persistor } from "@redux/store";
+import { ToastContainer, toast, cssTransition } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// (Tùy chọn) Purge lần đầu khi version dataset thay đổi
-const BOOT_KEY = "dataset_version_boot";
-try {
-  const saved = localStorage.getItem(BOOT_KEY);
-  if (saved !== String(DATASET_VERSION)) {
-    // Xóa persisted state + UI cache cũ
-    persistor.purge();
-    clearAllQuizStorage();
-    localStorage.setItem(BOOT_KEY, String(DATASET_VERSION));
-  }
-} catch {}
+// Hiệu ứng trượt từ trên xuống + mờ dần
+export const slideDown = cssTransition({
+  enter: "toast-slide-down-enter",
+  exit: "toast-slide-down-exit",
+  duration: [320, 260],
+});
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <App />
+      <ToastContainer
+        position="top-right"
+        autoClose={2200}
+        hideProgressBar
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        limit={3}
+        transition={slideDown}
+ 
+      />
     </PersistGate>
   </Provider>
 );
