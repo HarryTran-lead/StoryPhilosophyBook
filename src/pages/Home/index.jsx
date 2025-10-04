@@ -4,61 +4,168 @@ import { Link } from "react-router-dom";
 
 export default function MarxismPhilosophyPage() {
   const steps = sections.length;
-  const [step, setStep] = useState(-1);
+  const [step, setStep] = useState(0);
+
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showGuide, setShowGuide] = useState(false);
+
+  // điều khiển hiển thị
+  const [showTopHint, setShowTopHint] = useState(false);
+  const [showNextChip, setShowNextChip] = useState(false);
+
+  // nội dung hiển thị (tách khỏi step)
+  const [topHintText, setTopHintText] = useState("");
+  const [chipProgress, setChipProgress] = useState("");
+  const [chipNextTitle, setChipNextTitle] = useState("");
+
+  // KHÓA điều hướng cho tới khi text xong
+  const [canNavigate, setCanNavigate] = useState(false);
+
   const scrollTargetRef = useRef(0);
   const scrollPosRef = useRef(0);
   const lastScrollTime = useRef(0);
 
-  const nextIndex = step >= 0 ? (step + 1) % steps : 0;
-  const prevIndex = step >= 0 ? (step - 1 + steps) % steps : 0;
+  // chống stale closure
+  const stepRef = useRef(step);
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
 
-  /* ---------------- RAF: chỉ khởi tạo 1 lần ---------------- */
+  // token mỗi lần điều hướng
+  const navTokenRef = useRef(0);
+
+  // gom toàn bộ timer
+  const timersRef = useRef({
+    topShow: null,
+    topHide: null,
+    bottomShow: null,
+    bottomHide: null,
+    unlock: null,
+  });
+
+  const nextIndex = (step + 1) % steps;
+
+  // Helper: dọn tất cả timer
+  const clearAllTimers = () => {
+    Object.keys(timersRef.current).forEach((k) => {
+      if (timersRef.current[k]) {
+        clearTimeout(timersRef.current[k]);
+        timersRef.current[k] = null;
+      }
+    });
+  };
+
+  /* ---------------- RAF: nội suy + snap ---------------- */
   useEffect(() => {
     let rafId;
     const animate = () => {
       const diff = scrollTargetRef.current - scrollPosRef.current;
-      scrollPosRef.current += diff * 0.06;
+      scrollPosRef.current += diff * 0.08;
+      if (Math.abs(diff) < 0.002)
+        scrollPosRef.current = scrollTargetRef.current;
+
       const newStep = Math.round(scrollPosRef.current);
-      if (newStep !== step) setStep(newStep);
+      if (newStep !== stepRef.current) setStep(newStep);
+
       rafId = requestAnimationFrame(animate);
     };
     rafId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafId);
-  }, []); // đừng phụ thuộc step
+  }, []);
 
-  /* -------- khi sang trang mới: bật chip gợi ý ngắn -------- */
+  /* -------- Khi đã TỚI step đích: hẹn lịch hint/chip + mở khóa điều hướng -------- */
   useEffect(() => {
-    if (step < 0) return;
-    setShowGuide(true);
-    const t = setTimeout(() => setShowGuide(false), 1600);
-    return () => clearTimeout(t);
-  }, [step]);
+    const arrived = step === Math.round(scrollTargetRef.current);
+    if (!arrived) return;
 
-  /* --------------------- tiện ích đổi step ------------------ */
+    clearAllTimers();
+    const tokenAtSchedule = navTokenRef.current;
+
+    // Tính thời điểm text hoàn tất cho step hiện tại
+    // thường: quote (1100 + 1200) = 2300ms; step cuối có CTA (1300 + 1200) = 2500ms
+    const isLast = step === steps - 1;
+    const TEXT_DONE_MS = (isLast ? 2500 : 2300) + 100; // +100ms buffer
+    const TOP_HINT_DELAY = 600; // hint bật nhẹ nhàng
+    const TOP_HINT_SHOW_MS = 1400; // hint tồn tại 1.4s
+    const CHIP_DELAY = TEXT_DONE_MS + 100; // chip sau khi text xong
+    const CHIP_SHOW_MS = 2200; // chip tồn tại 2.2s
+
+    // Mở khóa điều hướng khi text xong
+    timersRef.current.unlock = setTimeout(() => {
+      if (tokenAtSchedule !== navTokenRef.current) return;
+      setCanNavigate(true);
+    }, TEXT_DONE_MS);
+
+    // Hint trên
+    timersRef.current.topShow = setTimeout(() => {
+      if (tokenAtSchedule !== navTokenRef.current) return;
+      setTopHintText(
+        sections[step]?.hint ?? "Space/PageDown để tiếp • PageUp để lùi"
+      );
+      setShowTopHint(true);
+
+      timersRef.current.topHide = setTimeout(() => {
+        if (tokenAtSchedule !== navTokenRef.current) return;
+        setShowTopHint(false);
+      }, TOP_HINT_SHOW_MS);
+    }, TOP_HINT_DELAY);
+
+    // Chip đáy (từ step >= 1)
+    if (step >= 1) {
+      timersRef.current.bottomShow = setTimeout(() => {
+        if (tokenAtSchedule !== navTokenRef.current) return;
+
+        setChipProgress(`Phần ${step + 1}/${steps}`);
+        setChipNextTitle(sections[(step + 1) % steps]?.title ?? "");
+        setShowNextChip(true);
+
+        timersRef.current.bottomHide = setTimeout(() => {
+          if (tokenAtSchedule !== navTokenRef.current) return;
+          setShowNextChip(false);
+        }, CHIP_SHOW_MS);
+      }, CHIP_DELAY);
+    } else {
+      setShowNextChip(false);
+    }
+
+    return clearAllTimers;
+  }, [step, steps]);
+
+  /* ---------------- tiện ích đổi step ------------------ */
   const goToStep = (newTarget) => {
     if (isTransitioning || steps <= 0) return;
-    if (newTarget >= steps) newTarget = 0; // loop
-    if (newTarget < 0) newTarget = steps - 1; // loop ngược
+
+    // chặn điều hướng nếu text chưa hoàn tất
+    if (!canNavigate) return;
+
+    // chuẩn hóa vòng lặp
+    if (newTarget >= steps) newTarget = 0;
+    if (newTarget < 0) newTarget = steps - 1;
+
+    // bắt đầu điều hướng: tăng token, ẩn ngay UI & khóa điều hướng
+    navTokenRef.current += 1;
+    setShowTopHint(false);
+    setShowNextChip(false);
+    setCanNavigate(false);
+    clearAllTimers();
+
     scrollTargetRef.current = newTarget;
     setIsTransitioning(true);
-    setTimeout(() => setIsTransitioning(false), 2000);
+    setTimeout(() => setIsTransitioning(false), 600);
   };
 
   /* ---------------- scroll + keyboard ---------------------- */
   useEffect(() => {
     const handleWheel = (e) => {
-      if (step === -1 || isTransitioning) return;
+      if (isTransitioning || !canNavigate) return;
       e.preventDefault();
       const now = Date.now();
-      if (now - lastScrollTime.current < 300) return;
+      if (now - lastScrollTime.current < 280) return;
       lastScrollTime.current = now;
       goToStep(scrollTargetRef.current + (e.deltaY > 0 ? 1 : -1));
     };
 
     const handleKey = (e) => {
-      if (step === -1 || isTransitioning) return;
+      if (isTransitioning || !canNavigate) return;
       if (["ArrowDown", "PageDown", " "].includes(e.key)) {
         e.preventDefault();
         goToStep(scrollTargetRef.current + 1);
@@ -67,11 +174,11 @@ export default function MarxismPhilosophyPage() {
         e.preventDefault();
         goToStep(scrollTargetRef.current - 1);
       }
-      if (["Home"].includes(e.key)) {
+      if (e.key === "Home") {
         e.preventDefault();
         goToStep(0);
       }
-      if (["End"].includes(e.key)) {
+      if (e.key === "End") {
         e.preventDefault();
         goToStep(steps - 1);
       }
@@ -83,53 +190,45 @@ export default function MarxismPhilosophyPage() {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("keydown", handleKey);
     };
-  }, [step, isTransitioning, steps]);
+  }, [isTransitioning, steps, canNavigate]);
 
-  /* ---------------- click toàn màn (không cần progress bar) ------------- */
+  /* ---------------- click toàn màn ------------------------- */
   useEffect(() => {
-    // phần tử tương tác mà ta KHÔNG muốn kích hoạt lật trang khi click
     const INTERACTIVE_SEL =
       "a,button,input,textarea,select,summary,[role='button'],[data-nav-ignore]";
 
     const handlePointerDown = (e) => {
-      if (step === -1 || isTransitioning) return;
+      if (isTransitioning || !canNavigate) return;
 
       const t = e.target;
-      if (t.closest("header")) return; // bỏ qua header
-      if (t.closest(INTERACTIVE_SEL)) return; // bỏ qua UI tương tác
+      if (t.closest("header") || t.closest(INTERACTIVE_SEL)) return;
 
-      // đang bôi chọn chữ -> bỏ qua
       const sel = window.getSelection?.();
       if (sel && !sel.isCollapsed) return;
 
-      // click thường: đi tiếp; nếu đang ở trang cuối -> về 0
       if (scrollTargetRef.current === steps - 1) goToStep(0);
       else goToStep(scrollTargetRef.current + 1);
     };
 
-    // dùng capture phase để không bị chặn bởi stopPropagation của overlay khác
     document.addEventListener("pointerdown", handlePointerDown, true);
     return () =>
       document.removeEventListener("pointerdown", handlePointerDown, true);
-  }, [step, isTransitioning, steps]);
+  }, [isTransitioning, steps, canNavigate]);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
       {/* ------------------------- Top hint ------------------------- */}
-      <div
-        className={`fixed top-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none
-        transition-all duration-600 ${step >= 0 ? "opacity-100" : "opacity-0"}`}
-      >
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 z-40 pointer-events-none transition-all duration-600">
         <div
           className={`px-3 py-1 rounded border border-white/10 bg-black/40 text-white/85
-          text-[12px] tracking-wide backdrop-blur
-          transition-all duration-600 ${
-            showGuide ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
-          }`}
+                      text-[12px] tracking-wide backdrop-blur transition-all duration-600
+                      ${
+                        showTopHint
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 -translate-y-1"
+                      }`}
         >
-          {step >= 0
-            ? sections[step]?.hint ?? "Space/PageDown để tiếp • PageUp để lùi"
-            : ""}
+          {topHintText}
         </div>
       </div>
 
@@ -160,18 +259,6 @@ export default function MarxismPhilosophyPage() {
                 }}
               />
             </div>
-
-            <div
-              className={`absolute inset-0 transition-opacity duration-1500 ${
-                i === step ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <div className="absolute top-20 left-20 w-2 h-2 bg-yellow-400/30 rounded-full animate-pulse" />
-              <div className="absolute bottom-32 right-32 w-3 h-3 bg-red-400/30 rounded-full animate-pulse" />
-              <div className="absolute top-1/3 right-20 w-1 h-1 bg-blue-400/40 rounded-full animate-pulse" />
-              <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-white/20 to-transparent -rotate-12 opacity-30" />
-              <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-white/15 to-transparent rotate-12 opacity-30" />
-            </div>
           </div>
         ))}
       </div>
@@ -201,7 +288,7 @@ export default function MarxismPhilosophyPage() {
               >
                 <div className="w-32 h-px bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mb-6"></div>
                 <div className="text-amber-400 text-sm font-medium tracking-[0.25em] uppercase">
-                  Chương {i + 1}
+                  Phần {i + 1}
                 </div>
               </div>
 
@@ -214,8 +301,6 @@ export default function MarxismPhilosophyPage() {
                 }`}
                 style={{
                   textShadow: "3px 3px 12px rgba(0,0,0,0.8)",
-                  fontFamily:
-                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
                   lineHeight: "1.1",
                 }}
               >
@@ -229,11 +314,6 @@ export default function MarxismPhilosophyPage() {
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
                 }`}
-                style={{
-                  textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
-                  fontFamily:
-                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                }}
               >
                 {section.subtitle}
               </h2>
@@ -258,12 +338,6 @@ export default function MarxismPhilosophyPage() {
                     ? "translate-y-0 opacity-100"
                     : "translate-y-12 opacity-0"
                 }`}
-                style={{
-                  textShadow: "1px 1px 6px rgba(0,0,0,0.8)",
-                  fontFamily:
-                    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                  lineHeight: "1.75",
-                }}
               >
                 {section.description}
               </p>
@@ -280,15 +354,7 @@ export default function MarxismPhilosophyPage() {
                   <div className="text-6xl text-amber-400/30 absolute -top-4 -left-4 font-serif">
                     "
                   </div>
-                  <p
-                    className="text-base md:text-lg text-amber-200 leading-relaxed pl-8 pr-8 italic"
-                    style={{
-                      fontFamily:
-                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-                      textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
-                      fontStyle: "italic",
-                    }}
-                  >
+                  <p className="text-base md:text-lg text-amber-200 leading-relaxed pl-8 pr-8 italic">
                     {section.quote}
                   </p>
                   <footer className="mt-4 text-amber-300 text-sm font-medium">
@@ -298,7 +364,7 @@ export default function MarxismPhilosophyPage() {
               </div>
 
               {/* CTA ở slide cuối */}
-              {i === steps - 1 && (
+              {step === steps - 1 && (
                 <div
                   data-nav-ignore
                   className={`mt-12 md:mt-16 transition-all duration-1200 delay-1300 flex justify-center ${
@@ -308,13 +374,7 @@ export default function MarxismPhilosophyPage() {
                   }`}
                 >
                   <Link to="/storybook">
-                    <button
-                      className="group relative bg-gradient-to-r from-amber-600 to-amber-500 
-                                 border-2 border-amber-400 text-white px-4 py-2 md:py-2
-                                 rounded-full text-sm sm:text-base md:text-lg font-semibold
-                                 shadow-2xl overflow-hidden transition-all duration-500
-                                 hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90"
-                    >
+                    <button className="group relative bg-gradient-to-r from-amber-600 to-amber-500 border-2 border-amber-400 text-white px-4 py-2 md:py-2 rounded-full text-sm sm:text-base md:text-lg font-semibold shadow-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:from-amber-600/90 hover:to-amber-500/90">
                       <span className="relative z-10 inline-block transition-all duration-500 group-hover:pr-4">
                         Khám phá học thuyết sâu hơn
                         <span className="absolute opacity-0 group-hover:opacity-100 right-0 top-0 transform translate-x-1 group-hover:translate-x-0 transition-all duration-300 text-white/90">
@@ -336,30 +396,35 @@ export default function MarxismPhilosophyPage() {
       <div
         data-nav-ignore
         onClick={(e) => e.stopPropagation()}
-        className={`fixed bottom-16 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-700
-        ${step >= 0 ? "opacity-100" : "opacity-0"}`}
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-40 transition-opacity duration-700
+        ${step >= 1 ? "opacity-100" : "opacity-0"}`}
       >
         <div
-          className={`flex items-center gap-3 px-4 py-2 rounded-full
-          border border-white/12 bg-black/55 backdrop-blur
-          shadow-[0_8px_24px_rgba(0,0,0,.35)]
-          transition-all duration-700
-          ${
-            showGuide ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-          }`}
+          className={`flex items-center gap-3 px-4 py-1 rounded-full
+                      border border-white/12 bg-black/55 backdrop-blur
+                      shadow-[0_8px_24px_rgba(0,0,0,.35)]
+                      transition-all duration-700
+                      ${
+                        showNextChip
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-2 opacity-0"
+                      }`}
         >
-          <span className="text-xs text-amber-200">
-            Chương {Math.max(1, step + 1)}/{steps}
-          </span>
+          <span className="text-xs text-amber-200">{chipProgress}</span>
           <span className="text-white/40">•</span>
           <span className="text-sm text-white/90 line-clamp-1 max-w-[52vw] md:max-w-none">
-            Tiếp theo: {sections[nextIndex]?.title}
+            Tiếp theo: {chipNextTitle}
           </span>
 
           <button
-            onClick={() => goToStep(nextIndex)}
-            className="px-3 py-1 rounded-full border border-amber-400/50
-                       text-amber-100 hover:bg-amber-400/10 transition"
+            onClick={() => canNavigate && goToStep(nextIndex)}
+            disabled={!canNavigate}
+            className={`px-3 py-0.5 rounded-full border border-amber-400/50 text-amber-100 transition
+                        ${
+                          canNavigate
+                            ? "hover:bg-amber-400/10"
+                            : "opacity-60 cursor-not-allowed"
+                        }`}
           >
             Tiếp
           </button>
@@ -376,14 +441,16 @@ export default function MarxismPhilosophyPage() {
           {sections.map((s, idx) => (
             <li key={idx} className="relative group">
               <button
-                onClick={() => goToStep(idx)}
-                aria-label={`Đi tới chương ${idx + 1}`}
+                onClick={() => canNavigate && goToStep(idx)}
+                disabled={!canNavigate}
+                aria-label={`Đi tới phần ${idx + 1}`}
                 className={`w-3 h-3 rounded-full border transition-all
                   ${
                     idx === step
                       ? "scale-125 bg-amber-400 border-amber-300 shadow-[0_0_0_4px_rgba(251,191,36,.2)]"
                       : "bg-white/30 border-white/40 hover:bg-white/60"
-                  }`}
+                  }
+                  ${!canNavigate ? "opacity-60 cursor-not-allowed" : ""}`}
               />
               <span
                 className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2
@@ -398,7 +465,7 @@ export default function MarxismPhilosophyPage() {
         </ul>
       </div>
 
-      {/* hint cuộn */}
+      {/* hint cuộn: chỉ hiện ở step === 0 */}
       <div
         className={`fixed bottom-16 sm:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-all duration-1000 ${
           step === 0 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -410,14 +477,12 @@ export default function MarxismPhilosophyPage() {
         </div>
       </div>
 
-      {/* watermark */}
+      {/* watermark & depth overlay */}
       <div className="fixed bottom-3 left-3 z-30 opacity-60">
         <div className="text-white/60 text-xs">
           Triết học Mác-Lênin • Nghiên cứu khoa học
         </div>
       </div>
-
-      {/* depth overlay */}
       <div className="fixed inset-0 pointer-events-none z-5">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/40" />
         <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-black/20" />
