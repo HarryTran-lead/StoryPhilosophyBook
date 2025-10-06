@@ -11,15 +11,18 @@ import sophie5 from "../../assets/picture/Sophie 5.png";
 const sections = [
   // 0) HOME
   {
-    title: "Trang đầu",
-    subtitle: "Thế giới của Sophie • Hành trình triết học",
-    description:
-      "Một trải nghiệm đọc tương tác kết hợp hình ảnh và khái niệm. Dùng Space/PageDown để sang trang, PageUp để lùi; có thể nhảy nhanh bằng thanh tiến độ hoặc chấm điều hướng bên phải. Hãy để sự ngạc nhiên dẫn đường.",
-    quote: "Sapere aude — Hãy dám biết!",
-    author: "Immanuel Kant",
-    backgroundImage: Home2,
-    hint: "Nhấn Space/PageDown để bắt đầu hành trình.",
-  },
+   
+  title: "Trang đầu",
+  subtitle: "V.I. Lênin • Tư duy cách mạng & lối vào Thế giới của Sophie",
+  description:
+    "Bắt đầu từ những luận điểm cốt lõi của Lênin về nhận thức, thực tiễn và vai trò của lý luận trong cách mạng — trình bày bằng trải nghiệm đọc tương tác. Từ nền tảng đó, hành trình sẽ bắc cầu sang “Thế giới của Sophie”, nơi ta đối thoại với lịch sử triết học phương Tây.",
+  quote: "Không có lý luận cách mạng thì cũng không thể có phong trào cách mạng.",
+  author: "V.I. Lênin",
+  backgroundImage: Home2, // TODO: thay bằng ảnh bìa/ảnh minh họa Lênin của bạn
+  hint: "Nhấn Space/PageDown để khởi hành từ Lênin và gặp Sophie."
+},
+
+  
 
   // 1) GIỚI THIỆU CÂU CHUYỆN
   {
