@@ -417,3 +417,24 @@ body.philo-bg::after {
     transition-duration: 0ms !important;
   }
 }
+
+/* === Force text to black (except covers) =============================== */
+.philo-book { 
+  --ink: #0b0b0b;      /* mực đen */
+  --muted: #0b0b0b;    /* bớt xám: cũng đen */
+}
+
+/* Nội dung các trang thường (không phải bìa) */
+.philo-book .page-content:not(.cover-front):not(.cover-back) {
+  color: var(--ink) !important;
+}
+
+/* Tiêu đề & phần hay bị để màu xám */
+.philo-book .page-content:not(.cover-front):not(.cover-back) h2,
+.philo-book .page-content:not(.cover-front):not(.cover-back) h3,
+.philo-book .page-content:not(.cover-front):not(.cover-back) h4,
+.philo-book .philosophy-quote .quote-author,
+.philo-book .page-number {
+  color: var(--ink) !important;
+}
+

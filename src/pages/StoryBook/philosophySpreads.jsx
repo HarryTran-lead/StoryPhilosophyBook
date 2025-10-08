@@ -12,20 +12,20 @@ export const spreads = [
   {
     left: null,
     right: (
-<AutoFitPage
-  className="cover-front"
-  style={{
-    background: `
-      radial-gradient(circle at 20% 20%, rgba(124,58,237,.15) 0%, transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(245,158,11,.12) 0%, transparent 40%),
-      url(${Coverbook}) center / cover no-repeat,
-      linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0f0f1a 100%)
-    `
-  }}
->
-    {/* Nếu muốn chỉ hiển thị ảnh full-bleed, xóa các khối dưới đi.
-        Nếu vẫn muốn giữ tiêu đề/quote chồng lên ảnh, giữ nguyên nội dung. */}
-    <div className="cover-design">     <div className="cover-design">
+      <AutoFitPage
+        className="cover-front"
+        style={{
+          background: `
+            radial-gradient(circle at 20% 20%, rgba(124,58,237,.15) 0%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(245,158,11,.12) 0%, transparent 40%),
+            url(${Coverbook}) center / cover no-repeat,
+            linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0f0f1a 100%)
+          `
+        }}
+      >
+        {/* Nếu muốn chỉ hiển thị ảnh full-bleed, xóa các khối dưới đi.
+            Nếu vẫn muốn giữ tiêu đề/quote chồng lên ảnh, giữ nguyên nội dung. */}
+        <div className="cover-design">
           <div className="cover-stars">
             <div className="star star-1" />
             <div className="star star-2" />
@@ -59,8 +59,8 @@ export const spreads = [
 
           <div className="cover-ornament bottom" />
           <div className="cover-glow" />
-        </div></div>
-  </AutoFitPage>
+        </div>
+      </AutoFitPage>
     ),
   },
 
@@ -160,9 +160,16 @@ export const spreads = [
     ),
     right: (
       <AutoFitPage className="page-right">
+        {/* Đổi "Gợi ý hình ảnh" -> "Mẫu chuyện nhỏ" */}
         <div className="reflection-box">
-          <div className="reflection-title">Gợi ý hình ảnh</div>
-          <p>Infographic công cụ sản xuất từ thô sơ → hiện đại; làng chài ven biển &amp; ruộng bậc thang vùng cao; khu phố đông đúc.</p>
+          <div className="reflection-title">Mẫu chuyện nhỏ</div>
+          <p>
+            Ở một xã miền núi, nhóm thanh niên mang về máy xay ngô chạy điện và mở điểm thu mua.
+            Chỉ sau hai vụ, lịch làm việc đổi hẳn: phụ nữ rảnh buổi tối đi lớp xoá mù,
+            trẻ con có tiền mua sách. Làng lập quy ước chia ca và tổ góp vốn — không còn
+            cảnh “giữ bí quyết gia truyền” như trước. <em>LLSX</em> đổi → <em>QHSX</em> đổi,
+            và đời sống vật chất toàn xã hội nhích lên một nấc.
+          </p>
         </div>
 
         <div className="life-principles">
@@ -228,9 +235,15 @@ export const spreads = [
           </div>
         </div>
 
+        {/* Đổi "Gợi ý hình ảnh" -> "Mẫu chuyện nhỏ" */}
         <div className="reflection-box">
-          <div className="reflection-title">Gợi ý hình ảnh</div>
-          <p>Tranh đối sánh: xa hoa của giới quý tộc ↔ đời sống nông dân thời phong kiến.</p>
+          <div className="reflection-title">Mẫu chuyện nhỏ</div>
+          <p>
+            Nhà máy giày mở ở thị trấn. Bảng tin công ty đăng bài “Gia đình là động lực — hãy tự nguyện tăng ca”:
+            một cách nhìn từ phía quản lý. Trong quán nước đối diện, nhóm công nhân chia sẻ bài viết về quyền nghỉ bù
+            từ một blog độc lập. Vài tuần sau, họ đề xuất quỹ ca đêm và lịch bù minh bạch. Cùng một sự kiện,
+            hai hệ tư tưởng đối thoại ngay trên cùng con phố.
+          </p>
         </div>
 
         <div className="page-number">7</div>
@@ -356,9 +369,15 @@ export const spreads = [
     ),
     right: (
       <AutoFitPage className="page-right">
+        {/* Đổi "Gợi ý hình ảnh" -> "Mẫu chuyện nhỏ" */}
         <div className="reflection-box">
-          <div className="reflection-title">Gợi ý hình ảnh</div>
-          <p>Đồ thị “thói quen cũ” kéo chậm cải cách; tia chớp “ý tưởng mới” mở đường.</p>
+          <div className="reflection-title">Mẫu chuyện nhỏ</div>
+          <p>
+            Ở một trường huyện, cô giáo Vật lý lập CLB maker. Trước cả khi xưởng mới được đầu tư,
+            học sinh đã thống nhất nội quy “ai cũng được thử — không phân biệt nam nữ” và mở ngày chia sẻ dự án.
+            Một năm sau, phòng lab về tới nơi; thói quen “nam máy — nữ sổ” đã biến mất từ trước.
+            <em>Ý thức mới</em> đi <em>vượt trước</em> và kéo điều kiện vật chất thay đổi theo.
+          </p>
         </div>
 
         <div className="philosophy-quote">
@@ -569,17 +588,17 @@ export const spreads = [
             <div className="life-summary">
               <div className="summary-item">
                 <span className="summary-icon">🏗️</span>
-                <p><strong>Xây nền móng vật chất</strong> hiện đại</p>
+                <p><strong>Xây nền móng vật chất</strong> </p>
               </div>
 
               <div className="summary-item">
                 <span className="summary-icon">🧠</span>
-                <p><strong>Bồi đắp ý thức</strong> khoa học &amp; nhân văn</p>
+                <p><strong>Bồi đắp ý thức</strong> </p>
               </div>
 
               <div className="summary-item">
                 <span className="summary-icon">🔄</span>
-                <p><strong>Phối hợp biện chứng</strong> để phát triển bền vững</p>
+                <p><strong>Phối hợp biện chứng</strong> </p>
               </div>
             </div>
           </div>
@@ -628,8 +647,11 @@ export const spreads = [
   },
 ];
 
-/** Chuyển spreads -> mảng pages cho HTMLFlipBook (showCover=true) */
-export const spreadsToPages = (spreads) => {
+/** Chuyển spreads -> mảng pages cho HTMLFlipBook (showCover=true)
+ *  + Thêm 2 trang Mục lục (TOC-L & TOC-R) ngay sau cover-front (index = 1,2)
+ *  + Nhận onTocClick để lật trang khi bấm mục lục
+ */
+export const spreadsToPages = (spreads, { onTocClick } = {}) => {
   const pages = [];
 
   // 0) Bìa trước = right của spread 0
@@ -639,15 +661,93 @@ export const spreadsToPages = (spreads) => {
     </div>
   );
 
-  // 1) Các spread sau: left rồi right (nếu có)
+  // Mapping gốc (không TOC): left = 2*s - 1, right = 2*s (s>=1).
+  // Sau khi có 2 trang TOC -> cộng +2 cho mọi trang nội dung.
+  const OFFSET = 2;
+  const idxFor = (spreadIndex, side = "left") => {
+    if (spreadIndex <= 0) return 0; // cover
+    const base = side === "left" ? 2 * spreadIndex - 1 : 2 * spreadIndex;
+    return base + OFFSET;
+  };
+
+  // Danh sách mục lục (label + spread đích)
+  const toc = [
+    { label: "Dẫn nhập", s: 1, side: "left" },
+    { label: "Chương I — Tồn Tại Xã Hội", s: 2, side: "left" },
+    { label: "Chương II — Ý Thức Xã Hội", s: 3, side: "left" },
+    { label: "Chương III — Hình thái YTXH", s: 4, side: "left" },
+    { label: "Chương IV — Vật chất quyết định tinh thần", s: 5, side: "left" },
+    { label: "Chương V — Tính độc lập tương đối của YTXH", s: 6, side: "left" },
+    { label: "Chương VI — Ví dụ & vận dụng", s: 7, side: "left" },
+    { label: "Chương VII — Câu hỏi & thảo luận", s: 8, side: "left" },
+    { label: "Chương VIII — Tóm tắt & so sánh", s: 9, side: "left" },
+    { label: "Chương IX — Ý nghĩa phương pháp", s: 10, side: "left" },
+    { label: "Kết — Lời cuối", s: 11, side: "left" },
+  ];
+
+  // Chia TOC thành 2 trang cho đẹp
+  const mid = Math.ceil(toc.length / 2);
+  const tocLeft = toc.slice(0, mid);
+  const tocRight = toc.slice(mid);
+
+  const renderTocList = (items) => (
+    <div className="wisdom-section">
+      <h4>Chương / Trang</h4>
+      {items.map((item, i) => {
+        const targetIdx = idxFor(item.s, item.side);
+        const printedPage = 2 * item.s; // số trang hiển thị trong nội dung (left của spread s)
+        return (
+          <div className="principle" key={`${item.label}-${i}`}>
+            <span className="principle-icon">📖</span>
+            <a
+              href="#"
+              className="toc-link"
+              data-goto={targetIdx}
+              title={`Tới trang ${printedPage}`}
+              onClick={onTocClick}
+            >
+              <strong>{item.label}</strong>
+              <span className="toc-page"> — tr. {printedPage}</span>
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  // 1) TOC-L (index = 1)
+  pages.push(
+    <div className="page" key="toc-L">
+      <AutoFitPage className="page-left">
+        <div className="page-header">
+          <h2>Mục lục</h2>
+          <div className="chapter-ornament">❦</div>
+        </div>
+        <div className="page-body">{renderTocList(tocLeft)}</div>
+        {/* Không in số trang cho TOC để giữ numbering nội dung cũ */}
+      </AutoFitPage>
+    </div>
+  );
+
+  // 2) TOC-R (index = 2)
+  pages.push(
+    <div className="page" key="toc-R">
+      <AutoFitPage className="page-right">
+        <div className="page-header">
+          <h2>Mục lục (tiếp)</h2>
+          <div className="chapter-ornament">❦</div>
+        </div>
+        <div className="page-body">{renderTocList(tocRight)}</div>
+        {/* Không in số trang cho TOC để giữ numbering nội dung cũ */}
+      </AutoFitPage>
+    </div>
+  );
+
+  // 3) Các spread sau: left rồi right (nếu có)
   for (let i = 1; i < spreads.length; i++) {
     const s = spreads[i];
-    if (s.left) {
-      pages.push(<div className="page" key={`p-${i}-L`}>{s.left}</div>);
-    }
-    if (s.right) {
-      pages.push(<div className="page" key={`p-${i}-R`}>{s.right}</div>);
-    }
+    if (s.left) pages.push(<div className="page" key={`p-${i}-L`}>{s.left}</div>);
+    if (s.right) pages.push(<div className="page" key={`p-${i}-R`}>{s.right}</div>);
   }
 
   return pages;
