@@ -63,7 +63,7 @@ const TrademarkFooter = () => (
         />
       </svg>
       <span className="text-sm md:text-base font-semibold text-amber-200">
-        MLN101 Studio - Group 7
+        © {new Date().getFullYear()} All Rights Reserved
       </span>
     </div>
   </div>

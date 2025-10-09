@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 /* Custom scrollbar */
 .custom-scrollbar {
     scrollbar-width: thin;
