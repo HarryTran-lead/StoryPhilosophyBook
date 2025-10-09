@@ -127,6 +127,11 @@
 .reflection-title, .connection-title, .meditation-title{
   font-weight:800; color: var(--violet-500); margin-bottom:10px;
   font-size: clamp(14px, 2vw, 16px); text-transform: uppercase; letter-spacing:.6px;
+  
+}
+
+.reflection-title .p{
+  color: #050507 !important;
 }
 
 /* Lists of wisdom */
@@ -232,7 +237,7 @@
 .book-dark .stoic-quote,
 .book-dark .rumi-quote{
   background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(245,158,11,.12));
-  color: #0f172a;
+  color: black;
   border-left-color:#fbbf24;
   box-shadow: 0 6px 18px rgba(0,0,0,.25);
 }
@@ -242,7 +247,7 @@
 .book-dark .wisdom-insight{
   background: rgba(255,255,255,.04);
   border-color: rgba(255,255,255,.08);
-  color:#0f172a;
+  color: black;
 }
 
 /* thẻ tóm tắt/ô điểm nhấn */
@@ -266,6 +271,16 @@
 }
 
 /* Trang bên trong: đổi tông heading/nhấn sang amber */
+.theme-amber /* Paragraphs */
+.page-body p{
+  color: #000;            /* ← đổi sang đen */
+  line-height: 1.85;
+  margin-bottom: 16px;
+  text-align: justify;
+  font-size: clamp(13px, 1.95vw, 15px);
+  text-indent: 1.25em;
+}
+
 .theme-amber .page-body h3{ color: var(--accent-300); text-shadow: 0 0 8px rgba(253,186,116,.35); }
 .theme-amber .page-body h4{ color: var(--accent-400); text-shadow: 0 0 6px rgba(251,146,60,.35); }
 .theme-amber .wisdom-number{ background: var(--accent-600); }
