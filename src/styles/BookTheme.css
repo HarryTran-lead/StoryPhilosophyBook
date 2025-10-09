@@ -120,6 +120,10 @@
   box-shadow: 0 4px 14px rgba(0,0,0,.06);
   padding: 16px 18px; margin: 16px 0;
 }
+
+.reflection-box .rel{
+   color:#0f172a !important;
+}
 .reflection-title, .connection-title, .meditation-title{
   font-weight:800; color: var(--violet-500); margin-bottom:10px;
   font-size: clamp(14px, 2vw, 16px); text-transform: uppercase; letter-spacing:.6px;
@@ -228,7 +232,7 @@
 .book-dark .stoic-quote,
 .book-dark .rumi-quote{
   background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(245,158,11,.12));
-  color: #e9d5ff;
+  color: #0f172a;
   border-left-color:#fbbf24;
   box-shadow: 0 6px 18px rgba(0,0,0,.25);
 }
@@ -238,7 +242,7 @@
 .book-dark .wisdom-insight{
   background: rgba(255,255,255,.04);
   border-color: rgba(255,255,255,.08);
-  color:#e6edf3;
+  color:#0f172a;
 }
 
 /* thẻ tóm tắt/ô điểm nhấn */
