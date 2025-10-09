@@ -21,21 +21,6 @@ import {
 } from "@redux/features/quizSlice";
 
 const MarxistPhilosophyQuiz = () => {
-  // Test Modal
-  const [testOpen, setTestOpen] = React.useState(false);
-  const handleStartTest = (cfg) => {
-    // ví dụ: lưu cấu hình + chuyển sang chế độ tương ứng
-    localStorage.setItem(
-      "test_config",
-      JSON.stringify({ ...cfg, chapterIndex: activeChapter })
-    );
-    // Chuyển mode theo lựa chọn (mixed -> quiz trước)
-    const nextMode = cfg.mode === "fill" ? "fill" : "quiz";
-    const dispatch = useDispatch();
-    dispatch(setStudyMode(nextMode));
-    dispatch(setCurrentPage(0));
-  };
-
   const dispatch = useDispatch();
   const { chapters, activeChapter, currentPage, questionStates, studyMode } =
     useSelector(selectQuiz);
@@ -51,7 +36,7 @@ const MarxistPhilosophyQuiz = () => {
   // Dark mode cục bộ (persist localStorage)
   const [darkMode, setDarkMode] = React.useState(() => {
     const saved = localStorage.getItem("darkMode");
-    return saved ? JSON.parse(saved) : false;
+    return saved ? JSON.parse(saved) : true;
   });
   React.useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));

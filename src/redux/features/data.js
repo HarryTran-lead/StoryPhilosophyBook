@@ -1,58 +1,59 @@
 // src/data/chapter3.dataset.js
-// Gộp 3 mức độ + Bộ 50 câu theo 3 chủ đề
-// MỖI CÂU ĐỀU ĐẦY ĐỦ: term, definition, quiz{question, options, correct}, fillAnswer, answer, fullFillAnswer
+// Phiên bản đã chuẩn hoá chủ đề & xoá viết tắt
 
-export const DATASET_VERSION = 8;
+export const DATASET_VERSION = 9;
 
 /**
- * Lưu ý:
- * - quiz.correct dùng chỉ số 0-based (A=0, B=1, C=2, D=3)
- * - Mỗi chương có id riêng; mỗi câu trong chương đánh số từ 1
+ * Quy ước:
+ * - Mỗi chương có id riêng; trong mỗi chương, câu hỏi đánh số từ 1.
+ * - Không dùng viết tắt (ví dụ: TTXH → "tồn tại xã hội"; YTXH → "ý thức xã hội";
+ *   LLSX → "lực lượng sản xuất"; QHSX → "quan hệ sản xuất";
+ *   CSHT → "cơ sở hạ tầng (kinh tế)"; KTTT → "kiến trúc thượng tầng";
+ *   KT–XH → "kinh tế – xã hội"; TLSX → "tư liệu sản xuất").
  */
 
 export const chapters = [
   /* =========================================================
-   * (1) GỘP 3 MỨC ĐỘ: Nhận biết (1–7) → Thông hiểu (8–13) → Vận dụng (14–18)
+   * Chương 1 — Tồn tại xã hội & Ý thức xã hội (cơ sở và quan hệ)
+   * Nền tảng khái niệm, cấu trúc, thuộc tính và quan hệ biện chứng.
    * ========================================================= */
   {
-    id: 30300,
-    title: "Chương 3: Tồn tại xã hội và Ý thức xã hội",
+    id: 31001,
+    title: "Tồn tại xã hội & Ý thức xã hội (cơ sở và quan hệ)",
     description:
-      "Các câu hỏi ôn tập theo ba mức độ: Nhận biết, Thông hiểu, Vận dụng.",
-    icon: "🧠",
-
+      "Khái niệm nền tảng, kết cấu, các thuộc tính và quan hệ biện chứng giữa tồn tại xã hội và ý thức xã hội; các vận dụng điển hình.",
+    icon: "🧩",
     questions: [
-      // ===== NHẬN BIẾT (1–7)
+      // 1
       {
         id: 1,
-        term: "Tồn tại xã hội (TTXH)",
+        term: "Tồn tại xã hội",
         definition:
           "Toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
         quiz: {
-          question:
-            "Theo quan điểm của chủ nghĩa duy vật lịch sử, tồn tại xã hội (TTXH) là gì?",
+          question: "Theo chủ nghĩa duy vật lịch sử, “tồn tại xã hội” là gì?",
           options: [
-            "Toàn bộ đời sống tinh thần và vật chất của xã hội.",
+            "Toàn bộ đời sống tinh thần của xã hội.",
             "Toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
-            "Toàn bộ những quan điểm, tư tưởng, lý luận của một cộng đồng người.",
-            "Toàn bộ những thành tựu về văn hóa, khoa học và nghệ thuật của xã hội.",
+            "Tổng thể hệ thống chính trị của xã hội.",
+            "Những thành tựu văn hoá – nghệ thuật.",
           ],
           correct: 1,
         },
         fillAnswer:
           "___ là toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
-        answer: "Tồn tại xã hội (TTXH)",
+        answer: "Tồn tại xã hội",
         fullFillAnswer:
           "Tồn tại xã hội là toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
       },
+      // 2
       {
         id: 2,
-        term: "Các yếu tố cơ bản của TTXH",
+        term: "Các yếu tố cơ bản của tồn tại xã hội",
         definition:
           "Hoàn cảnh địa lý, dân cư và phương thức sản xuất của cải vật chất.",
         quiz: {
-          question:
-            "Tồn tại xã hội bao gồm ba yếu tố cơ bản. Đâu là phương án đúng nhất?",
+          question: "Ba yếu tố cơ bản cấu thành tồn tại xã hội là gì?",
           options: [
             "Phương thức sản xuất, nhà nước và giai cấp.",
             "Lực lượng sản xuất, quan hệ sản xuất và kiến trúc thượng tầng.",
@@ -61,57 +62,60 @@ export const chapters = [
           ],
           correct: 2,
         },
-        fillAnswer: "Ba yếu tố cơ bản của TTXH: ___.",
+        fillAnswer: "Ba yếu tố cơ bản của tồn tại xã hội: ___.",
         answer:
           "Hoàn cảnh địa lý, dân cư và phương thức sản xuất của cải vật chất",
         fullFillAnswer:
-          "TTXH bao gồm: hoàn cảnh địa lý, dân cư và phương thức sản xuất của cải vật chất.",
+          "Tồn tại xã hội bao gồm: hoàn cảnh địa lý, dân cư và phương thức sản xuất của cải vật chất.",
       },
+      // 3
       {
         id: 3,
-        term: "Yếu tố quyết định nhất của TTXH",
+        term: "Yếu tố quyết định nhất của tồn tại xã hội",
         definition:
           "Phương thức sản xuất của cải vật chất giữ vai trò quyết định nhất.",
         quiz: {
           question:
-            "Trong các yếu tố cấu thành tồn tại xã hội, yếu tố nào giữ vai trò quyết định nhất?",
+            "Trong các yếu tố của tồn tại xã hội, yếu tố nào giữ vai trò quyết định nhất?",
           options: [
             "Hoàn cảnh địa lý và điều kiện tự nhiên.",
             "Yếu tố dân cư và mật độ dân số.",
             "Phương thức sản xuất của cải vật chất.",
-            "Cả ba yếu tố đều có vai trò quan trọng như nhau.",
+            "Các yếu tố đều quan trọng như nhau.",
           ],
           correct: 2,
         },
-        fillAnswer: "Yếu tố quyết định nhất của TTXH là ___.",
+        fillAnswer: "Yếu tố quyết định nhất của tồn tại xã hội là ___.",
         answer: "Phương thức sản xuất của cải vật chất",
         fullFillAnswer:
-          "Trong TTXH, phương thức sản xuất của cải vật chất giữ vai trò quyết định nhất.",
+          "Trong tồn tại xã hội, phương thức sản xuất của cải vật chất giữ vai trò quyết định nhất.",
       },
+      // 4
       {
         id: 4,
-        term: "Ý thức xã hội (YTXH)",
+        term: "Ý thức xã hội",
         definition:
-          "Toàn bộ đời sống tinh thần của xã hội, nảy sinh từ và phản ánh tồn tại xã hội.",
+          "Phương diện sinh hoạt tinh thần của xã hội, nảy sinh từ và phản ánh tồn tại xã hội.",
         quiz: {
-          question: "Ý thức xã hội (YTXH) được hiểu là:",
+          question: "Ý thức xã hội được hiểu là gì?",
           options: [
-            "Toàn bộ đời sống tinh thần của xã hội, nảy sinh từ tồn tại xã hội và phản ánh tồn tại xã hội.",
-            "Toàn bộ đời sống vật chất của xã hội và quyết định tồn tại xã hội.",
-            "Những ý thức, tình cảm riêng lẻ của từng cá nhân trong xã hội.",
-            "Hệ thống các cơ quan quyền lực của nhà nước và các đảng phái chính trị.",
+            "Toàn bộ đời sống vật chất của xã hội.",
+            "Phương diện sinh hoạt tinh thần của xã hội, nảy sinh từ và phản ánh tồn tại xã hội.",
+            "Ý thức của từng cá nhân.",
+            "Hệ thống cơ quan công quyền.",
           ],
-          correct: 0,
+          correct: 1,
         },
         fillAnswer:
-          "___ là phương diện tinh thần của đời sống xã hội, nảy sinh từ và phản ánh TTXH.",
-        answer: "Ý thức xã hội (YTXH)",
+          "___ là phương diện sinh hoạt tinh thần của xã hội, nảy sinh từ và phản ánh tồn tại xã hội.",
+        answer: "Ý thức xã hội",
         fullFillAnswer:
-          "Ý thức xã hội là phương diện tinh thần của đời sống xã hội, nảy sinh từ và phản ánh TTXH.",
+          "Ý thức xã hội là phương diện sinh hoạt tinh thần của xã hội, nảy sinh từ và phản ánh tồn tại xã hội.",
       },
+      // 5
       {
         id: 5,
-        term: "Kết cấu của YTXH",
+        term: "Kết cấu của ý thức xã hội",
         definition: "Gồm hai cấp độ: tâm lý xã hội và hệ tư tưởng xã hội.",
         quiz: {
           question: "Kết cấu của ý thức xã hội gồm những cấp độ nào?",
@@ -123,16 +127,17 @@ export const chapters = [
           ],
           correct: 1,
         },
-        fillAnswer: "Hai cấp độ trong kết cấu YTXH: ___ và ___.",
+        fillAnswer: "Hai cấp độ trong kết cấu ý thức xã hội: ___ và ___.",
         answer: "Tâm lý xã hội và hệ tư tưởng xã hội",
         fullFillAnswer:
-          "Kết cấu YTXH gồm hai cấp độ: tâm lý xã hội và hệ tư tưởng xã hội.",
+          "Kết cấu ý thức xã hội gồm hai cấp độ: tâm lý xã hội và hệ tư tưởng xã hội.",
       },
+      // 6
       {
         id: 6,
-        term: "Hình thái YTXH (loại trừ)",
+        term: "Hình thái ý thức xã hội (loại trừ)",
         definition:
-          "“Ý thức sản xuất” không phải là hình thái của ý thức xã hội.",
+          "“Ý thức sản xuất” không phải là một hình thái của ý thức xã hội.",
         quiz: {
           question: "Đâu KHÔNG phải là một hình thái của ý thức xã hội?",
           options: [
@@ -146,61 +151,63 @@ export const chapters = [
         fillAnswer: "___ không phải là một hình thái của ý thức xã hội.",
         answer: "Ý thức sản xuất",
         fullFillAnswer:
-          "Trong các hình thái YTXH, “ý thức sản xuất” không phải là một hình thái.",
+          "Trong các hình thái ý thức xã hội, “ý thức sản xuất” không phải là một hình thái.",
       },
+      // 7
       {
         id: 7,
-        term: "Quan hệ TTXH – YTXH",
+        term: "Quan hệ giữa tồn tại xã hội và ý thức xã hội",
         definition:
-          "TTXH quyết định YTXH; YTXH có tính độc lập tương đối và tác động trở lại TTXH.",
+          "Tồn tại xã hội quyết định ý thức xã hội; ý thức xã hội có tính độc lập tương đối và tác động trở lại tồn tại xã hội.",
         quiz: {
           question:
-            "Luận điểm nào thể hiện đúng nhất mối quan hệ giữa TTXH và YTXH?",
+            "Luận điểm nào thể hiện đúng nhất mối quan hệ giữa tồn tại xã hội và ý thức xã hội?",
           options: [
-            "YTXH quyết định TTXH.",
-            "TTXH và YTXH tồn tại độc lập, không liên quan.",
-            "TTXH quyết định YTXH, đồng thời YTXH có tính độc lập tương đối và tác động trở lại TTXH.",
-            "TTXH và YTXH quyết định lẫn nhau ngang bằng.",
+            "Ý thức xã hội quyết định tồn tại xã hội.",
+            "Hai mặt này tồn tại độc lập, không liên quan.",
+            "Tồn tại xã hội quyết định ý thức xã hội, đồng thời ý thức xã hội có tính độc lập tương đối và tác động trở lại tồn tại xã hội.",
+            "Chúng quyết định lẫn nhau ngang bằng.",
           ],
           correct: 2,
         },
         fillAnswer:
           "Mối quan hệ: ___ quyết định ___; ___ có tính độc lập tương đối và tác động trở lại ___.",
-        answer: "TTXH quyết định YTXH; YTXH tác động trở lại TTXH",
+        answer:
+          "Tồn tại xã hội quyết định ý thức xã hội; ý thức xã hội tác động trở lại tồn tại xã hội",
         fullFillAnswer:
-          "TTXH quyết định YTXH; YTXH có tính độc lập tương đối và tác động trở lại TTXH.",
+          "Tồn tại xã hội quyết định ý thức xã hội; ý thức xã hội có tính độc lập tương đối và tác động trở lại tồn tại xã hội.",
       },
-
-      // ===== THÔNG HIỂU (8–13)
+      // 8
       {
         id: 8,
-        term: "Tính giai cấp của YTXH",
+        term: "Tính giai cấp của ý thức xã hội",
         definition:
-          "Trong xã hội có giai cấp, do TTXH và lợi ích khác nhau (thậm chí đối lập), YTXH mang tính giai cấp.",
+          "Trong xã hội có giai cấp, do tồn tại xã hội và lợi ích khác nhau (thậm chí đối lập), ý thức xã hội mang tính giai cấp.",
         quiz: {
           question:
             "Vì sao trong xã hội có giai cấp, ý thức xã hội lại mang tính giai cấp?",
           options: [
             "Vì mỗi giai cấp có trình độ nhận thức khác nhau.",
-            "Vì tồn tại xã hội của các giai cấp là khác nhau, lợi ích giai cấp đối lập nhau.",
+            "Vì tồn tại xã hội của các giai cấp khác nhau, lợi ích giai cấp đối lập nhau.",
             "Vì giai cấp thống trị áp đặt tư tưởng bằng bạo lực.",
-            "Vì truyền thống và thói quen của mỗi giai cấp khác nhau.",
+            "Vì thói quen truyền thống khác nhau.",
           ],
           correct: 1,
         },
-        fillAnswer: "YTXH mang tính giai cấp vì ___.",
-        answer: "tồn tại xã hội khác nhau và lợi ích giai cấp đối lập nhau",
+        fillAnswer: "Ý thức xã hội mang tính giai cấp vì ___.",
+        answer: "Tồn tại xã hội khác nhau và lợi ích giai cấp đối lập nhau",
         fullFillAnswer:
-          "YTXH mang tính giai cấp vì TTXH khác nhau và lợi ích giai cấp đối lập nhau.",
+          "Ý thức xã hội mang tính giai cấp vì tồn tại xã hội khác nhau và lợi ích giai cấp đối lập nhau.",
       },
+      // 9
       {
         id: 9,
-        term: "Biểu hiện lạc hậu của YTXH",
+        term: "Tính lạc hậu của ý thức xã hội",
         definition:
           "Một số phong tục, tập quán cũ không còn phù hợp vẫn tồn tại trong đời sống hiện đại.",
         quiz: {
           question:
-            "Biểu hiện nào thể hiện rõ tính lạc hậu của YTXH so với TTXH?",
+            "Biểu hiện nào thể hiện rõ tính lạc hậu của ý thức xã hội so với tồn tại xã hội?",
           options: [
             "Một phát minh khoa học đi trước thời đại.",
             "Phong tục, tập quán cũ lạc hậu vẫn tồn tại trong đời sống hiện đại.",
@@ -209,221 +216,188 @@ export const chapters = [
           ],
           correct: 1,
         },
-        fillAnswer: "Tính lạc hậu của YTXH: ___.",
-        answer: "Phong tục, tập quán lạc hậu vẫn tồn tại trong hiện đại",
+        fillAnswer: "Tính lạc hậu của ý thức xã hội: ___.",
+        answer:
+          "Phong tục, tập quán lạc hậu vẫn tồn tại trong đời sống hiện đại",
         fullFillAnswer:
-          "Tính lạc hậu của YTXH thể hiện khi phong tục, tập quán cũ vẫn tồn tại trong đời sống hiện đại.",
+          "Tính lạc hậu của ý thức xã hội thể hiện khi phong tục, tập quán cũ vẫn tồn tại trong đời sống hiện đại.",
       },
+      // 10
       {
         id: 10,
-        term: "Tính vượt trước của YTXH",
+        term: "Tính vượt trước của ý thức xã hội",
         definition:
-          "Khi phản ánh đúng bản chất và có cơ sở khoa học, YTXH có thể dự báo, đi trước TTXH.",
+          "Khi phản ánh đúng bản chất và có cơ sở khoa học, ý thức xã hội có thể dự báo, đi trước tồn tại xã hội.",
         quiz: {
-          question: "YTXH có thể vượt trước TTXH khi nào?",
+          question: "Ý thức xã hội có thể vượt trước tồn tại xã hội khi nào?",
           options: [
-            "Khi phản ánh đúng đắn các mối liên hệ bản chất, có cơ sở khoa học.",
+            "Khi phản ánh đúng đắn các mối liên hệ bản chất và có cơ sở khoa học.",
             "Khi là ý chí chủ quan của một vĩ nhân.",
             "Khi phản ánh hư ảo, hoang đường.",
-            "Khi lặp lại nguyên xi tư tưởng quá khứ.",
+            "Khi lặp lại tư tưởng quá khứ.",
           ],
           correct: 0,
         },
-        fillAnswer: "YTXH vượt trước TTXH khi nó có cơ sở khoa học và ___.",
-        answer: "phản ánh đúng đắn các mối liên hệ bản chất, tất yếu",
+        fillAnswer:
+          "Ý thức xã hội vượt trước tồn tại xã hội khi nó có cơ sở khoa học và ___.",
+        answer: "Phản ánh đúng đắn các mối liên hệ bản chất, tất yếu",
         fullFillAnswer:
-          "YTXH vượt trước TTXH nếu phản ánh đúng bản chất và có cơ sở khoa học.",
+          "Ý thức xã hội vượt trước tồn tại xã hội nếu phản ánh đúng bản chất và có cơ sở khoa học.",
       },
+      // 11
       {
         id: 11,
-        term: "Tính kế thừa của YTXH",
+        term: "Tính kế thừa của ý thức xã hội",
         definition:
-          "YTXH giai đoạn sau kế thừa có chọn lọc các giá trị của giai đoạn trước để phát triển.",
+          "Giai đoạn sau kế thừa có chọn lọc các giá trị của giai đoạn trước để phát triển.",
         quiz: {
           question:
-            '"Tính kế thừa" trong sự phát triển của YTXH có nghĩa là gì?',
+            "“Tính kế thừa” trong sự phát triển của ý thức xã hội có nghĩa là gì?",
           options: [
             "Sao chép hoàn toàn tư tưởng trước.",
             "Phủ định sạch trơn tư tưởng trước.",
             "Kế thừa có chọn lọc các giá trị trước để phát triển.",
-            "Các hình thái YTXH phát triển độc lập.",
+            "Các hình thái ý thức phát triển độc lập.",
           ],
           correct: 2,
         },
         fillAnswer:
           "Tính kế thừa: giai đoạn sau ___ các giá trị giai đoạn trước.",
-        answer: "kế thừa có chọn lọc",
+        answer: "Kế thừa có chọn lọc",
         fullFillAnswer:
           "Tính kế thừa nghĩa là kế thừa có chọn lọc các giá trị của giai đoạn trước.",
       },
+      // 12
       {
         id: 12,
-        term: "Tác động trở lại của YTXH",
+        term: "Sự tác động trở lại của ý thức xã hội",
         definition:
-          "YTXH có thể thúc đẩy hoặc kìm hãm TTXH tùy tính chất tiến bộ hay lạc hậu.",
+          "Ý thức xã hội có thể thúc đẩy hoặc kìm hãm tồn tại xã hội tùy tính chất tiến bộ hay lạc hậu.",
         quiz: {
           question:
-            "Sự tác động trở lại của YTXH đối với TTXH được thể hiện thế nào?",
+            "Sự tác động trở lại của ý thức xã hội đối với tồn tại xã hội được thể hiện thế nào?",
           options: [
-            "Luôn luôn thúc đẩy TTXH.",
-            "Luôn luôn kìm hãm TTXH.",
+            "Luôn luôn thúc đẩy tồn tại xã hội.",
+            "Luôn luôn kìm hãm tồn tại xã hội.",
             "Không có khả năng tác động.",
             "Có thể thúc đẩy hoặc kìm hãm tùy tính chất tiến bộ hay lạc hậu.",
           ],
           correct: 3,
         },
-        fillAnswer: "YTXH có thể ___ hoặc ___ TTXH tùy tính chất của nó.",
-        answer: "thúc đẩy hoặc kìm hãm",
+        fillAnswer:
+          "Ý thức xã hội có thể ___ hoặc ___ tồn tại xã hội tùy tính chất của nó.",
+        answer: "Thúc đẩy hoặc kìm hãm",
         fullFillAnswer:
-          "YTXH có thể thúc đẩy hoặc kìm hãm TTXH tùy tính chất tiến bộ hay lạc hậu.",
+          "Ý thức xã hội có thể thúc đẩy hoặc kìm hãm tồn tại xã hội tùy tính chất tiến bộ hay lạc hậu.",
       },
+      // 13
       {
         id: 13,
-        term: "Phân biệt tâm lý xã hội & hệ tư tưởng",
+        term: "Phân biệt tâm lý xã hội và hệ tư tưởng xã hội",
         definition:
-          "Tâm lý xã hội: phản ánh trực tiếp, tự phát; Hệ tư tưởng: phản ánh gián tiếp, có hệ thống.",
+          "Tâm lý xã hội: phản ánh trực tiếp, tự phát; Hệ tư tưởng xã hội: phản ánh gián tiếp, có hệ thống.",
         quiz: {
           question:
-            "Sự khác biệt cơ bản giữa tâm lý xã hội và hệ tư tưởng là gì?",
+            "Sự khác biệt cơ bản giữa tâm lý xã hội và hệ tư tưởng xã hội là gì?",
           options: [
             "Tâm lý xã hội mang tính lý luận, hệ tư tưởng tự phát.",
-            "Tâm lý xã hội phản ánh trực tiếp, tự phát; hệ tư tưởng phản ánh gián tiếp, có hệ thống.",
-            "Tâm lý xã hội chỉ ở giai cấp bị trị, hệ tư tưởng chỉ ở giai cấp thống trị.",
-            "Tâm lý xã hội không thay đổi, hệ tư tưởng luôn thay đổi.",
+            "Tâm lý xã hội phản ánh trực tiếp, tự phát; hệ tư tưởng xã hội phản ánh gián tiếp, có hệ thống.",
+            "Tâm lý xã hội chỉ ở giai cấp bị trị; hệ tư tưởng chỉ ở giai cấp thống trị.",
+            "Tâm lý xã hội không thay đổi; hệ tư tưởng luôn thay đổi.",
           ],
           correct: 1,
         },
         fillAnswer:
-          "Tâm lý XH: phản ánh ___, ___; Hệ tư tưởng: phản ánh ___, ___.",
-        answer: "trực tiếp, tự phát; gián tiếp, có hệ thống",
+          "Tâm lý xã hội: phản ánh ___, ___; Hệ tư tưởng xã hội: phản ánh ___, ___.",
+        answer: "Trực tiếp, tự phát; gián tiếp, có hệ thống",
         fullFillAnswer:
-          "Khác biệt: tâm lý XH phản ánh trực tiếp, tự phát; hệ tư tưởng phản ánh gián tiếp, có hệ thống.",
+          "Khác biệt: tâm lý xã hội phản ánh trực tiếp, tự phát; hệ tư tưởng xã hội phản ánh gián tiếp, có hệ thống.",
       },
-
-      // ===== VẬN DỤNG (14–18)
+      // 14
       {
         id: 14,
         term: "Kinh tế quyết định chính trị",
-        definition: "Biểu hiện vai trò quyết định của TTXH đối với YTXH.",
+        definition:
+          "Một cách diễn đạt vai trò quyết định của tồn tại xã hội (đặc biệt là phương thức sản xuất) đối với ý thức xã hội và thượng tầng chính trị.",
         quiz: {
           question:
-            'Quan điểm "Kinh tế quyết định chính trị" thể hiện nội dung nào cốt lõi?',
+            "Câu “Kinh tế quyết định chính trị” nhấn mạnh nội dung cốt lõi nào?",
           options: [
             "Vai trò của đấu tranh giai cấp trong lịch sử.",
-            "Vai trò quyết định của TTXH đối với YTXH.",
-            "Quan hệ biện chứng giữa LLSX và QHSX.",
-            "Tính độc lập tương đối của YTXH.",
+            "Vai trò quyết định của tồn tại xã hội đối với ý thức xã hội.",
+            "Quan hệ biện chứng giữa lực lượng sản xuất và quan hệ sản xuất.",
+            "Tính độc lập tuyệt đối của ý thức xã hội.",
           ],
           correct: 1,
         },
         fillAnswer:
           "Kinh tế quyết định chính trị → vai trò quyết định của ___ đối với ___.",
-        answer: "TTXH đối với YTXH",
+        answer: "Tồn tại xã hội đối với ý thức xã hội",
         fullFillAnswer:
-          "Quan điểm này nhấn mạnh vai trò quyết định của TTXH đối với YTXH.",
+          "Phát biểu này nhấn mạnh vai trò quyết định của tồn tại xã hội đối với ý thức xã hội.",
       },
+      // 15
       {
         id: 15,
         term: "Không giản lược đạo đức vào kinh tế",
         definition:
-          "Sai nếu cho rằng kinh tế phát triển là tự khắc đạo đức được giải quyết (vì YTXH có độc lập tương đối).",
+          "Sai khi cho rằng chỉ cần kinh tế phát triển thì tự khắc đạo đức được giải quyết; vì ý thức xã hội có tính độc lập tương đối và có thể tác động tiêu cực nếu lạc hậu.",
         quiz: {
           question:
-            'Luận điểm: "Chỉ cần kinh tế phát triển thì tự khắc vấn đề đạo đức sẽ được giải quyết" đúng hay sai?',
+            "Luận điểm “Kinh tế phát triển thì tự khắc vấn đề đạo đức sẽ được giải quyết” là đúng hay sai?",
           options: [
-            "Đúng, vì TTXH quyết định hoàn toàn YTXH.",
-            "Sai, vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của YTXH lạc hậu.",
+            "Đúng, vì tồn tại xã hội quyết định hoàn toàn ý thức xã hội.",
+            "Sai, vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của ý thức xã hội lạc hậu.",
             "Đúng, vì đạo đức là một bộ phận của kinh tế.",
-            "Sai, vì đạo đức không liên quan gì đến kinh tế.",
+            "Sai, vì đạo đức không liên quan đến kinh tế.",
           ],
           correct: 1,
         },
         fillAnswer: "Đáp án đúng: ___.",
         answer:
-          "Sai, vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của YTXH lạc hậu",
+          "Sai, vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của ý thức xã hội lạc hậu",
         fullFillAnswer:
-          "Sai: vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của YTXH lạc hậu.",
+          "Sai: vì bỏ qua tính độc lập tương đối và khả năng tác động tiêu cực của ý thức xã hội lạc hậu.",
       },
+      // 16
       {
         id: 16,
-        term: "Cách mạng 4.0 → TTXH → YTXH",
+        term: "Cách mạng công nghiệp 4.0 và tác động xã hội",
         definition:
-          "Thay đổi phương thức sản xuất (TTXH) kéo theo biến đổi đời sống tinh thần (YTXH).",
+          "Thay đổi phương thức sản xuất (tồn tại xã hội) kéo theo biến đổi đời sống tinh thần (ý thức xã hội).",
         quiz: {
           question:
-            "Cách mạng 4.0 là sự thay đổi của yếu tố nào và sẽ tác động đến yếu tố nào?",
+            "Cách mạng công nghiệp 4.0 là sự thay đổi của yếu tố nào và sẽ tác động đến yếu tố nào?",
           options: [
-            "Thay đổi YTXH, tác động đến TTXH.",
-            "Thay đổi trong phương thức sản xuất (TTXH) → biến đổi trong YTXH.",
+            "Thay đổi ý thức xã hội → tác động đến tồn tại xã hội.",
+            "Thay đổi phương thức sản xuất (tồn tại xã hội) → biến đổi trong ý thức xã hội.",
             "Thay đổi điều kiện tự nhiên → tác động đến dân số.",
-            "Thay đổi KTTT → tác động đến CSHT.",
+            "Thay đổi kiến trúc thượng tầng → tác động đến cơ sở hạ tầng (kinh tế).",
           ],
           correct: 1,
         },
         fillAnswer:
           "Cách mạng 4.0 → thay đổi trong ___, kéo theo biến đổi trong ___.",
-        answer: "phương thức sản xuất (TTXH); ý thức xã hội (YTXH)",
+        answer: "Phương thức sản xuất (tồn tại xã hội); ý thức xã hội",
         fullFillAnswer:
-          "Cách mạng 4.0 làm thay đổi phương thức sản xuất, kéo theo biến đổi trong YTXH.",
-      },
-      {
-        id: 17,
-        term: "Xây dựng văn hoá Việt Nam",
-        definition:
-          "Phát triển kinh tế đồng thời kế thừa có chọn lọc truyền thống & tiếp thu tinh hoa nhân loại.",
-        quiz: {
-          question:
-            "Để xây dựng nền văn hoá Việt Nam tiên tiến, đậm đà bản sắc dân tộc, cần làm gì?",
-          options: [
-            "Kế thừa có chọn lọc các giá trị truyền thống & tiếp thu tinh hoa nhân loại.",
-            "Chỉ tập trung phát triển kinh tế, văn hoá tự phát triển.",
-            "Xoá bỏ hoàn toàn các giá trị cũ.",
-            "Du nhập toàn bộ văn hoá nước ngoài.",
-          ],
-          correct: 0,
-        },
-        fillAnswer: "Cần ___ giá trị truyền thống và ___ tinh hoa nhân loại.",
-        answer: "kế thừa có chọn lọc; tiếp thu",
-        fullFillAnswer:
-          "Phải kế thừa có chọn lọc truyền thống và tiếp thu tinh hoa nhân loại.",
-      },
-      {
-        id: 18,
-        term: "Vai trò của tư tưởng tiến bộ",
-        definition:
-          "TTXH quyết định YTXH, nhưng tư tưởng tiến bộ có thể đi trước thời đại, chỉ đạo thực tiễn.",
-        quiz: {
-          question:
-            "Chọn phương án đúng nhất về quan hệ TTXH–YTXH và vai trò tư tưởng tiến bộ.",
-          options: [
-            "TTXH có sau, phản ánh YTXH.",
-            "Mọi thay đổi TTXH làm YTXH đổi ngay lập tức.",
-            "Lịch sử xét đến cùng do tư tưởng vĩ nhân quyết định.",
-            "TTXH quyết định YTXH, nhưng tư tưởng tiến bộ có thể đi trước thời đại, chỉ đạo thực tiễn.",
-          ],
-          correct: 3,
-        },
-        fillAnswer: "TTXH quyết định YTXH, nhưng ___ có thể đi trước thời đại.",
-        answer: "các tư tưởng tiến bộ",
-        fullFillAnswer:
-          "TTXH quyết định YTXH; tuy nhiên tư tưởng tiến bộ có thể đi trước thời đại và chỉ đạo thực tiễn.",
+          "Cách mạng công nghiệp 4.0 làm thay đổi phương thức sản xuất, kéo theo biến đổi trong ý thức xã hội.",
       },
     ],
   },
 
   /* =========================================================
-   * (2) BỘ 50 CÂU – 3 CHỦ ĐỀ (mỗi câu viết tay đầy đủ, không auto-build)
+   * Chương 2 — Học thuyết hình thái kinh tế – xã hội
+   * Phương thức sản xuất; lực lượng sản xuất – quan hệ sản xuất;
+   * cơ sở hạ tầng (kinh tế) – kiến trúc thượng tầng; quy luật phù hợp.
    * ========================================================= */
-  /* ===========================
-   * C3.1 – Học thuyết hình thái kinh tế–xã hội (1–20)
-   * =========================== */
   {
-    id: 30311,
-    title: "Chương 3.1: Học thuyết hình thái kinh tế – xã hội",
+    id: 31002,
+    title: "Học thuyết hình thái kinh tế – xã hội",
     description:
-      "Phương thức sản xuất, LLSX – QHSX, CSHT – KTTT, và quy luật phù hợp trong phát triển xã hội.",
+      "Phương thức sản xuất; lực lượng sản xuất và quan hệ sản xuất; cơ sở hạ tầng (kinh tế) – kiến trúc thượng tầng; quy luật phù hợp trong phát triển xã hội.",
     icon: "🏛️",
     questions: [
+      // 1
       {
         id: 1,
         term: "Nền tảng phát triển xã hội",
@@ -443,6 +417,7 @@ export const chapters = [
         answer: "Sản xuất vật chất",
         fullFillAnswer: "Nền tảng phát triển xã hội là sản xuất vật chất.",
       },
+      // 2
       {
         id: 2,
         term: "Khái niệm phương thức sản xuất",
@@ -452,17 +427,19 @@ export const chapters = [
           question: "Phương thức sản xuất là gì?",
           options: [
             "Cách sản xuất tinh thần",
-            "Cách tác động vào tự nhiên tạo của cải vật chất",
+            "Cách con người tác động vào tự nhiên để tạo ra của cải vật chất",
             "Cách tổ chức đời sống xã hội",
             "Cách giao tiếp và trao đổi kinh nghiệm",
           ],
           correct: 1,
         },
         fillAnswer: "Phương thức sản xuất là ___.",
-        answer: "Cách tác động vào tự nhiên tạo của cải vật chất",
+        answer:
+          "Cách con người tác động vào tự nhiên để tạo ra của cải vật chất",
         fullFillAnswer:
-          "Phương thức sản xuất là cách con người tác động vào tự nhiên tạo ra của cải vật chất.",
+          "Phương thức sản xuất là cách con người tác động vào tự nhiên để tạo ra của cải vật chất.",
       },
+      // 3
       {
         id: 3,
         term: "Cấu thành phương thức sản xuất",
@@ -471,10 +448,10 @@ export const chapters = [
           question:
             "Phương thức sản xuất được cấu thành từ hai yếu tố cơ bản nào?",
           options: [
-            "Người lao động & công cụ",
-            "LLSX & QHSX",
-            "CSHT & KTTT",
-            "TTXH & YTXH",
+            "Người lao động và công cụ",
+            "Lực lượng sản xuất và quan hệ sản xuất",
+            "Cơ sở hạ tầng (kinh tế) và kiến trúc thượng tầng",
+            "Tồn tại xã hội và ý thức xã hội",
           ],
           correct: 1,
         },
@@ -483,27 +460,29 @@ export const chapters = [
         fullFillAnswer:
           "Phương thức sản xuất = Lực lượng sản xuất và quan hệ sản xuất.",
       },
+      // 4
       {
         id: 4,
-        term: "Bản chất LLSX",
+        term: "Bản chất lực lượng sản xuất",
         definition:
           "Quan hệ giữa con người với tự nhiên trong quá trình sản xuất.",
         quiz: {
-          question: "Lực lượng sản xuất (LLSX) biểu hiện mối quan hệ nào?",
+          question: "Lực lượng sản xuất biểu hiện mối quan hệ nào?",
           options: [
             "Quan hệ giữa người với người trong sản xuất",
-            "Quan hệ giữa người với tự nhiên trong sản xuất",
+            "Quan hệ giữa con người với tự nhiên trong sản xuất",
             "Quan hệ giai cấp",
             "Quan hệ nhà nước – công dân",
           ],
           correct: 1,
         },
         fillAnswer:
-          "LLSX biểu hiện quan hệ giữa con người với ___ trong quá trình sản xuất.",
-        answer: "Quan hệ giữa người với tự nhiên trong sản xuất",
+          "Lực lượng sản xuất biểu hiện quan hệ giữa con người với ___ trong quá trình sản xuất.",
+        answer: "Tự nhiên",
         fullFillAnswer:
-          "LLSX biểu hiện quan hệ giữa con người với tự nhiên trong quá trình sản xuất.",
+          "Lực lượng sản xuất biểu hiện quan hệ giữa con người với tự nhiên trong quá trình sản xuất.",
       },
+      // 5
       {
         id: 5,
         term: "Tư liệu sản xuất",
@@ -513,19 +492,20 @@ export const chapters = [
           options: [
             "Kinh nghiệm, kỹ năng",
             "Sức khoẻ, thể lực",
-            "Công cụ lao động & đối tượng lao động",
+            "Công cụ lao động và đối tượng lao động",
             "Tri thức khoa học",
           ],
           correct: 2,
         },
         fillAnswer: "Tư liệu sản xuất gồm ___ và ___.",
-        answer: "Công cụ lao động & đối tượng lao động",
+        answer: "Công cụ lao động và đối tượng lao động",
         fullFillAnswer:
           "Tư liệu sản xuất gồm công cụ lao động và đối tượng lao động.",
       },
+      // 6
       {
         id: 6,
-        term: "Yếu tố quyết định của LLSX",
+        term: "Yếu tố quyết định của lực lượng sản xuất",
         definition: "Người lao động.",
         quiz: {
           question:
@@ -538,40 +518,44 @@ export const chapters = [
           ],
           correct: 2,
         },
-        fillAnswer: "Yếu tố cơ bản và quyết định nhất của LLSX là ___.",
+        fillAnswer:
+          "Yếu tố cơ bản và quyết định nhất của lực lượng sản xuất là ___.",
         answer: "Người lao động",
         fullFillAnswer:
-          "Yếu tố cơ bản và quyết định nhất của LLSX là người lao động.",
+          "Yếu tố cơ bản và quyết định nhất của lực lượng sản xuất là người lao động.",
       },
+      // 7
       {
         id: 7,
-        term: "Yếu tố cách mạng nhất trong LLSX",
+        term: "Yếu tố cách mạng nhất trong lực lượng sản xuất",
         definition:
           "Công cụ lao động (bao gồm cả công nghệ) là yếu tố động và cách mạng nhất, thước đo trình độ chinh phục tự nhiên.",
         quiz: {
           question:
-            "Trong LLSX, yếu tố nào động nhất và cách mạng nhất, là thước đo trình độ chinh phục tự nhiên?",
+            "Trong lực lượng sản xuất, yếu tố nào động nhất và cách mạng nhất, là thước đo trình độ chinh phục tự nhiên?",
           options: [
             "Người lao động",
             "Đối tượng lao động",
-            "Công cụ lao động",
+            "Công cụ lao động (bao gồm công nghệ)",
             "Tri thức khoa học",
           ],
           correct: 2,
         },
-        fillAnswer: "Yếu tố động và cách mạng nhất trong LLSX là ___.",
-        answer: "Công cụ lao động",
+        fillAnswer:
+          "Yếu tố động và cách mạng nhất trong lực lượng sản xuất là ___.",
+        answer: "Công cụ lao động (bao gồm công nghệ)",
         fullFillAnswer:
-          "Công cụ lao động là yếu tố động nhất và cách mạng nhất trong LLSX.",
+          "Công cụ lao động (bao gồm công nghệ) là yếu tố động nhất và cách mạng nhất trong lực lượng sản xuất.",
       },
+      // 8
       {
         id: 8,
-        term: "Bản chất QHSX",
+        term: "Bản chất quan hệ sản xuất",
         definition:
           "Mối quan hệ giữa người với người trong quá trình sản xuất (sản xuất, phân phối, trao đổi, tiêu dùng).",
         quiz: {
           question:
-            "Quan hệ sản xuất (QHSX) là mối quan hệ giữa người với người trong quá trình nào?",
+            "Quan hệ sản xuất là mối quan hệ giữa người với người trong quá trình nào?",
           options: [
             "Giao lưu văn hoá",
             "Đấu tranh chính trị",
@@ -581,20 +565,21 @@ export const chapters = [
           correct: 2,
         },
         fillAnswer:
-          "QHSX là quan hệ giữa người với người trong toàn bộ quá trình ___.",
+          "Quan hệ sản xuất là quan hệ giữa người với người trong toàn bộ quá trình ___.",
         answer: "Sản xuất (sản xuất, phân phối, trao đổi, tiêu dùng)",
         fullFillAnswer:
-          "QHSX là quan hệ giữa người với người trong toàn bộ quá trình sản xuất xã hội.",
+          "Quan hệ sản xuất là quan hệ giữa người với người trong toàn bộ quá trình sản xuất xã hội.",
       },
+      // 9
       {
         id: 9,
-        term: "Mặt quyết định trong QHSX",
+        term: "Mặt quyết định trong quan hệ sản xuất",
         definition: "Quan hệ sở hữu đối với tư liệu sản xuất.",
         quiz: {
           question:
             "Trong ba mặt của quan hệ sản xuất, mặt nào giữ vai trò quyết định các mặt còn lại?",
           options: [
-            "Quan hệ tổ chức & quản lý sản xuất",
+            "Quan hệ tổ chức và quản lý sản xuất",
             "Quan hệ phân phối sản phẩm",
             "Quan hệ sở hữu đối với tư liệu sản xuất",
             "Quan hệ trao đổi sản phẩm",
@@ -602,52 +587,58 @@ export const chapters = [
           correct: 2,
         },
         fillAnswer:
-          "Trong QHSX, mặt quyết định là quan hệ ___ đối với tư liệu sản xuất.",
-        answer: "Quan hệ sở hữu đối với tư liệu sản xuất",
+          "Trong quan hệ sản xuất, mặt quyết định là quan hệ ___ đối với tư liệu sản xuất.",
+        answer: "Sở hữu",
         fullFillAnswer:
-          "Trong QHSX, quan hệ sở hữu đối với tư liệu sản xuất giữ vai trò quyết định.",
+          "Trong quan hệ sản xuất, quan hệ sở hữu đối với tư liệu sản xuất giữ vai trò quyết định.",
       },
+      // 10
       {
         id: 10,
-        term: "Quy luật phù hợp LLSX–QHSX",
+        term: "Quy luật về sự phù hợp của quan hệ sản xuất với trình độ phát triển của lực lượng sản xuất",
         definition:
-          "Quy luật về sự phù hợp của quan hệ sản xuất với trình độ phát triển của lực lượng sản xuất.",
+          "Quy luật cơ bản, phổ biến của sự vận động và phát triển xã hội.",
         quiz: {
           question:
             "Quy luật cơ bản, phổ biến của sự vận động và phát triển xã hội là quy luật nào?",
           options: [
             "Quy luật đấu tranh giai cấp",
-            "Quy luật TTXH quyết định YTXH",
-            "Quy luật về sự phù hợp của QHSX với trình độ phát triển của LLSX",
+            "Quy luật tồn tại xã hội quyết định ý thức xã hội",
+            "Quy luật về sự phù hợp của quan hệ sản xuất với trình độ phát triển của lực lượng sản xuất",
             "Quy luật kế thừa",
           ],
           correct: 2,
         },
         fillAnswer: "Quy luật cơ bản: sự phù hợp của ___ với trình độ ___ .",
-        answer: "sự phù hợp của QHSX với trình độ phát triển của LLSX",
+        answer:
+          "Sự phù hợp của quan hệ sản xuất với trình độ phát triển của lực lượng sản xuất",
         fullFillAnswer:
-          "Quy luật phát triển xã hội cơ bản là sự phù hợp của QHSX với trình độ LLSX.",
+          "Quy luật phát triển xã hội cơ bản là sự phù hợp của quan hệ sản xuất với trình độ lực lượng sản xuất.",
       },
+      // 11
       {
         id: 11,
-        term: "Vai trò của QHSX phù hợp",
-        definition: "Khi QHSX phù hợp với LLSX, nó thúc đẩy LLSX phát triển.",
+        term: "Vai trò của quan hệ sản xuất phù hợp",
+        definition:
+          "Khi quan hệ sản xuất phù hợp với lực lượng sản xuất, nó thúc đẩy lực lượng sản xuất phát triển.",
         quiz: {
           question:
             "Khi quan hệ sản xuất phù hợp với trình độ phát triển của lực lượng sản xuất, nó sẽ có vai trò gì?",
           options: [
-            "Kìm hãm LLSX",
-            "Thúc đẩy LLSX phát triển",
-            "Không ảnh hưởng đến LLSX",
-            "Phá vỡ LLSX hiện có",
+            "Kìm hãm lực lượng sản xuất",
+            "Thúc đẩy lực lượng sản xuất phát triển",
+            "Không ảnh hưởng đến lực lượng sản xuất",
+            "Phá vỡ lực lượng sản xuất hiện có",
           ],
           correct: 1,
         },
-        fillAnswer: "Khi QHSX phù hợp với LLSX, nó ___ lực lượng sản xuất.",
-        answer: "Thúc đẩy LLSX phát triển",
+        fillAnswer:
+          "Khi quan hệ sản xuất phù hợp với lực lượng sản xuất, nó ___ lực lượng sản xuất.",
+        answer: "Thúc đẩy lực lượng sản xuất phát triển",
         fullFillAnswer:
-          "QHSX phù hợp sẽ thúc đẩy lực lượng sản xuất phát triển.",
+          "Quan hệ sản xuất phù hợp sẽ thúc đẩy lực lượng sản xuất phát triển.",
       },
+      // 12
       {
         id: 12,
         term: "Nguyên nhân sâu xa của cách mạng xã hội",
@@ -657,25 +648,26 @@ export const chapters = [
           question: "Nguyên nhân sâu xa của các cuộc cách mạng xã hội là gì?",
           options: [
             "Mâu thuẫn đảng phái",
-            "Mâu thuẫn giữa QHSX lỗi thời và LLSX đã phát triển",
+            "Mâu thuẫn giữa quan hệ sản xuất lỗi thời và lực lượng sản xuất đã phát triển",
             "Mâu thuẫn giữa các quốc gia, dân tộc",
             "Mâu thuẫn về ý thức hệ",
           ],
           correct: 1,
         },
         fillAnswer:
-          "CMXH bắt nguồn từ mâu thuẫn giữa ___ lỗi thời và ___ đã phát triển.",
-        answer: "Mâu thuẫn giữa QHSX lỗi thời và LLSX đã phát triển",
+          "Cách mạng xã hội bắt nguồn từ mâu thuẫn giữa ___ lỗi thời và ___ đã phát triển.",
+        answer: "Quan hệ sản xuất lỗi thời và lực lượng sản xuất đã phát triển",
         fullFillAnswer:
-          "Nguyên nhân sâu xa của cách mạng xã hội: mâu thuẫn giữa QHSX lỗi thời và LLSX đã phát triển.",
+          "Nguyên nhân sâu xa của cách mạng xã hội là mâu thuẫn giữa quan hệ sản xuất lỗi thời và lực lượng sản xuất đã phát triển.",
       },
+      // 13
       {
         id: 13,
-        term: "Cơ sở hạ tầng xã hội",
+        term: "Cơ sở hạ tầng (kinh tế) của xã hội",
         definition:
           "Toàn bộ các quan hệ sản xuất hợp thành cơ cấu kinh tế của xã hội.",
         quiz: {
-          question: "Cơ sở hạ tầng (CSHT) của một xã hội là gì?",
+          question: "Cơ sở hạ tầng (kinh tế) của một xã hội là gì?",
           options: [
             "Toàn bộ các quan điểm, tư tưởng xã hội",
             "Toàn bộ các thiết chế chính trị – xã hội",
@@ -685,91 +677,96 @@ export const chapters = [
           correct: 2,
         },
         fillAnswer:
-          "CSHT là toàn bộ các ___ hợp thành cơ cấu kinh tế của xã hội.",
-        answer:
-          "Toàn bộ các quan hệ sản xuất hợp thành cơ cấu kinh tế của xã hội",
+          "Cơ sở hạ tầng (kinh tế) là toàn bộ các ___ hợp thành cơ cấu kinh tế của xã hội.",
+        answer: "Quan hệ sản xuất",
         fullFillAnswer:
-          "CSHT là toàn bộ các quan hệ sản xuất hợp thành cơ cấu kinh tế xã hội.",
+          "Cơ sở hạ tầng (kinh tế) là toàn bộ các quan hệ sản xuất hợp thành cơ cấu kinh tế của xã hội.",
       },
+      // 14
       {
         id: 14,
         term: "Kiến trúc thượng tầng",
         definition:
-          "Toàn bộ các quan điểm và các thiết chế chính trị – xã hội tương ứng, hình thành trên một CSHT nhất định.",
+          "Toàn bộ các quan điểm và các thiết chế chính trị – xã hội tương ứng, hình thành trên một cơ sở hạ tầng (kinh tế) nhất định.",
         quiz: {
-          question: "Kiến trúc thượng tầng (KTTT) là gì?",
+          question: "Kiến trúc thượng tầng là gì?",
           options: [
             "Toàn bộ các quan hệ sản xuất của xã hội",
             "Toàn bộ sinh hoạt vật chất của xã hội",
-            "Toàn bộ các quan điểm & thiết chế chính trị – xã hội tương ứng, được hình thành trên một cơ sở hạ tầng nhất định",
+            "Toàn bộ các quan điểm và thiết chế chính trị – xã hội tương ứng, được hình thành trên một cơ sở hạ tầng (kinh tế) nhất định",
             "Trình độ phát triển của lực lượng sản xuất",
           ],
           correct: 2,
         },
         fillAnswer:
-          "KTTT là toàn bộ các quan điểm và các thiết chế ___ – ___ hình thành trên CSHT nhất định.",
-        answer:
-          "Toàn bộ các quan điểm & thiết chế chính trị – xã hội tương ứng, hình thành trên CSHT nhất định",
+          "Kiến trúc thượng tầng là toàn bộ các quan điểm và các thiết chế ___ – ___ hình thành trên cơ sở hạ tầng (kinh tế) nhất định.",
+        answer: "Chính trị – xã hội",
         fullFillAnswer:
-          "KTTT là các quan điểm & thiết chế chính trị – xã hội hình thành trên một CSHT nhất định.",
+          "Kiến trúc thượng tầng là các quan điểm và thiết chế chính trị – xã hội hình thành trên một cơ sở hạ tầng (kinh tế) nhất định.",
       },
+      // 15
       {
         id: 15,
-        term: "Quan hệ CSHT – KTTT",
-        definition: "CSHT quyết định KTTT.",
+        term: "Quan hệ cơ sở hạ tầng (kinh tế) – kiến trúc thượng tầng",
+        definition: "Cơ sở hạ tầng (kinh tế) quyết định kiến trúc thượng tầng.",
         quiz: {
           question:
-            "Trong mối quan hệ giữa cơ sở hạ tầng và kiến trúc thượng tầng, yếu tố nào giữ vai trò quyết định?",
+            "Trong mối quan hệ giữa cơ sở hạ tầng (kinh tế) và kiến trúc thượng tầng, yếu tố nào giữ vai trò quyết định?",
           options: [
-            "KTTT quyết định CSHT",
-            "CSHT quyết định KTTT",
+            "Kiến trúc thượng tầng quyết định cơ sở hạ tầng (kinh tế)",
+            "Cơ sở hạ tầng (kinh tế) quyết định kiến trúc thượng tầng",
             "Không có quan hệ với nhau",
             "Quyết định lẫn nhau ngang bằng",
           ],
           correct: 1,
         },
-        fillAnswer: "Trong quan hệ CSHT–KTTT, ___ quyết định ___.",
-        answer: "CSHT quyết định KTTT",
+        fillAnswer:
+          "Trong quan hệ cơ sở hạ tầng (kinh tế) – kiến trúc thượng tầng, ___ quyết định ___.",
+        answer: "Cơ sở hạ tầng (kinh tế) quyết định kiến trúc thượng tầng",
         fullFillAnswer:
-          "Trong quan hệ CSHT – KTTT, CSHT giữ vai trò quyết định.",
+          "Trong quan hệ cơ sở hạ tầng (kinh tế) – kiến trúc thượng tầng, cơ sở hạ tầng (kinh tế) giữ vai trò quyết định.",
       },
+      // 16
       {
         id: 16,
-        term: "Yếu tố KTTT tác động mạnh nhất đến CSHT",
+        term: "Yếu tố kiến trúc thượng tầng tác động mạnh nhất đến cơ sở hạ tầng (kinh tế)",
         definition: "Nhà nước.",
         quiz: {
           question:
-            "Yếu tố nào trong kiến trúc thượng tầng có vai trò tác động trực tiếp và mạnh mẽ nhất tới cơ sở hạ tầng?",
+            "Yếu tố nào trong kiến trúc thượng tầng có vai trò tác động trực tiếp và mạnh mẽ nhất tới cơ sở hạ tầng (kinh tế)?",
           options: ["Nhà nước", "Tôn giáo", "Nghệ thuật", "Đạo đức"],
           correct: 0,
         },
         fillAnswer:
-          "Trong KTTT, yếu tố tác động trực tiếp và mạnh nhất đến CSHT là ___.",
+          "Trong kiến trúc thượng tầng, yếu tố tác động trực tiếp và mạnh nhất đến cơ sở hạ tầng (kinh tế) là ___.",
         answer: "Nhà nước",
         fullFillAnswer:
-          "Trong KTTT, nhà nước tác động trực tiếp và mạnh nhất tới CSHT.",
+          "Trong kiến trúc thượng tầng, nhà nước tác động trực tiếp và mạnh nhất tới cơ sở hạ tầng (kinh tế).",
       },
+      // 17
       {
         id: 17,
-        term: "Hệ quả đổi thay CSHT",
-        definition: "Biểu hiện tính quyết định của CSHT đối với KTTT.",
+        term: "Hệ quả đổi thay cơ sở hạ tầng (kinh tế)",
+        definition:
+          "Biểu hiện tính quyết định của cơ sở hạ tầng (kinh tế) đối với kiến trúc thượng tầng.",
         quiz: {
           question:
-            "Sự thay đổi của cơ sở hạ tầng sẽ dẫn đến sự thay đổi của kiến trúc thượng tầng. Đây là tính chất gì của mối quan hệ?",
+            "Sự thay đổi của cơ sở hạ tầng (kinh tế) sẽ dẫn đến sự thay đổi của kiến trúc thượng tầng. Đây là tính chất gì của mối quan hệ?",
           options: [
-            "Tính độc lập tương đối của KTTT",
-            "Tính quyết định của CSHT",
-            "Tính tác động trở lại của KTTT",
-            "Tính kế thừa của KTTT",
+            "Tính độc lập tương đối của kiến trúc thượng tầng",
+            "Tính quyết định của cơ sở hạ tầng (kinh tế)",
+            "Tính tác động trở lại của kiến trúc thượng tầng",
+            "Tính kế thừa của kiến trúc thượng tầng",
           ],
           correct: 1,
         },
         fillAnswer:
-          "Sự đổi thay KTTT do CSHT thay đổi thể hiện tính ___ của ___.",
-        answer: "Tính quyết định của CSHT",
+          "Sự đổi thay kiến trúc thượng tầng do cơ sở hạ tầng (kinh tế) thay đổi thể hiện tính ___ của ___.",
+        answer: "Tính quyết định của cơ sở hạ tầng (kinh tế)",
         fullFillAnswer:
-          "CSHT thay đổi kéo theo KTTT thay đổi – biểu hiện tính quyết định của CSHT.",
+          "Cơ sở hạ tầng (kinh tế) thay đổi kéo theo kiến trúc thượng tầng thay đổi – biểu hiện tính quyết định của cơ sở hạ tầng (kinh tế).",
       },
+      // 18
       {
         id: 18,
         term: "Tính lịch sử – tự nhiên của phát triển xã hội",
@@ -787,14 +784,15 @@ export const chapters = [
           correct: 1,
         },
         fillAnswer:
-          "Sự phát triển các hình thái KT–XH là một quá trình ___ – ___.",
-        answer: "Một quá trình lịch sử – tự nhiên",
+          "Sự phát triển các hình thái kinh tế – xã hội là một quá trình ___ – ___.",
+        answer: "Lịch sử – tự nhiên",
         fullFillAnswer:
           "Các hình thái kinh tế – xã hội phát triển theo quá trình lịch sử – tự nhiên.",
       },
+      // 19
       {
         id: 19,
-        term: "Các hình thái KT–XH trong lịch sử",
+        term: "Các hình thái kinh tế – xã hội trong lịch sử (loại trừ)",
         definition:
           "“Toàn cầu hoá” không phải là một hình thái kinh tế – xã hội lịch sử.",
         quiz: {
@@ -808,47 +806,50 @@ export const chapters = [
           ],
           correct: 3,
         },
-        fillAnswer: "___ không phải là một hình thái KT–XH lịch sử.",
+        fillAnswer: "___ không phải là một hình thái kinh tế – xã hội lịch sử.",
         answer: "Toàn cầu hoá",
         fullFillAnswer:
           "Toàn cầu hoá không phải là một hình thái kinh tế – xã hội lịch sử.",
       },
+      // 20
       {
         id: 20,
-        term: "Giá trị học thuyết hình thái KT–XH",
+        term: "Giá trị học thuyết hình thái kinh tế – xã hội",
         definition:
-          "Cả a, b, c đều đúng (phương pháp luận khoa học; chỉ ra động lực; khẳng định quy luật khách quan).",
+          "Cả ba khía cạnh đều đúng: phương pháp luận khoa học; chỉ ra động lực; khẳng định quy luật khách quan.",
         quiz: {
           question:
-            '"Giá trị của học thuyết hình thái kinh tế – xã hội" là gì?',
+            "“Giá trị của học thuyết hình thái kinh tế – xã hội” là gì?",
           options: [
             "Cung cấp phương pháp luận khoa học để phân tích, lý giải lịch sử xã hội",
             "Chỉ ra động lực phát triển của xã hội là sản xuất vật chất",
             "Khẳng định sự phát triển của xã hội tuân theo quy luật khách quan",
-            "Cả a, b, c đều đúng",
+            "Cả ba ý trên đều đúng",
           ],
           correct: 3,
         },
-        fillAnswer: "Giá trị học thuyết hình thái KT–XH: ___.",
-        answer: "Cả a, b, c đều đúng",
+        fillAnswer: "Giá trị học thuyết hình thái kinh tế – xã hội: ___.",
+        answer: "Cả ba ý trên đều đúng",
         fullFillAnswer:
-          "Giá trị học thuyết hình thái KT–XH: Cả a, b, c đều đúng.",
+          "Giá trị học thuyết hình thái kinh tế – xã hội: cả ba ý trên đều đúng.",
       },
     ],
   },
 
-  /* ===========================
-   * C3.2 – Giai cấp, Dân tộc, Nhà nước & Cách mạng xã hội (21–35)
-   * =========================== */
+  /* =========================================================
+   * Chương 3 — Giai cấp, Dân tộc, Nhà nước & Cách mạng xã hội
+   * Nguồn gốc giai cấp; đấu tranh giai cấp; bản chất nhà nước; CMXH.
+   * ========================================================= */
   {
-    id: 30312,
-    title: "Chương 3.2: Giai cấp, Dân tộc, Nhà nước & Cách mạng xã hội",
+    id: 31003,
+    title: "Giai cấp, Dân tộc, Nhà nước & Cách mạng xã hội",
     description:
-      "Nguồn gốc giai cấp, đấu tranh giai cấp, bản chất nhà nước và cách mạng xã hội.",
+      "Nguồn gốc giai cấp, đấu tranh giai cấp, quan hệ giai cấp – dân tộc, bản chất và chức năng của nhà nước, cách mạng xã hội.",
     icon: "🛡️",
     questions: [
+      // 1
       {
-        id: 21,
+        id: 1,
         term: "Nguồn gốc ra đời giai cấp",
         definition:
           "Sự phân công lao động xã hội và sự xuất hiện tư hữu về tư liệu sản xuất.",
@@ -870,9 +871,10 @@ export const chapters = [
         fullFillAnswer:
           "Giai cấp ra đời do phân công lao động xã hội và sự xuất hiện tư hữu về tư liệu sản xuất.",
       },
+      // 2
       {
-        id: 22,
-        term: "Đặc trưng bản chất của giai cấp (Lênin)",
+        id: 2,
+        term: "Đặc trưng bản chất của giai cấp (theo V.I. Lênin)",
         definition:
           "Tất cả các đặc trưng, trong đó khác nhau về sở hữu tư liệu sản xuất là cơ bản nhất.",
         quiz: {
@@ -887,14 +889,14 @@ export const chapters = [
           correct: 3,
         },
         fillAnswer:
-          "Theo Lênin, đặc trưng cơ bản nhất của giai cấp là khác nhau về ___ đối với TLSX.",
-        answer:
-          "Tất cả các đặc trưng, trong đó khác nhau về sở hữu tư liệu sản xuất là cơ bản nhất",
+          "Theo Lênin, đặc trưng cơ bản nhất của giai cấp là khác nhau về ___ đối với tư liệu sản xuất.",
+        answer: "Sở hữu",
         fullFillAnswer:
           "Theo Lênin, điểm cơ bản nhất là khác nhau về sở hữu tư liệu sản xuất.",
       },
+      // 3
       {
-        id: 23,
+        id: 3,
         term: "Khái niệm đấu tranh giai cấp",
         definition:
           "Cuộc đấu tranh giữa các tập đoàn người có lợi ích cơ bản đối lập nhau.",
@@ -914,8 +916,9 @@ export const chapters = [
         fullFillAnswer:
           "Đấu tranh giai cấp là đấu tranh giữa các tập đoàn người có lợi ích cơ bản đối lập.",
       },
+      // 4
       {
-        id: 24,
+        id: 4,
         term: "Nguồn gốc đấu tranh giai cấp",
         definition:
           "Mâu thuẫn không thể điều hoà về lợi ích giữa các giai cấp.",
@@ -934,9 +937,10 @@ export const chapters = [
         fullFillAnswer:
           "Nguồn gốc đấu tranh giai cấp là mâu thuẫn lợi ích giai cấp không thể điều hoà.",
       },
+      // 5
       {
-        id: 25,
-        term: "Vai trò đấu tranh giai cấp",
+        id: 5,
+        term: "Vai trò của đấu tranh giai cấp",
         definition: "Một động lực quan trọng của sự phát triển xã hội.",
         quiz: {
           question:
@@ -954,9 +958,10 @@ export const chapters = [
         fullFillAnswer:
           "Đấu tranh giai cấp là một động lực quan trọng của phát triển xã hội.",
       },
+      // 6
       {
-        id: 26,
-        term: "Đỉnh cao đấu tranh giai cấp",
+        id: 6,
+        term: "Đỉnh cao của đấu tranh giai cấp",
         definition: "Cách mạng xã hội.",
         quiz: {
           question: "Đỉnh cao của đấu tranh giai cấp thường dẫn tới:",
@@ -973,8 +978,9 @@ export const chapters = [
         fullFillAnswer:
           "Đỉnh cao đấu tranh giai cấp thường dẫn tới cách mạng xã hội.",
       },
+      // 7
       {
-        id: 27,
+        id: 7,
         term: "Cơ sở hình thành dân tộc",
         definition:
           "Sự thống nhất ngôn ngữ, lãnh thổ, đời sống kinh tế, văn hoá và sự gắn bó bền vững của cộng đồng.",
@@ -993,8 +999,9 @@ export const chapters = [
         fullFillAnswer:
           "Dân tộc hình thành trên tổng hoà các yếu tố: ngôn ngữ, lãnh thổ, kinh tế, văn hoá, cộng đồng.",
       },
+      // 8
       {
-        id: 28,
+        id: 8,
         term: "Thời điểm ra đời của dân tộc",
         definition: "Ra đời muộn hơn, gắn liền với thời kỳ chủ nghĩa tư bản.",
         quiz: {
@@ -1008,13 +1015,14 @@ export const chapters = [
           correct: 1,
         },
         fillAnswer: "So với giai cấp, dân tộc ra đời ___.",
-        answer: "Ra đời muộn hơn, gắn liền với thời kỳ chủ nghĩa tư bản",
+        answer: "Muộn hơn, gắn liền với thời kỳ chủ nghĩa tư bản",
         fullFillAnswer:
           "Dân tộc ra đời muộn hơn, gắn với quá trình phát triển của chủ nghĩa tư bản.",
       },
+      // 9
       {
-        id: 29,
-        term: "Quan hệ giai cấp – dân tộc",
+        id: 9,
+        term: "Quan hệ giữa giai cấp và dân tộc",
         definition: "Có mối quan hệ biện chứng, thống nhất.",
         quiz: {
           question:
@@ -1028,12 +1036,13 @@ export const chapters = [
           correct: 2,
         },
         fillAnswer: "Quan hệ giữa giai cấp và dân tộc là mối quan hệ ___, ___.",
-        answer: "mối quan hệ biện chứng, thống nhất",
+        answer: "Biện chứng, thống nhất",
         fullFillAnswer:
           "Giữa giai cấp và dân tộc tồn tại mối quan hệ biện chứng, thống nhất.",
       },
+      // 10
       {
-        id: 30,
+        id: 10,
         term: "Nguồn gốc ra đời nhà nước",
         definition:
           "Khi xã hội xuất hiện chế độ tư hữu và phân chia giai cấp đối kháng.",
@@ -1049,13 +1058,14 @@ export const chapters = [
         },
         fillAnswer:
           "Nhà nước ra đời khi xã hội xuất hiện ___ và phân chia ___ đối kháng.",
-        answer: "Khi xã hội xuất hiện tư hữu và phân chia giai cấp đối kháng",
+        answer: "Tư hữu; giai cấp",
         fullFillAnswer:
           "Nhà nước ra đời khi xuất hiện tư hữu và sự đối kháng giai cấp.",
       },
+      // 11
       {
-        id: 31,
-        term: "Bản chất nhà nước (Mác – Lênin)",
+        id: 11,
+        term: "Bản chất nhà nước (theo Mác – Lênin)",
         definition: "Công cụ chuyên chính của giai cấp thống trị.",
         quiz: {
           question: "Bản chất của nhà nước theo quan điểm Mác – Lênin là gì?",
@@ -1072,8 +1082,9 @@ export const chapters = [
         fullFillAnswer:
           "Theo Mác – Lênin, nhà nước là công cụ chuyên chính của giai cấp thống trị.",
       },
+      // 12
       {
-        id: 32,
+        id: 12,
         term: "Chức năng cơ bản của nhà nước",
         definition:
           "Chức năng thống trị chính trị (bạo lực trấn áp) và chức năng xã hội.",
@@ -1088,13 +1099,14 @@ export const chapters = [
           correct: 2,
         },
         fillAnswer: "Hai chức năng cơ bản của nhà nước là ___ và ___.",
-        answer: "Chức năng thống trị chính trị và chức năng xã hội",
+        answer: "Thống trị chính trị; chức năng xã hội",
         fullFillAnswer:
           "Chức năng cơ bản của nhà nước gồm thống trị chính trị và chức năng xã hội.",
       },
+      // 13
       {
-        id: 33,
-        term: "Kiểu nhà nước đầu tiên",
+        id: 13,
+        term: "Kiểu nhà nước đầu tiên trong lịch sử",
         definition: "Nhà nước chủ nô.",
         quiz: {
           question: "Đâu là kiểu nhà nước đầu tiên trong lịch sử?",
@@ -1111,13 +1123,14 @@ export const chapters = [
         fullFillAnswer:
           "Kiểu nhà nước đầu tiên trong lịch sử là nhà nước chủ nô.",
       },
+      // 14
       {
-        id: 34,
+        id: 14,
         term: "Khái niệm cách mạng xã hội (nghĩa hẹp)",
         definition:
           "Cuộc đấu tranh lật đổ một chế độ chính trị đã lỗi thời, thiết lập một chế độ tiến bộ hơn.",
         quiz: {
-          question: "Cách mạng xã hội (CMXH) theo nghĩa hẹp là gì?",
+          question: "Cách mạng xã hội theo nghĩa hẹp là gì?",
           options: [
             "Sự thay đổi dần dần về văn hoá, xã hội",
             "Cuộc đấu tranh lật đổ một chế độ chính trị đã lỗi thời, thiết lập một chế độ tiến bộ hơn",
@@ -1126,15 +1139,16 @@ export const chapters = [
           ],
           correct: 1,
         },
-        fillAnswer: "CMXH (nghĩa hẹp) là: ___.",
+        fillAnswer: "Cách mạng xã hội (nghĩa hẹp) là: ___.",
         answer:
           "Cuộc đấu tranh lật đổ một chế độ chính trị đã lỗi thời, thiết lập một chế độ tiến bộ hơn",
         fullFillAnswer:
-          "CMXH (nghĩa hẹp) là đấu tranh lật đổ chế độ lỗi thời, thiết lập chế độ tiến bộ hơn.",
+          "Cách mạng xã hội (nghĩa hẹp) là đấu tranh lật đổ chế độ lỗi thời, thiết lập chế độ tiến bộ hơn.",
       },
+      // 15
       {
-        id: 35,
-        term: "Nguồn gốc CMXH",
+        id: 15,
+        term: "Nguồn gốc của cách mạng xã hội",
         definition:
           "Bắt nguồn từ mâu thuẫn gay gắt giữa lực lượng sản xuất và quan hệ sản xuất.",
         quiz: {
@@ -1142,232 +1156,57 @@ export const chapters = [
           options: [
             "Do ý muốn chủ quan của các nhà lãnh đạo",
             "Do sự tuyên truyền của các thế lực bên ngoài",
-            "Bắt nguồn từ mâu thuẫn gay gắt giữa LLSX và QHSX",
+            "Bắt nguồn từ mâu thuẫn gay gắt giữa lực lượng sản xuất và quan hệ sản xuất",
             "Do sự khủng hoảng về đạo đức xã hội",
           ],
           correct: 2,
         },
         fillAnswer:
           "Nguồn gốc cách mạng xã hội: mâu thuẫn gay gắt giữa ___ và ___.",
-        answer: "Mâu thuẫn gay gắt giữa LLSX và QHSX",
-        fullFillAnswer: "Nguồn gốc CMXH: mâu thuẫn gay gắt giữa LLSX và QHSX.",
+        answer: "Lực lượng sản xuất và quan hệ sản xuất",
+        fullFillAnswer:
+          "Nguồn gốc cách mạng xã hội là mâu thuẫn gay gắt giữa lực lượng sản xuất và quan hệ sản xuất.",
       },
     ],
   },
 
-  /* ===========================
-   * C3.3 – Tồn tại xã hội, Ý thức xã hội & Con người (36–50)
-   * =========================== */
+  /* =========================================================
+   * Chương 4 — Con người, văn hoá & vai trò quần chúng
+   * Bản chất con người; tha hoá; khác biệt người – vật; vai trò quần chúng; văn hoá và phát triển.
+   * ========================================================= */
   {
-    id: 30313,
-    title: "Chương 3.3: Tồn tại xã hội, Ý thức xã hội & Con người",
+    id: 31004,
+    title: "Con người, văn hoá & vai trò quần chúng",
     description:
-      "Quan hệ TTXH – YTXH, các tính chất của YTXH và triết học về con người.",
-    icon: "🌐",
+      "Triết học về con người trong chủ nghĩa Mác – Lênin: bản chất, lao động, tha hoá; vai trò quần chúng nhân dân; định hướng xây dựng văn hoá.",
+    icon: "🌱",
     questions: [
+      // 1 (từ câu 17 bộ đầu)
       {
-        id: 36,
-        term: "Khái niệm Tồn tại xã hội (TTXH)",
+        id: 1,
+        term: "Xây dựng văn hoá Việt Nam",
         definition:
-          "Toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
-        quiz: {
-          question: "Tồn tại xã hội (TTXH) là gì?",
-          options: [
-            "Toàn bộ đời sống tinh thần",
-            "Toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất",
-            "Toàn bộ các mối quan hệ chính trị – pháp lý",
-            "Toàn bộ các công trình kiến trúc, hạ tầng kỹ thuật",
-          ],
-          correct: 1,
-        },
-        fillAnswer: "TTXH là: ___.",
-        answer:
-          "Toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất",
-        fullFillAnswer:
-          "TTXH là toàn bộ đời sống vật chất và những điều kiện sinh hoạt vật chất của xã hội.",
-      },
-      {
-        id: 37,
-        term: "Các yếu tố của TTXH (loại trừ)",
-        definition: "Hệ tư tưởng chính trị không thuộc về TTXH.",
-        quiz: {
-          question: "Yếu tố nào sau đây không thuộc về tồn tại xã hội?",
-          options: [
-            "Điều kiện địa lý",
-            "Dân cư",
-            "Phương thức sản xuất",
-            "Hệ tư tưởng chính trị",
-          ],
-          correct: 3,
-        },
-        fillAnswer: "Yếu tố KHÔNG thuộc TTXH là ___.",
-        answer: "Hệ tư tưởng chính trị",
-        fullFillAnswer: "Hệ tư tưởng chính trị không thuộc TTXH (thuộc YTXH).",
-      },
-      {
-        id: 38,
-        term: "Yếu tố quyết định nhất của TTXH",
-        definition: "Phương thức sản xuất vật chất.",
+          "Phát triển kinh tế đồng thời kế thừa có chọn lọc truyền thống và tiếp thu tinh hoa nhân loại.",
         quiz: {
           question:
-            "Trong các yếu tố của tồn tại xã hội, yếu tố nào là cơ bản và quyết định nhất?",
+            "Để xây dựng nền văn hoá Việt Nam tiên tiến, đậm đà bản sắc dân tộc, cần làm gì?",
           options: [
-            "Phương thức sản xuất vật chất",
-            "Điều kiện tự nhiên – hoàn cảnh địa lý",
-            "Yếu tố dân cư",
-            "Tất cả đều quan trọng như nhau",
+            "Kế thừa có chọn lọc các giá trị truyền thống và tiếp thu tinh hoa nhân loại.",
+            "Chỉ tập trung phát triển kinh tế, văn hoá tự phát triển.",
+            "Xoá bỏ hoàn toàn các giá trị cũ.",
+            "Du nhập toàn bộ văn hoá nước ngoài.",
           ],
           correct: 0,
         },
-        fillAnswer: "Yếu tố cơ bản và quyết định nhất của TTXH là ___.",
-        answer: "Phương thức sản xuất vật chất",
+        fillAnswer: "Cần ___ giá trị truyền thống và ___ tinh hoa nhân loại.",
+        answer: "Kế thừa có chọn lọc; tiếp thu",
         fullFillAnswer:
-          "Yếu tố cơ bản, quyết định nhất của TTXH là phương thức sản xuất vật chất.",
+          "Phải kế thừa có chọn lọc truyền thống và tiếp thu tinh hoa nhân loại.",
       },
+      // 2 (46)
       {
-        id: 39,
-        term: "Khái niệm Ý thức xã hội (YTXH)",
-        definition:
-          "Phương diện sinh hoạt tinh thần của xã hội, phản ánh TTXH.",
-        quiz: {
-          question: "Ý thức xã hội (YTXH) là gì?",
-          options: [
-            "Toàn bộ đời sống vật chất của xã hội",
-            "Phương diện sinh hoạt tinh thần của xã hội, phản ánh TTXH",
-            "Ý thức của một cá nhân riêng lẻ",
-            "Hệ thống pháp luật của nhà nước",
-          ],
-          correct: 1,
-        },
-        fillAnswer: "YTXH là: ___.",
-        answer: "Phương diện sinh hoạt tinh thần của xã hội, phản ánh TTXH",
-        fullFillAnswer:
-          "YTXH là phương diện sinh hoạt tinh thần của xã hội, phản ánh TTXH.",
-      },
-      {
-        id: 40,
-        term: "Quan hệ TTXH – YTXH",
-        definition:
-          "TTXH quyết định YTXH; YTXH có tính độc lập tương đối và tác động trở lại TTXH.",
-        quiz: {
-          question: "Mối quan hệ giữa tồn tại xã hội và ý thức xã hội là gì?",
-          options: [
-            "YTXH quyết định TTXH",
-            "TTXH quyết định YTXH, đồng thời YTXH có tính độc lập tương đối và tác động trở lại TTXH",
-            "Chúng tồn tại độc lập, không liên quan đến nhau",
-            "Chúng quyết định lẫn nhau một cách ngang bằng",
-          ],
-          correct: 1,
-        },
-        fillAnswer:
-          "TTXH quyết định YTXH, đồng thời YTXH có tính ___ và tác động trở lại ___.",
-        answer:
-          "TTXH quyết định YTXH; YTXH có tính độc lập tương đối và tác động trở lại TTXH",
-        fullFillAnswer:
-          "TTXH quyết định YTXH; YTXH độc lập tương đối và tác động trở lại TTXH.",
-      },
-      {
-        id: 41,
-        term: "Biểu hiện vai trò quyết định của TTXH",
-        definition: "Khi TTXH thay đổi, YTXH cũng thay đổi theo.",
-        quiz: {
-          question:
-            "Biểu hiện nào sau đây thể hiện vai trò quyết định của tồn tại xã hội đối với ý thức xã hội?",
-          options: [
-            "Khi TTXH thay đổi, YTXH cũng thay đổi theo",
-            "YTXH thường lạc hậu hơn TTXH",
-            "YTXH có thể vượt trước TTXH",
-            "YTXH có tính kế thừa",
-          ],
-          correct: 0,
-        },
-        fillAnswer: "Khi ___ thay đổi, ___ cũng thay đổi theo.",
-        answer: "TTXH; YTXH",
-        fullFillAnswer: "TTXH thay đổi kéo theo YTXH thay đổi.",
-      },
-      {
-        id: 42,
-        term: "Tính lạc hậu của YTXH",
-        definition:
-          "Một số phong tục, tập quán lạc hậu vẫn tồn tại trong xã hội hiện đại.",
-        quiz: {
-          question:
-            "Hiện tượng một số phong tục, tập quán lạc hậu vẫn tồn tại trong xã hội hiện đại là biểu hiện cho tính chất nào của ý thức xã hội?",
-          options: [
-            "Tính vượt trước",
-            "Tính kế thừa",
-            "Tính lạc hậu hơn so với tồn tại xã hội",
-            "Tính tác động trở lại",
-          ],
-          correct: 2,
-        },
-        fillAnswer:
-          "Phong tục lạc hậu còn tồn tại là biểu hiện tính ___ của YTXH so với TTXH.",
-        answer: "Tính lạc hậu hơn so với tồn tại xã hội",
-        fullFillAnswer: "Đó là biểu hiện tính lạc hậu của YTXH so với TTXH.",
-      },
-      {
-        id: 43,
-        term: "Tính vượt trước của YTXH",
-        definition:
-          "Các học thuyết khoa học dự báo về tương lai phát triển của xã hội.",
-        quiz: {
-          question:
-            "Các học thuyết khoa học dự báo về tương lai phát triển của xã hội là biểu hiện cho tính chất nào của ý thức xã hội?",
-          options: [
-            "Tính vượt trước so với tồn tại xã hội",
-            "Tính lạc hậu",
-            "Tính giai cấp",
-            "Tính kế thừa",
-          ],
-          correct: 0,
-        },
-        fillAnswer:
-          "Dự báo khoa học về tương lai xã hội thể hiện tính ___ của YTXH.",
-        answer: "Tính vượt trước so với tồn tại xã hội",
-        fullFillAnswer:
-          "Dự báo khoa học là biểu hiện tính vượt trước của YTXH.",
-      },
-      {
-        id: 44,
-        term: "Hai cấp độ của YTXH",
-        definition: "Tâm lý xã hội và hệ tư tưởng.",
-        quiz: {
-          question: "Ý thức xã hội bao gồm hai cấp độ nào?",
-          options: [
-            "Tâm lý xã hội và hệ tư tưởng",
-            "Ý thức cá nhân và ý thức tập thể",
-            "Ý thức khoa học và ý thức thông thường",
-            "Ý thức chính trị và ý thức pháp quyền",
-          ],
-          correct: 0,
-        },
-        fillAnswer: "Hai cấp độ của YTXH: ___ và ___.",
-        answer: "Tâm lý xã hội và hệ tư tưởng",
-        fullFillAnswer: "Hai cấp độ của YTXH: tâm lý xã hội và hệ tư tưởng.",
-      },
-      {
-        id: 45,
-        term: "Hình thái YTXH (loại trừ)",
-        definition:
-          "Ý thức sản xuất không phải là một hình thái của ý thức xã hội.",
-        quiz: {
-          question: "Đâu không phải là một hình thái của ý thức xã hội?",
-          options: [
-            "Ý thức chính trị",
-            "Ý thức đạo đức",
-            "Ý thức sản xuất",
-            "Ý thức nghệ thuật",
-          ],
-          correct: 2,
-        },
-        fillAnswer: "Hình thái KHÔNG thuộc YTXH là ___.",
-        answer: "Ý thức sản xuất",
-        fullFillAnswer: "Ý thức sản xuất không phải là một hình thái của YTXH.",
-      },
-      {
-        id: 46,
-        term: "Bản chất con người (Mác – Lênin)",
+        id: 2,
+        term: "Bản chất con người (theo Mác – Lênin)",
         definition: "Tổng hoà các mối quan hệ xã hội.",
         quiz: {
           question: "Theo chủ nghĩa Mác – Lênin, bản chất con người là:",
@@ -1384,13 +1223,14 @@ export const chapters = [
         fullFillAnswer:
           "Bản chất con người là tổng hoà các mối quan hệ xã hội.",
       },
+      // 3 (47)
       {
-        id: 47,
+        id: 3,
         term: "Con người – chủ thể và sản phẩm của lịch sử",
         definition: "Con người vừa là chủ thể, vừa là sản phẩm của lịch sử.",
         quiz: {
           question:
-            '"Con người là sản phẩm của lịch sử và của chính bản thân con người" có nghĩa là gì?',
+            "Câu “Con người là sản phẩm của lịch sử và của chính bản thân con người” có nghĩa là gì?",
           options: [
             "Con người tự tạo ra mình mà không cần điều kiện khách quan",
             "Con người vừa là chủ thể, vừa là sản phẩm của lịch sử",
@@ -1400,13 +1240,14 @@ export const chapters = [
           correct: 1,
         },
         fillAnswer: "Con người vừa là ___, vừa là ___ của lịch sử.",
-        answer: "chủ thể; sản phẩm",
+        answer: "Chủ thể; sản phẩm",
         fullFillAnswer:
           "Con người vừa là chủ thể, vừa là sản phẩm của lịch sử.",
       },
+      // 4 (48)
       {
-        id: 48,
-        term: "Khác biệt căn bản người – vật",
+        id: 4,
+        term: "Khác biệt căn bản giữa con người và con vật",
         definition: "Con người biết lao động sản xuất.",
         quiz: {
           question:
@@ -1420,11 +1261,12 @@ export const chapters = [
           correct: 3,
         },
         fillAnswer: "Sự khác biệt căn bản: con người biết ___.",
-        answer: "Con người biết lao động sản xuất",
+        answer: "Lao động sản xuất",
         fullFillAnswer: "Khác biệt căn bản: con người biết lao động sản xuất.",
       },
+      // 5 (49)
       {
-        id: 49,
+        id: 5,
         term: "Nguồn gốc tha hoá con người",
         definition:
           "Nảy sinh trong xã hội có chế độ tư hữu, có giai cấp đối kháng.",
@@ -1439,13 +1281,14 @@ export const chapters = [
           correct: 1,
         },
         fillAnswer: "Tha hoá nảy sinh trong xã hội có ___ và ___ giai cấp.",
-        answer: "Xã hội có chế độ tư hữu, có giai cấp đối kháng",
+        answer: "Chế độ tư hữu; đối kháng giai cấp",
         fullFillAnswer:
           "Tha hoá nảy sinh trong xã hội có tư hữu và đối kháng giai cấp.",
       },
+      // 6 (50)
       {
-        id: 50,
-        term: "Vai trò quần chúng nhân dân",
+        id: 6,
+        term: "Vai trò của quần chúng nhân dân",
         definition:
           "Là lực lượng sáng tạo ra lịch sử, quyết định sự phát triển của lịch sử.",
         quiz: {
@@ -1459,10 +1302,602 @@ export const chapters = [
           correct: 0,
         },
         fillAnswer: "Quần chúng nhân dân là lực lượng ___ ra lịch sử.",
-        answer: "sáng tạo",
+        answer: "Sáng tạo",
         fullFillAnswer:
           "Quần chúng nhân dân là lực lượng sáng tạo ra lịch sử, quyết định sự phát triển của lịch sử.",
       },
     ],
   },
 ];
+
+// --- Rút gọn mô tả chương ---
+for (const c of chapters) {
+  if (c.id === 31001) {
+    c.description = "Nền tảng, cấu trúc và quan hệ giữa tồn tại xã hội & ý thức xã hội.";
+  }
+  if (c.id === 31002) {
+    c.description = "Phương thức sản xuất; lực lượng–quan hệ sản xuất; cơ sở hạ tầng & kiến trúc thượng tầng.";
+  }
+  if (c.id === 31003) {
+    c.description = "Nguồn gốc giai cấp, đấu tranh giai cấp, nhà nước, cách mạng xã hội.";
+  }
+  if (c.id === 31004) {
+    c.description = "Bản chất con người, lao động, tha hoá; vai trò quần chúng; văn hoá.";
+  }
+}
+
+// --- Bổ sung câu hỏi để mỗi chương có ít nhất 20 câu ---
+(function appendMoreQuestions() {
+  /* ========== CHƯƠNG 1: Tồn tại xã hội & Ý thức xã hội ========== */
+  {
+    const ch = chapters.find(c => c.id === 31001);
+    if (ch) {
+      const nextId = () => ch.questions.length + 1;
+
+      while (ch.questions.length < 20) {
+        const need = 20 - ch.questions.length;
+
+        if (need > 0) ch.questions.push({
+          id: nextId(),
+          term: "Phân biệt ý thức thông thường và ý thức lý luận",
+          definition:
+            "Ý thức thông thường hình thành trực tiếp từ trải nghiệm đời sống; ý thức lý luận khái quát có hệ thống dựa trên thực tiễn và tri thức khoa học.",
+          quiz: {
+            question:
+              "Sự khác nhau cơ bản giữa ý thức thông thường và ý thức lý luận là gì?",
+            options: [
+              "Ý thức thông thường luôn đúng, ý thức lý luận chỉ là giả thuyết.",
+              "Ý thức thông thường mang tính kinh nghiệm trực tiếp; ý thức lý luận mang tính khái quát, hệ thống dựa trên khoa học.",
+              "Ý thức thông thường thuộc về cá nhân; ý thức lý luận chỉ thuộc về nhà nước.",
+              "Không có khác biệt đáng kể giữa hai loại ý thức này.",
+            ],
+            correct: 1,
+          },
+          fillAnswer:
+            "Ý thức thông thường mang tính ___; ý thức lý luận mang tính ___ và có cơ sở khoa học.",
+          answer: "Kinh nghiệm trực tiếp; khái quát, hệ thống",
+          fullFillAnswer:
+            "Ý thức thông thường mang tính kinh nghiệm trực tiếp; ý thức lý luận mang tính khái quát, hệ thống và có cơ sở khoa học.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Nguồn gốc xã hội trực tiếp của ý thức",
+          definition:
+            "Lao động và ngôn ngữ là nguồn gốc xã hội trực tiếp của ý thức con người.",
+          quiz: {
+            question:
+              "Nguồn gốc xã hội trực tiếp của ý thức con người là gì?",
+            options: [
+              "Bộ não con người và thế giới khách quan.",
+              "Lao động và ngôn ngữ.",
+              "Cảm xúc và niềm tin cá nhân.",
+              "Thiên tài bẩm sinh.",
+            ],
+            correct: 1,
+          },
+          fillAnswer: "Nguồn gốc xã hội trực tiếp của ý thức là ___ và ___.",
+          answer: "Lao động; ngôn ngữ",
+          fullFillAnswer:
+            "Nguồn gốc xã hội trực tiếp của ý thức là lao động và ngôn ngữ.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Vai trò của thực tiễn đối với nhận thức",
+          definition:
+            "Thực tiễn là cơ sở, mục tiêu và tiêu chuẩn kiểm nghiệm chân lý của nhận thức.",
+          quiz: {
+            question:
+              "Vai trò của thực tiễn đối với nhận thức được khái quát đúng nhất ở mệnh đề nào?",
+            options: [
+              "Thực tiễn chỉ là mục tiêu của nhận thức.",
+              "Thực tiễn là cơ sở của nhận thức, nhưng không liên quan đến chân lý.",
+              "Thực tiễn là cơ sở, mục tiêu và tiêu chuẩn kiểm nghiệm chân lý.",
+              "Thực tiễn đối lập với nhận thức.",
+            ],
+            correct: 2,
+          },
+          fillAnswer:
+            "Thực tiễn là ___, ___ và ___ kiểm nghiệm chân lý của nhận thức.",
+          answer: "Cơ sở; mục tiêu; tiêu chuẩn",
+          fullFillAnswer:
+            "Thực tiễn là cơ sở, mục tiêu và tiêu chuẩn kiểm nghiệm chân lý của nhận thức.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Khắc phục tính lạc hậu của ý thức xã hội",
+          definition:
+            "Phối hợp phát triển kinh tế với giáo dục, pháp luật, truyền thông khoa học và nâng cao đời sống văn hoá để đổi mới ý thức xã hội.",
+          quiz: {
+            question:
+              "Biện pháp cơ bản để khắc phục tính lạc hậu của ý thức xã hội là:",
+            options: [
+              "Chỉ tập trung phát triển kinh tế, không cần giáo dục.",
+              "Kết hợp phát triển kinh tế với giáo dục, pháp luật và nâng cao đời sống văn hoá.",
+              "Bãi bỏ mọi phong tục, tập quán truyền thống.",
+              "Chỉ tuyên truyền bằng khẩu hiệu.",
+            ],
+            correct: 1,
+          },
+          fillAnswer:
+            "Cần kết hợp phát triển ___ với ___, pháp luật và nâng cao đời sống ___.",
+          answer: "Kinh tế; giáo dục; văn hoá",
+          fullFillAnswer:
+            "Cần kết hợp phát triển kinh tế với giáo dục, pháp luật và nâng cao đời sống văn hoá.",
+        });
+      }
+    }
+  }
+
+  /* ========== CHƯƠNG 2: Học thuyết hình thái kinh tế – xã hội ========== */
+  // Đã đủ 20 câu trong dữ liệu gốc → không bổ sung.
+
+  /* ========== CHƯƠNG 3: Giai cấp, Dân tộc, Nhà nước & Cách mạng xã hội ========== */
+  {
+    const ch = chapters.find(c => c.id === 31003);
+    if (ch) {
+      const nextId = () => ch.questions.length + 1;
+
+      while (ch.questions.length < 20) {
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Các hình thức chủ yếu của đấu tranh giai cấp",
+          definition:
+            "Đấu tranh trên ba lĩnh vực chủ yếu: kinh tế, chính trị và tư tưởng – văn hoá.",
+          quiz: {
+            question:
+              "Đấu tranh giai cấp thường diễn ra chủ yếu trên các lĩnh vực nào?",
+            options: [
+              "Kinh tế, chính trị và tư tưởng – văn hoá.",
+              "Quân sự, tôn giáo và gia đình.",
+              "Khoa học, nghệ thuật và thể thao.",
+              "Ngoại giao, du lịch và thương mại điện tử.",
+            ],
+            correct: 0,
+          },
+          fillAnswer:
+            "Đấu tranh giai cấp diễn ra trên ba lĩnh vực: ___, ___ và ___.",
+          answer: "Kinh tế; chính trị; tư tưởng – văn hoá",
+          fullFillAnswer:
+            "Đấu tranh giai cấp diễn ra chủ yếu trên ba lĩnh vực: kinh tế, chính trị và tư tưởng – văn hoá.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Quan hệ giữa vấn đề dân tộc và giai cấp",
+          definition:
+            "Trong cách mạng giải phóng dân tộc, đặt lợi ích dân tộc lên hàng đầu đồng thời gắn với lợi ích của giai cấp và nhân dân lao động.",
+          quiz: {
+            question:
+              "Cách hiểu đúng về quan hệ dân tộc – giai cấp trong cách mạng giải phóng dân tộc là:",
+            options: [
+              "Chỉ ưu tiên lợi ích giai cấp, bỏ qua lợi ích dân tộc.",
+              "Chỉ ưu tiên lợi ích dân tộc, phủ nhận vấn đề giai cấp.",
+              "Kết hợp đúng đắn: đặt lợi ích dân tộc lên hàng đầu và gắn với lợi ích của giai cấp, nhân dân lao động.",
+              "Không có liên hệ giữa hai vấn đề này.",
+            ],
+            correct: 2,
+          },
+          fillAnswer:
+            "Cần đặt lợi ích ___ lên hàng đầu và gắn với lợi ích của ___, ___ lao động.",
+          answer: "Dân tộc; giai cấp; nhân dân",
+          fullFillAnswer:
+            "Cần đặt lợi ích dân tộc lên hàng đầu và gắn với lợi ích của giai cấp, nhân dân lao động.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Phân loại chức năng của nhà nước: đối nội và đối ngoại",
+          definition:
+            "Một cách phân loại chức năng nhà nước là chức năng đối nội và chức năng đối ngoại.",
+          quiz: {
+            question:
+              "Theo cách phân loại phổ biến, chức năng của nhà nước gồm:",
+            options: [
+              "Đối nội và đối ngoại.",
+              "Lập pháp và tư pháp.",
+              "Tài chính và văn hoá.",
+              "Khoa học và giáo dục.",
+            ],
+            correct: 0,
+          },
+          fillAnswer: "Chức năng của nhà nước gồm ___ và ___.",
+          answer: "Đối nội; đối ngoại",
+          fullFillAnswer:
+            "Chức năng của nhà nước có thể phân thành đối nội và đối ngoại.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Điều kiện của cách mạng xã hội",
+          definition:
+            "Cần có điều kiện khách quan chín muồi và nhân tố chủ quan: lực lượng chính trị, tổ chức lãnh đạo, ý thức và sự chuẩn bị của quần chúng.",
+          quiz: {
+            question:
+              "Điều kiện cơ bản để bùng nổ cách mạng xã hội gồm những gì?",
+            options: [
+              "Chỉ cần khủng hoảng kinh tế.",
+              "Chỉ cần có tổ chức lãnh đạo.",
+              "Cả điều kiện khách quan chín muồi và nhân tố chủ quan (lực lượng lãnh đạo, tổ chức, ý thức quần chúng).",
+              "Không cần điều kiện gì đặc biệt.",
+            ],
+            correct: 2,
+          },
+          fillAnswer:
+            "Cách mạng xã hội cần điều kiện ___ chín muồi và nhân tố ___ vững mạnh.",
+          answer: "Khách quan; chủ quan",
+          fullFillAnswer:
+            "Cách mạng xã hội cần điều kiện khách quan chín muồi và nhân tố chủ quan vững mạnh.",
+        });
+
+        if (ch.questions.length < 20) ch.questions.push({
+          id: nextId(),
+          term: "Cải cách xã hội và cách mạng xã hội",
+          definition:
+            "Cải cách xã hội là những biến đổi từng phần trong khuôn khổ trật tự hiện có; cách mạng xã hội là biến đổi căn bản chế độ chính trị – xã hội.",
+          quiz: {
+            question:
+              "Phát biểu nào đúng khi so sánh cải cách xã hội với cách mạng xã hội?",
+            options: [
+              "Cải cách xã hội là biến đổi từng phần; cách mạng xã hội là biến đổi căn bản chế độ.",
+              "Cả hai đều hoàn toàn giống nhau.",
+              "Cải cách xã hội luôn nhanh hơn cách mạng xã hội.",
+              "Cách mạng xã hội luôn xảy ra bằng con đường bạo lực quân sự.",
+            ],
+            correct: 0,
+          },
+          fillAnswer:
+            "Cải cách là biến đổi ___; cách mạng là biến đổi ___ chế độ.",
+          answer: "Từng phần; căn bản",
+          fullFillAnswer:
+            "Cải cách là biến đổi từng phần; cách mạng là biến đổi căn bản chế độ.",
+        });
+      }
+    }
+  }
+
+  /* ========== CHƯƠNG 4: Con người, văn hoá & vai trò quần chúng ========== */
+  {
+    const ch = chapters.find(c => c.id === 31004);
+    if (ch) {
+      const nextId = () => ch.questions.length + 1;
+
+      const add = (obj) => ch.questions.length < 20 && ch.questions.push({ id: nextId(), ...obj });
+
+      add({
+        term: "Nhu cầu, lợi ích và động cơ",
+        definition:
+          "Lợi ích là động lực trực tiếp thúc đẩy hoạt động của con người; nhu cầu là nguồn gốc nảy sinh lợi ích; động cơ định hướng hành vi.",
+        quiz: {
+          question:
+            "Phát biểu nào đúng về vai trò của lợi ích trong đời sống xã hội?",
+          options: [
+            "Lợi ích chỉ là yếu tố phụ trong hành vi.",
+            "Lợi ích là động lực trực tiếp thúc đẩy hoạt động của con người.",
+            "Lợi ích đối lập với đạo đức nên cần loại bỏ.",
+            "Lợi ích chỉ có tính cá nhân, không thể có lợi ích xã hội.",
+          ],
+          correct: 1,
+        },
+        fillAnswer: "Lợi ích là ___ trực tiếp thúc đẩy hoạt động.",
+        answer: "Động lực",
+        fullFillAnswer: "Lợi ích là động lực trực tiếp thúc đẩy hoạt động.",
+      });
+
+      add({
+        term: "Phát triển toàn diện con người",
+        definition:
+          "Hài hoà các mặt đức, trí, thể, mỹ và nghề nghiệp; tạo điều kiện cho cá nhân phát triển năng lực và phẩm chất.",
+        quiz: {
+          question:
+            "Mục tiêu của phát triển toàn diện con người theo quan điểm Mác – Lênin là:",
+          options: [
+            "Chỉ chú trọng tri thức.",
+            "Chỉ chú trọng thể lực.",
+            "Phát triển hài hoà đức, trí, thể, mỹ và nghề nghiệp.",
+            "Loại bỏ các giá trị đạo đức truyền thống.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Phát triển toàn diện hướng tới hài hoà ___, ___, ___, ___ và ___.",
+        answer: "Đức; trí; thể; mỹ; nghề nghiệp",
+        fullFillAnswer:
+          "Phát triển toàn diện hướng tới hài hoà đức, trí, thể, mỹ và nghề nghiệp.",
+      });
+
+      add({
+        term: "Tự do và tất yếu",
+        definition:
+          "Tự do là sự nhận thức được quy luật tất yếu và biết cải biến hiện thực theo các quy luật đó.",
+        quiz: {
+          question:
+            "Theo quan điểm duy vật biện chứng, tự do được hiểu là:",
+          options: [
+            "Sự tuỳ tiện không bị ràng buộc.",
+            "Sự phủ nhận mọi quy luật khách quan.",
+            "Sự nhận thức được tất yếu và cải biến hiện thực theo quy luật.",
+            "Sự tách rời con người khỏi xã hội.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Tự do là sự nhận thức ___ và cải biến hiện thực theo ___.",
+        answer: "Tất yếu; quy luật",
+        fullFillAnswer:
+          "Tự do là sự nhận thức được tất yếu và cải biến hiện thực theo quy luật.",
+      });
+
+      add({
+        term: "Lao động sáng tạo nâng tầm con người",
+        definition:
+          "Lao động sáng tạo phát triển năng lực, mở rộng thế giới quan và làm phong phú bản chất xã hội của con người.",
+        quiz: {
+          question:
+            "Vai trò của lao động sáng tạo đối với sự phát triển con người là:",
+          options: [
+            "Không đáng kể so với bẩm sinh.",
+            "Chủ yếu làm tăng thu nhập vật chất.",
+            "Phát triển năng lực, thế giới quan và bản chất xã hội của con người.",
+            "Chỉ cần khi theo đuổi nghệ thuật.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Lao động sáng tạo phát triển ___, mở rộng ___ và làm phong phú bản chất xã hội.",
+        answer: "Năng lực; thế giới quan",
+        fullFillAnswer:
+          "Lao động sáng tạo phát triển năng lực, mở rộng thế giới quan và làm phong phú bản chất xã hội.",
+      });
+
+      add({
+        term: "Biểu hiện của tha hoá trong lao động",
+        definition:
+          "Người lao động bị lệ thuộc vào sản phẩm và quá trình lao động, đánh mất ý nghĩa và tính sáng tạo của lao động.",
+        quiz: {
+          question:
+            "Biểu hiện nào sau đây phản ánh hiện tượng tha hoá trong lao động?",
+          options: [
+            "Người lao động làm chủ công cụ và quá trình lao động.",
+            "Người lao động coi lao động là hoạt động sáng tạo có ý nghĩa.",
+            "Người lao động bị biến thành phụ thuộc máy móc, sản phẩm xa lạ với chính mình.",
+            "Người lao động tự do lựa chọn cách thức lao động.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Tha hoá: người lao động bị ___ máy móc, sản phẩm trở nên ___ với mình.",
+        answer: "Phụ thuộc; xa lạ",
+        fullFillAnswer:
+          "Tha hoá: người lao động bị phụ thuộc máy móc, sản phẩm trở nên xa lạ với mình.",
+      });
+
+      add({
+        term: "Con người và tự nhiên trong phát triển bền vững",
+        definition:
+          "Con người và tự nhiên thống nhất biện chứng; cần khai thác hợp lý, bảo vệ môi trường để phát triển bền vững.",
+        quiz: {
+          question:
+            "Quan điểm đúng về quan hệ con người – tự nhiên là:",
+          options: [
+            "Con người phải khuất phục hoàn toàn trước tự nhiên.",
+            "Con người có thể khai thác tự nhiên vô hạn.",
+            "Thống nhất biện chứng: khai thác hợp lý gắn với bảo vệ môi trường.",
+            "Không có mối liên hệ giữa con người và tự nhiên.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Cần khai thác ___ gắn với ___ môi trường để phát triển bền vững.",
+        answer: "Hợp lý; bảo vệ",
+        fullFillAnswer:
+          "Cần khai thác hợp lý gắn với bảo vệ môi trường để phát triển bền vững.",
+      });
+
+      add({
+        term: "Vai trò của giá trị văn hoá",
+        definition:
+          "Giá trị văn hoá định hướng hành vi, bồi dưỡng nhân cách và củng cố bản sắc cộng đồng.",
+        quiz: {
+          question:
+            "Vai trò cơ bản của giá trị văn hoá đối với phát triển con người là:",
+          options: [
+            "Định hướng hành vi, bồi dưỡng nhân cách, củng cố bản sắc.",
+            "Chỉ phục vụ giải trí.",
+            "Thay thế pháp luật.",
+            "Làm giảm trách nhiệm xã hội.",
+          ],
+          correct: 0,
+        },
+        fillAnswer:
+          "Giá trị văn hoá giúp định hướng ___, bồi dưỡng ___ và củng cố ___.",
+        answer: "Hành vi; nhân cách; bản sắc",
+        fullFillAnswer:
+          "Giá trị văn hoá định hướng hành vi, bồi dưỡng nhân cách và củng cố bản sắc.",
+      });
+
+      add({
+        term: "Gia đình – tế bào của xã hội",
+        definition:
+          "Gia đình là môi trường đầu tiên hình thành nhân cách, giáo dục đạo đức và thói quen xã hội.",
+        quiz: {
+          question:
+            "Vì sao gia đình được coi là tế bào của xã hội?",
+          options: [
+            "Vì gia đình chỉ có chức năng kinh tế.",
+            "Vì gia đình là nơi đầu tiên hình thành nhân cách và giáo dục đạo đức.",
+            "Vì gia đình quyết định mọi chính sách xã hội.",
+            "Vì gia đình thay thế nhà trường.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "Gia đình là nơi đầu tiên hình thành ___ và giáo dục ___.",
+        answer: "Nhân cách; đạo đức",
+        fullFillAnswer:
+          "Gia đình là nơi đầu tiên hình thành nhân cách và giáo dục đạo đức.",
+      });
+
+      add({
+        term: "Giáo dục và tự giáo dục",
+        definition:
+          "Giáo dục xã hội và tự giáo dục của cá nhân kết hợp mới tạo nên sự phát triển bền vững về phẩm chất và năng lực.",
+        quiz: {
+          question:
+            "Điều kiện để phát triển bền vững phẩm chất và năng lực cá nhân là:",
+          options: [
+            "Chỉ dựa vào giáo dục xã hội.",
+            "Chỉ dựa vào tự giáo dục.",
+            "Kết hợp giáo dục xã hội với tự giáo dục.",
+            "Không cần giáo dục.",
+          ],
+          correct: 2,
+        },
+        fillAnswer:
+          "Cần kết hợp giáo dục ___ với ___ để phát triển bền vững.",
+        answer: "Xã hội; tự giáo dục",
+        fullFillAnswer:
+          "Cần kết hợp giáo dục xã hội với tự giáo dục để phát triển bền vững.",
+      });
+
+      add({
+        term: "Vai trò của thanh niên",
+        definition:
+          "Thanh niên là lực lượng xung kích trong đổi mới sáng tạo, tiếp thu khoa học – công nghệ và xây dựng văn hoá mới.",
+        quiz: {
+          question:
+            "Vai trò nổi bật của thanh niên trong phát triển xã hội là:",
+          options: [
+            "Bảo tồn nguyên trạng, hạn chế đổi mới.",
+            "Xung kích trong đổi mới sáng tạo và tiếp thu khoa học – công nghệ.",
+            "Chỉ tham gia hoạt động văn nghệ.",
+            "Hạn chế tham gia vào đời sống chính trị – xã hội.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "Thanh niên là lực lượng ___ trong đổi mới và tiếp thu ___.",
+        answer: "Xung kích; khoa học – công nghệ",
+        fullFillAnswer:
+          "Thanh niên là lực lượng xung kích trong đổi mới và tiếp thu khoa học – công nghệ.",
+      });
+
+      add({
+        term: "Đạo đức số trong thời đại công nghệ",
+        definition:
+          "Sử dụng công nghệ có trách nhiệm, tôn trọng quyền riêng tư, trung thực thông tin và tránh gây hại trên không gian mạng.",
+        quiz: {
+          question:
+            "Nội dung cốt lõi của đạo đức số là gì?",
+          options: [
+            "Sử dụng công nghệ không cần tuân thủ pháp luật.",
+            "Sử dụng công nghệ có trách nhiệm, tôn trọng quyền riêng tư và trung thực thông tin.",
+            "Chia sẻ mọi dữ liệu để tiện lợi.",
+            "Chỉ quan tâm hiệu quả kinh tế.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "Đạo đức số: sử dụng công nghệ ___, tôn trọng ___ và trung thực ___.",
+        answer: "Có trách nhiệm; quyền riêng tư; thông tin",
+        fullFillAnswer:
+          "Đạo đức số: sử dụng công nghệ có trách nhiệm, tôn trọng quyền riêng tư và trung thực thông tin.",
+      });
+
+      add({
+        term: "Bình đẳng giới trong phát triển con người",
+        definition:
+          "Bảo đảm cơ hội và điều kiện phát triển ngang nhau cho mọi giới trong giáo dục, việc làm, lãnh đạo và đời sống gia đình – xã hội.",
+        quiz: {
+          question:
+            "Bình đẳng giới hướng tới mục tiêu nào sau đây?",
+          options: [
+            "Ưu tiên tuyệt đối một giới.",
+            "Cơ hội và điều kiện phát triển ngang nhau cho mọi giới.",
+            "Không cần quan tâm đến chênh lệch.",
+            "Chỉ tập trung lĩnh vực kinh tế.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "Bình đẳng giới: bảo đảm ___ và ___ phát triển ngang nhau.",
+        answer: "Cơ hội; điều kiện",
+        fullFillAnswer:
+          "Bình đẳng giới: bảo đảm cơ hội và điều kiện phát triển ngang nhau.",
+      });
+
+      add({
+        term: "An sinh xã hội và phát triển con người",
+        definition:
+          "Hệ thống an sinh xã hội giúp bảo vệ người yếu thế, giảm bất bình đẳng và tạo nền tảng cho phát triển bền vững.",
+        quiz: {
+          question:
+            "Vai trò của an sinh xã hội đối với phát triển con người là:",
+          options: [
+            "Làm giảm động lực phấn đấu của toàn xã hội.",
+            "Bảo vệ người yếu thế, giảm bất bình đẳng và tạo nền tảng phát triển bền vững.",
+            "Chỉ có ý nghĩa trong thiên tai.",
+            "Chỉ mang tính từ thiện ngắn hạn.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "An sinh xã hội bảo vệ ___, giảm ___ và tạo nền tảng ___ bền vững.",
+        answer: "Người yếu thế; bất bình đẳng; phát triển",
+        fullFillAnswer:
+          "An sinh xã hội bảo vệ người yếu thế, giảm bất bình đẳng và tạo nền tảng phát triển bền vững.",
+      });
+
+      add({
+        term: "Quan hệ giữa hạnh phúc cá nhân và cộng đồng",
+        definition:
+          "Hạnh phúc cá nhân bền vững gắn với hạnh phúc cộng đồng; cá nhân – xã hội thống nhất trong phát triển.",
+        quiz: {
+          question:
+            "Phát biểu nào đúng về quan hệ hạnh phúc cá nhân – cộng đồng?",
+          options: [
+            "Hạnh phúc cá nhân hoàn toàn tách rời hạnh phúc cộng đồng.",
+            "Hạnh phúc cá nhân bền vững gắn với hạnh phúc cộng đồng.",
+            "Chỉ cần cộng đồng hạnh phúc, cá nhân tự khắc hạnh phúc.",
+            "Chỉ cần cá nhân hạnh phúc, không cần quan tâm cộng đồng.",
+          ],
+          correct: 1,
+        },
+        fillAnswer:
+          "Hạnh phúc cá nhân bền vững gắn với hạnh phúc ___.",
+        answer: "Cộng đồng",
+        fullFillAnswer:
+          "Hạnh phúc cá nhân bền vững gắn với hạnh phúc cộng đồng.",
+      });
+
+      // Nếu vẫn thiếu do ban đầu số câu < 6, tiếp tục thêm cho đủ 20 (safety)
+      while (ch.questions.length < 20) {
+        ch.questions.push({
+          id: nextId(),
+          term: "Tự hoàn thiện nhân cách",
+          definition:
+            "Quá trình chủ động rèn luyện phẩm chất, tri thức và kỹ năng để đạt mục tiêu sống có ý nghĩa.",
+          quiz: {
+            question:
+              "Tự hoàn thiện nhân cách bao gồm nội dung nào sau đây?",
+            options: [
+              "Tự phát triển phẩm chất, tri thức và kỹ năng.",
+              "Chỉ phát triển thể lực.",
+              "Chỉ tích luỹ bằng cấp.",
+              "Phụ thuộc hoàn toàn vào môi trường.",
+            ],
+            correct: 0,
+          },
+          fillAnswer:
+            "Tự hoàn thiện cần rèn luyện ___, ___ và ___ một cách chủ động.",
+          answer: "Phẩm chất; tri thức; kỹ năng",
+          fullFillAnswer:
+            "Tự hoàn thiện cần rèn luyện phẩm chất, tri thức và kỹ năng một cách chủ động.",
+        });
+      }
+    }
+  }
+})();
+

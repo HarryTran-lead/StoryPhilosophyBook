@@ -4,12 +4,11 @@ import {
   Info,
   BookOpen,
   Layers,
-  FileText,
+  Book,
   Menu,
   X,
   ChevronDown,
   ArrowRight,
-  Book,
 } from "lucide-react";
 import { NavLink as RouterNavLink } from "react-router-dom";
 import endPoint from "@routes/routes";
@@ -24,39 +23,11 @@ const navItems = [
   { label: "Trang chủ", icon: Home, to: endPoint.HOMEPAGE },
   { label: "Giới thiệu", icon: Info, to: endPoint.ABOUT },
   {
-    label: "Mục lục",
-    icon: BookOpen,
-    to: "#",
-    children: [
-      {
-        label: "Chương 1: Nhận thức khoa học",
-        to: `${endPoint.CHAPTERS}/1`,
-        description: "Cơ sở lý thuyết nhận thức",
-      },
-      {
-        label: "Chương 2: Vật chất và ý thức",
-        to: `${endPoint.CHAPTERS}/2`,
-        description: "Quan hệ biện chứng cơ bản",
-      },
-      {
-        label: "Chương 3: Quy luật biện chứng",
-        to: `${endPoint.CHAPTERS}/3`,
-        description: "Phương pháp tư duy khoa học",
-      },
-      {
-        label: "Chương 4: Lịch sử xã hội",
-        to: `${endPoint.CHAPTERS}/4`,
-        description: "Động lực phát triển",
-      },
-      {
-        label: "Chương 5: Cách mạng và tiến bộ",
-        to: `${endPoint.CHAPTERS}/5`,
-        description: "Con đường giải phóng",
-      },
-    ],
+    label: "Sách",
+    icon: Book,
+    to: "storybook",
   },
   { label: "Ôn tập", icon: Layers, to: endPoint.QUIZ },
-  // { label: "Tài liệu", icon: FileText, to: endPoint.RESOURCES },
 ];
 
 // Dropdown component

@@ -1,6 +1,8 @@
-import React, { useMemo} from "react";
+import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { BookOpenCheck, Compass, ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import endPoint from "@routes/routes";
 
 const container = {
   hidden: { opacity: 0 },
@@ -28,7 +30,7 @@ const AccentGlow = () => (
 
 const TrademarkFooter = () => (
   <div className="flex flex-col items-center gap-3 text-center">
-    {/* Divider mới */}
+    {/* Divider */}
     <div className="w-full max-w-3xl mx-auto">
       <div className="h-px w-full bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
     </div>
@@ -68,7 +70,22 @@ const TrademarkFooter = () => (
 );
 
 const FinaleSection = ({ onPrimary, onSecondary, visibleSections }) => {
+  const navigate = useNavigate();
   const isVisible = !visibleSections || visibleSections.has?.("finale");
+
+  // Handlers: ưu tiên callback được truyền vào; nếu không có thì navigate
+  const goPrimary = () => {
+    if (typeof onPrimary === "function") return onPrimary();
+    navigate(endPoint.QUIZ ?? "/quiz");
+  };
+
+  const goSecondary = () => {
+    if (typeof onSecondary === "function") return onSecondary();
+    // "Kho nội dung" → trang storybook
+    navigate(
+      endPoint.STORYBOOK ?? endPoint.BOOKS ?? endPoint.BOOK ?? "/storybook"
+    );
+  };
 
   const header = useMemo(
     () => (
@@ -83,7 +100,7 @@ const FinaleSection = ({ onPrimary, onSecondary, visibleSections }) => {
         </div>
 
         <h2 className="pt-3 text-3xl md:text-4xl font-extrabold pb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-amber-400 leading-snug">
-          Khép Lại Để Mở Ra Hành Trình Mới 
+          Khép Lại Để Mở Ra Hành Trình Mới
         </h2>
         <p className="text-lg md:text-xl text-slate-300/95 max-w-4xl mx-auto leading-relaxed">
           Những nguyên lý sống động của chủ nghĩa Mác – Lênin không dừng ở trang
@@ -115,7 +132,7 @@ const FinaleSection = ({ onPrimary, onSecondary, visibleSections }) => {
         >
           <motion.button
             variants={item}
-            onClick={onPrimary}
+            onClick={goPrimary}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-2 rounded-xl px-5 py-3 md:px-6 md:py-3.5 font-semibold text-slate-900 bg-amber-300 hover:bg-amber-200 active:bg-amber-300/90 transition-colors"
@@ -127,7 +144,7 @@ const FinaleSection = ({ onPrimary, onSecondary, visibleSections }) => {
 
           <motion.button
             variants={item}
-            onClick={onSecondary}
+            onClick={goSecondary}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             className="inline-flex items-center gap-2 rounded-xl px-5 py-3 md:px-6 md:py-3.5 font-semibold text-amber-200/90 ring-1 ring-amber-300/30 hover:bg-amber-400/10 transition-colors"
